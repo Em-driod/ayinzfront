@@ -17,7 +17,7 @@ interface Release {
 }
 
 const getStatusStyle = (status: string) => {
-  if (status === 'approved') return { cls: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20', icon: <CheckCircle className="w-2.5 h-2.5" />, label: 'Approved' };
+  if (status === 'approved') return { cls: 'bg-red-600/10 text-red-500 border border-red-600/20', icon: <CheckCircle className="w-2.5 h-2.5" />, label: 'Approved' };
   if (status === 'pending') return { cls: 'bg-amber-500/10 text-amber-400 border border-amber-500/20', icon: <Clock className="w-2.5 h-2.5" />, label: 'Pending' };
   if (status === 'rejected') return { cls: 'bg-red-500/10 text-red-400 border border-red-500/20', icon: <AlertCircle className="w-2.5 h-2.5" />, label: 'Rejected' };
   return { cls: 'bg-zinc-800 text-zinc-400', icon: <CheckCircle className="w-2.5 h-2.5" />, label: status };
@@ -177,7 +177,7 @@ export default function Releases() {
                     </div>
                     <div>
                       <p className="text-[10px] text-zinc-700 font-black uppercase tracking-wider">Revenue</p>
-                      <p className="font-black text-sm text-emerald-400">
+                      <p className="font-black text-sm text-red-500">
                         {release.revenue > 0 ? `₦${release.revenue.toLocaleString()}` : '—'}
                       </p>
                     </div>

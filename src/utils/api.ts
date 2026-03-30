@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'https://ayinzbackend.onrender.com/api',
+    baseURL: import.meta.env.VITE_API_BASE_URL || 'https://ayinzbackend.onrender.com/api', // Use local or production URL
     headers: {
         'Content-Type': 'application/json'
     }

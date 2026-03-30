@@ -73,7 +73,7 @@ export default function Dashboard() {
   };
 
   const getStatusStyle = (status: string) => {
-    if (status === 'approved') return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+    if (status === 'approved') return 'bg-red-600/10 text-red-500 border border-red-600/20';
     if (status === 'pending') return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
     if (status === 'rejected') return 'bg-red-500/10 text-red-400 border border-red-500/20';
     return 'bg-zinc-800 text-zinc-400';

@@ -123,7 +123,7 @@ export default function Settings() {
             animate={{ opacity: 1, y: 0 }}
             className={`mb-6 p-4 rounded-xl flex items-center space-x-3 text-sm font-semibold border ${
               message.type === 'success'
-                ? 'bg-emerald-500/5 text-emerald-400 border-emerald-500/20'
+                ? 'bg-red-600/10 text-red-500 border-red-600/20'
                 : 'bg-red-500/5 text-red-400 border-red-500/20'
             }`}
           >

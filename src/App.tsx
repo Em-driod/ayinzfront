@@ -11,6 +11,7 @@ import Analytics from './pages/Analytics';
 import AdminDashboard from './pages/AdminDashboard';
 import Revenue from './pages/Revenue';
 import Settings from './pages/Settings';
+import Support from './pages/Support';
 
 function App() {
   return (
@@ -50,6 +51,11 @@ function App() {
         <Route path="/settings" element={
           <Layout>
             <Settings />
+          </Layout>
+        } />
+        <Route path="/support" element={
+          <Layout>
+            <Support />
           </Layout>
         } />
         <Route path="/admin" element={

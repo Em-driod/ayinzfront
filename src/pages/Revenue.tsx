@@ -114,7 +114,7 @@ export default function Revenue() {
   const pieData = Object.entries(revenueByPlatform).map(([name, value]) => ({ name, value }));
 
   const payoutStatusStyle = (status: string) => {
-    if (status === 'Completed') return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+    if (status === 'Completed') return 'bg-red-600/10 text-red-500 border border-red-600/20';
     if (status === 'Rejected') return 'bg-red-500/10 text-red-400 border border-red-500/20';
     return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
   };
@@ -162,11 +162,11 @@ export default function Revenue() {
         {/* Lifetime */}
         <div className="bg-zinc-950 border border-zinc-900 rounded-2xl p-6">
           <div className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-4">
-            <TrendingUp className="w-4 h-4 text-emerald-500" />
+            <TrendingUp className="w-4 h-4 text-red-500" />
           </div>
           <p className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-1">Lifetime Earnings</p>
           <h2 className="text-2xl font-black text-white">₦{totalRevenue.toLocaleString()}</h2>
-          <p className="text-xs text-emerald-400 font-bold flex items-center mt-1">
+          <p className="text-xs text-red-500 font-bold flex items-center mt-1">
             <ArrowUpRight className="w-3 h-3 mr-1" />Total earned across all releases
           </p>
         </div>
@@ -232,9 +232,9 @@ export default function Revenue() {
             ) : payouts.map((payout) => (
               <div key={payout._id} className="flex items-center justify-between p-4 bg-black border border-zinc-900 rounded-xl hover:border-zinc-800 transition-all">
                 <div className="flex items-center space-x-3">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${payout.status === 'Completed' ? 'bg-emerald-500/10' : 'bg-amber-500/10'}`}>
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${payout.status === 'Completed' ? 'bg-red-600/10' : 'bg-amber-500/10'}`}>
                     {payout.status === 'Completed'
-                      ? <ArrowDownLeft className="w-4 h-4 text-emerald-400" />
+                      ? <ArrowDownLeft className="w-4 h-4 text-red-500" />
                       : <Clock className="w-4 h-4 text-amber-400" />
                     }
                   </div>

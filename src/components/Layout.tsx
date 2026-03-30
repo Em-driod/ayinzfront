@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Music, Home, Upload, BarChart3, DollarSign, Settings, Menu, X, LogOut, ShieldAlert } from 'lucide-react';
+import { Music, Home, Upload, BarChart3, DollarSign, Settings, Menu, X, LogOut, ShieldAlert, HelpCircle } from 'lucide-react';
 import api from '../utils/api';
 
 interface LayoutProps {
@@ -18,6 +18,7 @@ export default function Layout({ children }: LayoutProps) {
     { name: 'Releases', href: '/releases', icon: Upload },
     { name: 'Analytics', href: '/analytics', icon: BarChart3 },
     { name: 'Revenue', href: '/revenue', icon: DollarSign },
+    { name: 'Support', href: '/support', icon: HelpCircle },
     { name: 'Settings', href: '/settings', icon: Settings },
   ];
 

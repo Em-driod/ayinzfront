@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import { Users, Music, DollarSign, CheckCircle, Clock, TrendingUp, BarChart3, X } from 'lucide-react';
+import { Users, Music, DollarSign, CheckCircle, Clock, TrendingUp, BarChart3, X, Filter, Search, ChevronRight, LayoutDashboard, Wallet, MessageCircle, Send, UserCheck } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../utils/api';
 
 interface User {
@@ -28,18 +29,16 @@ interface Release {
     user: { name: string; email: string };
 }
 
-const PLATFORM_COLORS: Record<string, string> = {
-    'Spotify': '#1DB954',
-    'Apple Music': '#FB233B',
-    'YouTube Music': '#FF0000',
-    'Amazon Music': '#00A8E1',
-    'Tidal': '#00d2ff',
-    'Deezer': '#FF0092',
-    'Boomplay': '#f1c40f',
-    'Audiomack': '#FFA200',
-    'Other': '#fb923c',
-    'Overall': '#9ca3af'
-};
+interface Ticket {
+    _id: string;
+    user: { name: string; email: string };
+    subject: string;
+    status: 'Open' | 'Resolved';
+    messages: { sender: 'user' | 'admin', content: string, timestamp: string }[];
+    unreadAdmin: boolean;
+    createdAt: string;
+    updatedAt: string;
+}
 
 interface Payout {
     _id: string;
@@ -52,12 +51,32 @@ interface Payout {
     created_at: string;
 }
 
+const PLATFORM_COLORS: Record<string, string> = {
+    'Spotify': '#1DB954',
+    'Apple Music': '#FB233B',
+    'YouTube Music': '#FF0000',
+    'Amazon Music': '#00A8E1',
+    'Tidal': '#00d2ff',
+    'Deezer': '#FF0092',
+    'Boomplay': '#f1c40f',
+    'Audiomack': '#FFA200',
+    'Other': '#fb923c',
+    'Overall': '#ef4444'
+};
+
 export default function AdminDashboard() {
     const [users, setUsers] = useState<User[]>([]);
     const [releases, setReleases] = useState<Release[]>([]);
     const [payouts, setPayouts] = useState<Payout[]>([]);
+    const [tickets, setTickets] = useState<Ticket[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'releases' | 'payouts' | 'support'>('overview');
+
+    // For support chat modal
+    const [activeTicket, setActiveTicket] = useState<Ticket | null>(null);
+    const [replyMessage, setReplyMessage] = useState('');
+    const [replying, setReplying] = useState(false);
 
     // For updating stats modal
     const [editingRelease, setEditingRelease] = useState<Release | null>(null);
@@ -68,26 +87,60 @@ export default function AdminDashboard() {
     const [history, setHistory] = useState<any[]>([]);
     const [loadingHistory, setLoadingHistory] = useState(false);
 
-    // ...
     const fetchData = async () => {
         try {
-            const [usersRes, releasesRes, payoutsRes] = await Promise.all([
+            const [usersRes, releasesRes, payoutsRes, ticketsRes] = await Promise.all([
                 api.get('/admin/users'),
                 api.get('/admin/releases'),
-                api.get('/admin/payouts')
+                api.get('/admin/payouts'),
+                api.get('/support/all')
             ]);
             setUsers(usersRes.data.users);
             setReleases(releasesRes.data.releases);
             setPayouts(payoutsRes.data.payouts);
+            setTickets(ticketsRes.data.tickets);
         } catch (err: any) {
             setError(err.response?.data?.error || 'Access denied. You must be an admin.');
         } finally {
             setLoading(false);
         }
     };
+
     useEffect(() => {
         fetchData();
     }, []);
+
+    const handleTicketStatus = async (id: string, status: string) => {
+        try {
+            await api.patch(`/support/${id}/status`, { status });
+            setTickets(tickets.map(t => t._id === id ? { ...t, status } : t) as any);
+            if (activeTicket?._id === id) setActiveTicket({ ...activeTicket, status } as any);
+        } catch (err) { alert('Failed to change status'); }
+    };
+
+    const handleTicketReply = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!replyMessage.trim() || !activeTicket) return;
+        setReplying(true);
+        try {
+            const res = await api.post(`/support/${activeTicket._id}/message`, { message: replyMessage });
+            setTickets(tickets.map(t => t._id === activeTicket._id ? res.data.ticket : t));
+            setActiveTicket(res.data.ticket);
+            setReplyMessage('');
+        } catch (err) { alert('Failed to reply'); }
+        setReplying(false);
+    };
+
+    const handleOpenAdminTicket = async (ticket: Ticket) => {
+        setActiveTicket(ticket);
+        if (ticket.unreadAdmin) {
+            try {
+                await api.patch(`/support/${ticket._id}/read`);
+                setTickets(tickets.map(t => t._id === ticket._id ? { ...t, unreadAdmin: false } : t));
+                setActiveTicket({ ...ticket, unreadAdmin: false });
+            } catch (err) {}
+        }
+    };
 
     const handlePayoutStatus = async (id: string, status: string) => {
         try {
@@ -126,7 +179,6 @@ export default function AdminDashboard() {
 
         try {
             const res = await api.patch(`/admin/releases/${editingRelease.id}/stats`, statsForm);
-            // Update local state
             setReleases(releases.map(r => r.id === editingRelease.id ?
                 { ...r, streams: res.data.release.streams, revenue: res.data.release.revenue } : r
             ));
@@ -146,303 +198,658 @@ export default function AdminDashboard() {
         }
     };
 
-    if (loading) return <div className="p-10 text-center">Loading Admin Panel...</div>;
-    if (error) return <div className="p-10 text-center text-red-600 font-bold">{error}</div>;
+    if (loading) return (
+        <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+            <div className="w-12 h-12 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+        </div>
+    );
+
+    if (error) return (
+        <div className="min-h-screen bg-[#050505] flex items-center justify-center p-6 text-center">
+            <div className="glass-dark p-8 rounded-3xl max-w-sm">
+                <X className="w-12 h-12 text-rose-500 mx-auto mb-4" />
+                <h2 className="text-xl font-bold mb-2">Access Denied</h2>
+                <p className="text-zinc-600 text-sm mb-6">{error}</p>
+                <button onClick={() => window.location.href = '/'} className="w-full py-3 bg-white text-black font-bold rounded-xl">Return Home</button>
+            </div>
+        </div>
+    );
+
+    const StatCard = ({ title, value, icon: Icon, color }: any) => (
+        <div className="glass-dark p-6 rounded-3xl relative overflow-hidden group shadow-2xl shadow-black/20">
+            <div className={`absolute top-0 right-0 w-32 h-32 bg-${color}-500/10 blur-[100px] -mr-16 -mt-16 group-hover:bg-${color}-500/20 transition-all duration-500`} />
+            <div className="relative z-10">
+                <div className={`w-12 h-12 rounded-2xl bg-${color}-500/20 flex items-center justify-center mb-4 ring-1 ring-${color}-500/30 shadow-lg shadow-${color}-500/20`}>
+                    <Icon className={`w-6 h-6 text-${color}-400`} />
+                </div>
+                <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-1">{title}</p>
+                <h3 className="text-3xl font-display text-white tracking-tight">{value}</h3>
+            </div>
+        </div>
+    );
+
+    const TABS = [
+        { id: 'overview', name: 'Overview', icon: LayoutDashboard },
+        { id: 'users', name: 'Users', icon: Users },
+        { id: 'releases', name: 'Releases', icon: Music },
+        { id: 'payouts', name: 'Payouts', icon: Wallet },
+        { id: 'support', name: 'Support', icon: MessageCircle },
+    ];
 
     return (
-        <div className="min-h-screen bg-black p-6 pb-20">
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-white">Admin Control Panel</h1>
-                <p className="text-gray-400">Manage users, releases, and distribution stats.</p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8">
-
-                {/* USERS TABLE */}
-                <div className="bg-gray-900 rounded-2xl shadow-sm border border-gray-800 p-6">
-                    <div className="flex items-center space-x-2 mb-6">
-                        <Users className="w-6 h-6 text-orange-500" />
-                        <h2 className="text-xl font-bold text-white">Registered Users ({users.length})</h2>
+        <div className="min-h-screen bg-[#050505] bg-mesh text-white pb-24">
+            
+            {/* Header */}
+            <div className="p-6 md:p-8 pt-12 md:pt-16 max-w-7xl mx-auto">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                    <div>
+                        <p className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] mb-2">Master Control</p>
+                        <h1 className="text-5xl md:text-7xl font-display tracking-tight leading-tight uppercase italic">Admin<br/>Dashboard</h1>
                     </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-sm text-left">
-                            <thead className="text-xs text-gray-400 uppercase bg-gray-800">
-                                <tr>
-                                    <th className="px-4 py-3 rounded-l-lg">Name</th>
-                                    <th className="px-4 py-3">Email</th>
-                                    <th className="px-4 py-3 rounded-r-lg">Plan</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {users.map(u => (
-                                    <tr key={u._id} className="border-b border-gray-800 last:border-0 hover:bg-gray-800 transition-colors">
-                                        <td className="px-4 py-3 font-medium text-white">{u.name}</td>
-                                        <td className="px-4 py-3 text-gray-400">{u.email}</td>
-                                        <td className="px-4 py-3 uppercase text-xs font-bold text-orange-400">{u.subscription}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                {/* RELEASES TABLE */}
-                <div className="bg-gray-900 rounded-2xl shadow-sm border border-gray-800 p-6">
-                    <div className="flex items-center space-x-2 mb-6">
-                        <Music className="w-6 h-6 text-orange-500" />
-                        <h2 className="text-xl font-bold text-white">All Releases ({releases.length})</h2>
-                    </div>
-                    <div className="overflow-y-auto max-h-[600px] pr-2 space-y-4">
-                        {releases.map(r => (
-                            <div key={r.id} className="border border-gray-800 rounded-xl p-4 hover:border-orange-600 transition-all duration-200">
-                                <div className="flex justify-between items-start mb-2">
-                                    <div>
-                                        <h3 className="font-bold text-lg text-white">{r.title}</h3>
-                                        <p className="text-sm text-gray-400">{r.artist} ({r.contact_email || r.user?.email}) • {r.type} • {r.genre}</p>
-                                        <p className="text-xs text-gray-500 mt-1">Release Date: {new Date(r.release_date).toLocaleDateString()}</p>
-                                        {r.song_file && (
-                                            <div className="mt-3">
-                                                <audio controls src={r.song_file} className="h-8 w-full max-w-sm" />
-                                            </div>
-                                        )}
-                                    </div>
-                                    <select
-                                        value={r.status}
-                                        onChange={(e) => handleStatusChange(r.id, e.target.value)}
-                                        className={`text-xs font-bold uppercase rounded-full px-3 py-1 border outline-none cursor-pointer transition-colors ${r.status === 'approved' || r.status === 'uploaded' ? 'bg-green-900 text-green-300 border-green-700' :
-                                            r.status === 'rejected' ? 'bg-red-900 text-red-300 border-red-700' :
-                                                'bg-orange-900 text-orange-300 border-orange-700'
-                                            }`}
-                                    >
-                                        <option value="pending">Pending</option>
-                                        <option value="approved">Approved</option>
-                                        <option value="rejected">Rejected</option>
-                                        <option value="uploaded">Uploaded</option>
-                                    </select>
-                                </div>
-
-                                <div className="flex items-center space-x-6 mt-4 pt-4 border-t border-gray-800">
-                                    <div>
-                                        <p className="text-xs text-gray-400">Total Streams</p>
-                                        <p className="font-semibold text-white">{r.streams.toLocaleString()}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-gray-400">Total Revenue</p>
-                                        <p className="font-semibold text-green-400">₦{r.revenue.toLocaleString()}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-gray-400">Price (₦)</p>
-                                        <input
-                                            type="number"
-                                            className="w-20 text-sm border border-gray-700 rounded px-2 py-1 bg-gray-800 text-white outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
-                                            defaultValue={r.price || 0}
-                                            onBlur={(e) => handleUpdatePrice(r.id, Number(e.target.value))}
-                                        />
-                                    </div>
-                                    <button
-                                        onClick={() => handleViewStats(r)}
-                                        className="ml-auto flex items-center text-sm text-orange-400 hover:text-orange-300 font-medium mr-4 transition-colors"
-                                    >
-                                        <BarChart3 className="w-4 h-4 mr-1" /> View Graph
-                                    </button>
-                                    <button
-                                        onClick={() => setEditingRelease(r)}
-                                        className="text-sm text-orange-400 hover:text-orange-300 font-medium transition-colors"
-                                    >
-                                        + Add Data Point
-                                    </button>
-                                </div>
-                            </div>
+                    <div className="flex gap-2 bg-zinc-950/50 p-1.5 rounded-2xl border border-white/5 backdrop-blur-xl shrink-0 overflow-x-auto no-scrollbar">
+                        {TABS.map((tab) => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id as any)}
+                                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap ${
+                                    activeTab === tab.id 
+                                    ? 'bg-red-600 text-black' 
+                                    : 'text-zinc-500 hover:text-white hover:bg-white/5'
+                                }`}
+                            >
+                                <tab.icon className="w-3.5 h-3.5" />
+                                {tab.name}
+                            </button>
                         ))}
                     </div>
                 </div>
-            </div>
 
-            {/* PAYOUT REQUESTS SECTION */}
-            <div className="mt-8 bg-gray-900 rounded-2xl shadow-sm border border-gray-800 p-6">
-                <div className="flex items-center space-x-2 mb-6">
-                    <DollarSign className="w-6 h-6 text-orange-500" />
-                    <h2 className="text-xl font-bold text-white">Withdrawal Requests ({payouts.length})</h2>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-sm text-left">
-                        <thead className="text-xs text-gray-400 uppercase bg-gray-800">
-                            <tr>
-                                <th className="px-4 py-3 rounded-l-lg">User</th>
-                                <th className="px-4 py-3">Amount</th>
-                                <th className="px-4 py-3">Bank Details</th>
-                                <th className="px-4 py-3 text-center">Date</th>
-                                <th className="px-4 py-3 rounded-r-lg text-right">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {payouts.map(p => (
-                                <tr key={p._id} className="border-b border-gray-800 last:border-0 hover:bg-gray-800 transition-colors">
-                                    <td className="px-4 py-3">
-                                        <p className="font-medium text-white">{p.user?.name}</p>
-                                        <p className="text-[10px] text-gray-500">{p.user?.email}</p>
-                                    </td>
-                                    <td className="px-4 py-3 font-bold text-green-400 text-lg">₦{p.amount.toLocaleString()}</td>
-                                    <td className="px-4 py-3 text-gray-300">
-                                        <p className="font-bold text-xs">{p.bankName}</p>
-                                        <p className="text-sm font-mono">{p.accountNumber}</p>
-                                        <p className="text-[10px] text-gray-500 uppercase tracking-tighter">Holder: {p.accountName}</p>
-                                    </td>
-                                    <td className="px-4 py-3 text-center text-gray-500 text-xs">{new Date(p.created_at).toLocaleDateString()}</td>
-                                    <td className="px-4 py-3 text-right">
-                                        <select
-                                            value={p.status}
-                                            onChange={(e) => handlePayoutStatus(p._id, e.target.value)}
-                                            className={`text-[10px] font-bold uppercase rounded-lg px-3 py-2 border outline-none cursor-pointer transition-colors ${
-                                                p.status === 'Completed' ? 'bg-green-900/20 text-green-300 border-green-700/50' :
-                                                p.status === 'Rejected' ? 'bg-red-900/20 text-red-300 border-red-700/50' :
-                                                'bg-orange-900/20 text-orange-300 border-orange-700'
-                                            }`}
-                                        >
-                                            <option value="Pending">Pending</option>
-                                            <option value="Processing">Processing</option>
-                                            <option value="Completed">Completed</option>
-                                            <option value="Rejected">Rejected</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                            ))}
-                            {payouts.length === 0 && (
-                                <tr>
-                                    <td colSpan={5} className="text-center py-10 text-gray-500">No payout requests at the moment.</td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            {/* STATS UPDATE MODAL */}
-            {editingRelease && (
-                <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-                    <div className="bg-gray-900 rounded-2xl p-6 w-full max-w-md border border-gray-800">
-                        <h3 className="text-xl font-bold mb-1 text-white">Update Stats</h3>
-                        <p className="text-sm text-gray-400 mb-6">For: {editingRelease.title} by {editingRelease.artist}</p>
-
-                        <form onSubmit={handleUpdateStats} className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium mb-1 text-gray-300">Date Period</label>
-                                <input
-                                    type="text" required placeholder="e.g. March 2024 or Q1 2024"
-                                    className="w-full border border-gray-700 rounded-lg px-3 py-2 bg-gray-800 text-white placeholder-gray-500 outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
-                                    value={statsForm.date} onChange={e => setStatsForm({ ...statsForm, date: e.target.value })}
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-1 text-gray-300">Streaming Platform</label>
-                                <select
-                                    className="w-full border border-gray-700 rounded-lg px-3 py-2 bg-gray-800 text-white outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
-                                    value={statsForm.platform} onChange={e => setStatsForm({ ...statsForm, platform: e.target.value })}
-                                >
-                                    <option value="Spotify">Spotify</option>
-                                    <option value="Apple Music">Apple Music</option>
-                                    <option value="YouTube Music">YouTube Music</option>
-                                    <option value="Amazon Music">Amazon Music</option>
-                                    <option value="Tidal">Tidal</option>
-                                    <option value="Deezer">Deezer</option>
-                                    <option value="Boomplay">Boomplay</option>
-                                    <option value="Audiomack">Audiomack</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium mb-1 text-gray-300">New Streams</label>
-                                    <input
-                                        type="number" required min="0"
-                                        className="w-full border border-gray-700 rounded-lg px-3 py-2 bg-gray-800 text-white placeholder-gray-500 outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
-                                        value={statsForm.streams || ''} onChange={e => setStatsForm({ ...statsForm, streams: parseInt(e.target.value) || 0 })}
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium mb-1 text-gray-300">New Revenue (₦)</label>
-                                    <input
-                                        type="number" required min="0" step="0.01"
-                                        className="w-full border border-gray-700 rounded-lg px-3 py-2 bg-gray-800 text-white placeholder-gray-500 outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
-                                        value={statsForm.revenue || ''} onChange={e => setStatsForm({ ...statsForm, revenue: parseFloat(e.target.value) || 0 })}
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex space-x-3 mt-6">
-                                <button type="button" onClick={() => setEditingRelease(null)} className="flex-1 py-2 border border-gray-700 rounded-xl font-medium hover:bg-gray-800 text-gray-300 transition-colors">Cancel</button>
-                                <button type="submit" className="flex-1 py-2 bg-gradient-to-r from-orange-600 to-orange-700 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-orange-500/30 transition-all">Save Data</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-
-            {/* STATS GRAPH MODAL */}
-            {viewingRelease && (
-                <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-                    <div className="bg-gray-900 rounded-2xl p-6 w-full max-w-2xl relative border border-gray-800">
-                        <button
-                            onClick={() => setViewingRelease(null)}
-                            className="absolute top-4 right-4 p-2 text-gray-400 hover:bg-gray-800 rounded-lg transition-colors"
+                <AnimatePresence mode="wait">
+                    {activeTab === 'overview' && (
+                        <motion.div
+                            key="overview"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            className="space-y-8"
                         >
-                            <X className="w-5 h-5" />
-                        </button>
-
-                        <h3 className="text-xl font-bold mb-1 text-white">Growth Chart</h3>
-                        <p className="text-sm text-gray-400 mb-6">For: {viewingRelease.title} by {viewingRelease.artist}</p>
-
-                        {loadingHistory ? (
-                            <div className="flex items-center justify-center h-48">
-                                <div className="w-6 h-6 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <StatCard title="Active Artists" value={users.length} icon={Users} color="blue" />
+                                <StatCard title="Total Releases" value={releases.length} icon={Music} color="purple" />
+                                <StatCard title="Total Streams" value={releases.reduce((s, r) => s + r.streams, 0).toLocaleString()} icon={BarChart3} color="red" />
+                                <StatCard title="Pending Payouts" value={payouts.filter(p => p.status === 'Pending').length} icon={DollarSign} color="rose" />
                             </div>
-                        ) : history.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center h-48 text-center bg-gray-800 rounded-xl">
-                                <TrendingUp className="w-10 h-10 text-gray-600 mb-3" />
-                                <p className="text-gray-400 text-sm font-medium">No history data found</p>
-                                <p className="text-gray-500 text-xs mt-1">Add a data point first</p>
+
+                            <div className="grid lg:grid-cols-2 gap-8">
+                                <div className="glass-dark rounded-3xl p-8 border border-white/5">
+                                    <h3 className="text-xl font-display uppercase italic tracking-tight mb-6">Recent Users</h3>
+                                    <div className="space-y-4">
+                                        {users.slice(0, 5).map(u => (
+                                            <div key={u._id} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors group">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-10 h-10 rounded-full bg-red-600/10 flex items-center justify-center text-red-600 font-bold">
+                                                        {u.name[0]}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-bold text-sm">{u.name}</p>
+                                                        <p className="text-xs text-zinc-500">{u.email}</p>
+                                                    </div>
+                                                </div>
+                                                <span className="text-[10px] font-black uppercase text-zinc-600 bg-black/40 px-2.5 py-1 rounded-full border border-white/5">{u.subscription}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <button onClick={() => setActiveTab('users')} className="w-full mt-6 py-4 text-xs font-black uppercase tracking-widest text-zinc-500 hover:text-red-600 transition-colors flex items-center justify-center gap-2">
+                                        View All Users <ChevronRight className="w-4 h-4" />
+                                    </button>
+                                </div>
+
+                                <div className="glass-dark rounded-3xl p-8 border border-white/5">
+                                    <h3 className="text-xl font-display uppercase italic tracking-tight mb-6">Pending Releases</h3>
+                                    <div className="space-y-4">
+                                        {releases.filter(r => r.status === 'pending').slice(0, 5).map(r => (
+                                            <div key={r.id} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500">
+                                                        <Music className="w-5 h-5" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-bold text-sm tracking-tight">{r.title}</p>
+                                                        <p className="text-xs text-zinc-500">{r.artist}</p>
+                                                    </div>
+                                                </div>
+                                                <button onClick={() => setActiveTab('releases')} className="p-2 hover:bg-white/10 rounded-xl text-zinc-500 transition-colors">
+                                                    <ChevronRight className="w-5 h-5" />
+                                                </button>
+                                            </div>
+                                        ))}
+                                        {releases.filter(r => r.status === 'pending').length === 0 && (
+                                            <div className="text-center py-12 text-zinc-600">
+                                                <CheckCircle className="w-12 h-12 mx-auto mb-4 opacity-10" />
+                                                <p className="text-sm font-bold uppercase tracking-widest">All Clear</p>
+                                                <p className="text-xs mt-1">No pending releases to review.</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                    {releases.filter(r => r.status === 'pending').length > 5 && (
+                                        <button onClick={() => setActiveTab('releases')} className="w-full mt-6 py-4 text-xs font-black uppercase tracking-widest text-zinc-500 hover:text-red-600 transition-colors flex items-center justify-center gap-2">
+                                            Manage All Releases <ChevronRight className="w-4 h-4" />
+                                        </button>
+                                    )}
+                                </div>
                             </div>
-                        ) : (
-                            <div className="h-64 mt-4">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <LineChart 
-                                        data={Object.values(history.reduce((acc: any, curr: any) => {
-                                            if (!acc[curr.date]) acc[curr.date] = { date: curr.date };
-                                            acc[curr.date][curr.platform || 'Overall'] = curr.streams;
-                                            return acc;
-                                        }, {}))} 
-                                        margin={{ top: 5, right: 10, left: -20, bottom: 0 }}
+                        </motion.div>
+                    )}
+
+                    {activeTab === 'users' && (
+                        <motion.div
+                            key="users"
+                            initial={{ opacity: 0, scale: 0.98 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.98 }}
+                            className="glass-dark rounded-3xl overflow-hidden border border-white/5"
+                        >
+                            <div className="p-6 border-b border-white/5 flex items-center justify-between">
+                                <h2 className="text-xl font-display uppercase italic text-white flex items-center gap-3">
+                                    <Users className="w-6 h-6 text-blue-500" /> All Artists
+                                </h2>
+                                <div className="hidden md:flex items-center gap-2 bg-black/40 px-4 py-2 rounded-xl border border-white/5">
+                                    <Search className="w-4 h-4 text-zinc-600" />
+                                    <input type="text" placeholder="Search artists..." className="bg-transparent border-none text-xs focus:ring-0 w-48 font-bold" />
+                                </div>
+                            </div>
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left">
+                                    <thead className="bg-white/5 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
+                                        <tr>
+                                            <th className="px-8 py-5">Artist</th>
+                                            <th className="px-8 py-5">Subscription</th>
+                                            <th className="px-8 py-5 text-right">Joined</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-white/5">
+                                        {users.map(u => (
+                                            <tr key={u._id} className="hover:bg-white/[0.02] transition-colors group">
+                                                <td className="px-8 py-5">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-10 h-10 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center font-bold text-zinc-400 group-hover:border-blue-500/50 transition-colors">
+                                                            {u.name[0]}
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-bold text-sm">{u.name}</p>
+                                                            <p className="text-xs text-zinc-500">{u.email}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-8 py-5">
+                                                    <span className={`text-[10px] font-black uppercase px-3 py-1.5 rounded-full border ${
+                                                        u.subscription === 'premium_plus' ? 'bg-red-600/10 border-red-600/20 text-red-600' :
+                                                        u.subscription === 'premium' ? 'bg-blue-500/10 border-blue-500/20 text-blue-500' :
+                                                        'bg-zinc-900 border-white/5 text-zinc-500'
+                                                    }`}>
+                                                        {u.subscription.replace('_', ' ')}
+                                                    </span>
+                                                </td>
+                                                <td className="px-8 py-5 text-right text-xs font-bold text-zinc-600">
+                                                    {new Date(u.created_at).toLocaleDateString()}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {activeTab === 'releases' && (
+                        <motion.div
+                            key="releases"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            className="space-y-6"
+                        >
+                            <div className="grid lg:grid-cols-2 gap-6">
+                                {releases.map(r => (
+                                    <div key={r.id} className="glass-dark rounded-3xl p-6 border border-white/10 hover:border-red-600/50 transition-all group overflow-hidden relative shadow-2xl shadow-red-600/5">
+                                        {/* Status Glow */}
+                                        <div className={`absolute top-0 right-0 w-32 h-32 blur-[100px] -mr-16 -mt-16 transition-all duration-700 ${
+                                            r.status === 'approved' ? 'bg-red-600/30' : 
+                                            r.status === 'rejected' ? 'bg-rose-500/30' : 
+                                            'bg-blue-500/30'
+                                        }`} />
+
+                                        <div className="relative z-10">
+                                            <div className="flex justify-between items-start gap-4 mb-6">
+                                                <div className="flex gap-4">
+                                                    <div className="w-16 h-16 rounded-2xl overflow-hidden bg-zinc-900 border border-white/20 shadow-inner shrink-0 group-hover:scale-105 transition-transform">
+                                                        {r.cover_url ? (
+                                                            <img src={r.cover_url} alt={r.title} className="w-full h-full object-cover" />
+                                                        ) : (
+                                                            <div className="w-full h-full flex items-center justify-center text-zinc-600">
+                                                                <Music className="w-8 h-8" />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="font-bold text-xl tracking-tighter text-white group-hover:text-red-400 transition-colors uppercase leading-tight">{r.title}</h3>
+                                                        <p className="text-xs font-black text-zinc-400 uppercase tracking-widest mt-1">by {r.artist}</p>
+                                                        <div className="flex items-center gap-2 mt-3">
+                                                            <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-red-600/10 rounded-md border border-red-600/20 text-red-500">{r.type}</span>
+                                                            <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-white/5 rounded-md border border-white/10 text-zinc-400">{r.genre}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <select
+                                                    value={r.status}
+                                                    onChange={(e) => handleStatusChange(r.id, e.target.value)}
+                                                    className={`text-[10px] font-black uppercase rounded-full px-4 py-2 border outline-none cursor-pointer transition-all self-start shadow-lg ${
+                                                        r.status === 'approved' || r.status === 'uploaded' ? 'bg-red-600 text-black border-red-600 hover:bg-red-500' :
+                                                        r.status === 'rejected' ? 'bg-rose-500/20 text-rose-500 border-rose-500/30 hover:bg-rose-500 hover:text-white' :
+                                                        'bg-zinc-950 text-blue-400 border-blue-500/30 hover:border-blue-500'
+                                                    }`}
+                                                >
+                                                    <option value="pending">Reviewing</option>
+                                                    <option value="approved">Approved</option>
+                                                    <option value="rejected">Rejected</option>
+                                                    <option value="uploaded">Uploaded</option>
+                                                </select>
+                                            </div>
+
+                                            {r.song_file && (
+                                                <div className="mb-6 p-1 bg-black/40 rounded-2xl border border-white/5">
+                                                    <audio controls src={r.song_file} className="w-full h-10 invert opacity-60 hover:opacity-100 transition-opacity" />
+                                                </div>
+                                            )}
+
+                                            <div className="grid grid-cols-3 gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/5 mb-6">
+                                                <div>
+                                                    <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-1">Streams</p>
+                                                    <p className="font-display text-xl text-white">{r.streams.toLocaleString()}</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-1">Revenue</p>
+                                                    <p className="font-display text-xl text-red-500">₦{r.revenue.toLocaleString()}</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-1">Price</p>
+                                                    <input
+                                                        type="number"
+                                                        className="w-full bg-transparent border-none p-0 font-display text-xl text-blue-500 focus:ring-0"
+                                                        defaultValue={r.price || 0}
+                                                        onBlur={(e) => handleUpdatePrice(r.id, Number(e.target.value))}
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="flex gap-3">
+                                                <button
+                                                    onClick={() => handleViewStats(r)}
+                                                    className="flex-1 py-3.5 bg-white/5 hover:bg-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-white/5 transition-all flex items-center justify-center gap-2"
+                                                >
+                                                    <TrendingUp className="w-3.5 h-3.5" /> Growth
+                                                </button>
+                                                <button
+                                                    onClick={() => setEditingRelease(r)}
+                                                    className="flex-1 py-3.5 bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-black rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-red-600/20 transition-all flex items-center justify-center gap-2"
+                                                >
+                                                    + Update Data
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {activeTab === 'payouts' && (
+                        <motion.div
+                            key="payouts"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                        >
+                            <div className="glass-dark rounded-3xl overflow-hidden border border-white/5">
+                                <div className="p-6 border-b border-white/5 bg-white/5">
+                                    <h2 className="text-xl font-display uppercase italic text-white flex items-center gap-3">
+                                        <Wallet className="w-6 h-6 text-rose-500" /> Withdrawal Requests
+                                    </h2>
+                                </div>
+                                <div className="divide-y divide-white/5">
+                                    {payouts.map(p => (
+                                        <div key={p._id} className="p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-white/[0.02] transition-colors group">
+                                            <div className="flex-1 flex flex-col md:flex-row md:items-center gap-8">
+                                                <div className="flex items-center gap-4 min-w-[200px]">
+                                                    <div className="w-12 h-12 rounded-full bg-rose-500/10 flex items-center justify-center font-bold text-rose-500">
+                                                        {p.user?.name[0]}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-bold text-sm text-white">{p.user?.name}</p>
+                                                        <p className="text-xs text-zinc-500">{p.user?.email}</p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex flex-col gap-1">
+                                                    <p className="text-[9px] font-black uppercase tracking-widest text-zinc-600">Amount to pay</p>
+                                                    <p className="text-3xl font-display text-red-500 tracking-tight">₦{p.amount.toLocaleString()}</p>
+                                                </div>
+
+                                                <div className="flex flex-col gap-2 p-4 rounded-2xl bg-black/40 border border-white/5">
+                                                    <div className="flex items-center gap-2">
+                                                        <p className="text-[10px] font-black text-rose-500 uppercase tracking-widest">{p.bankName}</p>
+                                                        <div className="h-px flex-1 bg-white/5" />
+                                                    </div>
+                                                    <p className="text-sm font-mono tracking-wider text-white">{p.accountNumber}</p>
+                                                    <p className="text-[10px] font-bold text-zinc-500 uppercase italic tracking-tighter">Holder: {p.accountName}</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-4">
+                                                <p className="text-[10px] font-black uppercase text-zinc-600 hidden lg:block">{new Date(p.created_at).toLocaleDateString()}</p>
+                                                <select
+                                                    value={p.status}
+                                                    onChange={(e) => handlePayoutStatus(p._id, e.target.value)}
+                                                    className={`text-[11px] font-black uppercase rounded-2xl px-6 py-4 border outline-none cursor-pointer transition-all ${
+                                                        p.status === 'Completed' ? 'bg-red-600 text-black border-red-600' :
+                                                        p.status === 'Rejected' ? 'bg-rose-500/20 text-rose-500 border-rose-500/30 hover:bg-rose-500 hover:text-white' :
+                                                        'bg-zinc-950 text-blue-400 border-blue-500/30'
+                                                    }`}
+                                                >
+                                                    <option value="Pending">Pending</option>
+                                                    <option value="Processing">Processing</option>
+                                                    <option value="Completed">Completed</option>
+                                                    <option value="Rejected">Rejected</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {payouts.length === 0 && (
+                                        <div className="text-center py-24 text-zinc-700">
+                                            <TrendingUp className="w-16 h-16 mx-auto mb-6 opacity-5" />
+                                            <h3 className="text-sm font-black uppercase tracking-[0.3em]">No Pending Payouts</h3>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {activeTab === 'support' && (
+                        <motion.div
+                            key="support"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                        >
+                            <div className="glass-dark rounded-3xl overflow-hidden border border-white/5">
+                                <div className="p-6 border-b border-white/5 bg-white/5">
+                                    <h2 className="text-xl font-display uppercase italic text-white flex items-center gap-3">
+                                        <MessageCircle className="w-6 h-6 text-red-600" /> Support Tickets
+                                    </h2>
+                                </div>
+                                <div className="divide-y divide-white/5">
+                                    {tickets.map(t => (
+                                        <div key={t._id} onClick={() => handleOpenAdminTicket(t)} className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-white/[0.02] transition-colors cursor-pointer group">
+                                            <div className="flex flex-col gap-1">
+                                                <div className="flex items-center gap-2">
+                                                    {t.unreadAdmin && <div className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />}
+                                                    <h3 className={`text-sm font-black uppercase tracking-widest ${t.unreadAdmin ? 'text-white' : 'text-zinc-400'}`}>{t.subject}</h3>
+                                                </div>
+                                                <p className="text-xs text-zinc-500">From: {t.user?.name} ({t.user?.email})</p>
+                                                <p className="text-[10px] text-zinc-600 uppercase font-black uppercase mt-1">Updated: {new Date(t.updatedAt).toLocaleDateString()}</p>
+                                            </div>
+                                            <div className="flex items-center gap-4">
+                                                <span className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border ${
+                                                    t.status === 'Resolved' ? 'bg-zinc-900 border-zinc-800 text-zinc-500' : 'bg-red-600/10 border-red-600/20 text-red-500'
+                                                }`}>
+                                                    {t.status}
+                                                </span>
+                                                <ChevronRight className="text-zinc-600 group-hover:text-red-500 transition-colors" />
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {tickets.length === 0 && (
+                                        <div className="text-center py-24 text-zinc-700">
+                                            <CheckCircle className="w-16 h-16 mx-auto mb-6 opacity-5" />
+                                            <h3 className="text-sm font-black uppercase tracking-[0.3em]">No Open Tickets</h3>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
+
+            {/* MODALS (STYLING ONLY, LOGIC REMAINS) */}
+            <AnimatePresence>
+                {editingRelease && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/90 backdrop-blur-xl flex items-center justify-center z-50 p-4"
+                    >
+                        <motion.div 
+                            initial={{ scale: 0.9, y: 20 }}
+                            animate={{ scale: 1, y: 0 }}
+                            exit={{ scale: 0.9, y: 20 }}
+                            className="glass rounded-[2rem] p-8 w-full max-w-md border border-white/10"
+                        >
+                            <h3 className="text-2xl font-display uppercase italic mb-1">Update Stats</h3>
+                            <p className="text-xs font-bold text-zinc-500 mb-8 uppercase tracking-widest">{editingRelease.title} — {editingRelease.artist}</p>
+
+                            <form onSubmit={handleUpdateStats} className="space-y-5">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest ml-1">Period</label>
+                                    <input
+                                        type="text" required placeholder="e.g. March 2024"
+                                        className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-3.5 text-sm focus:border-red-600 focus:ring-0 transition-colors"
+                                        value={statsForm.date} onChange={e => setStatsForm({ ...statsForm, date: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest ml-1">Platform</label>
+                                    <select
+                                        className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-3.5 text-sm focus:border-red-600 focus:ring-0 transition-colors"
+                                        value={statsForm.platform} onChange={e => setStatsForm({ ...statsForm, platform: e.target.value })}
                                     >
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                                        <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#9ca3af' }} />
-                                        <YAxis tick={{ fontSize: 11, fill: '#9ca3af' }} />
-                                        <Tooltip 
-                                            contentStyle={{ backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '8px' }}
-                                            itemStyle={{ fontSize: '12px', fontWeight: 'bold' }}
+                                        {Object.keys(PLATFORM_COLORS).filter(k => k !== 'Overall').map(p => <option key={p} value={p}>{p}</option>)}
+                                    </select>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest ml-1">New Streams</label>
+                                        <input
+                                            type="number" required min="0"
+                                            className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-3.5 text-sm focus:border-red-600 focus:ring-0 transition-colors"
+                                            value={statsForm.streams || ''} onChange={e => setStatsForm({ ...statsForm, streams: parseInt(e.target.value) || 0 })}
                                         />
-                                        <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '12px', fontWeight: '600' }} />
-                                        {/* Dynamic Lines */}
-                                        {Array.from(new Set(history.map((h: any) => h.platform || 'Overall'))).map((platform: any) => {
-                                            const color = PLATFORM_COLORS[platform as string] || '#fb923c';
-                                            return (
-                                                <Line 
-                                                    key={platform}
-                                                    type="monotone" 
-                                                    dataKey={platform} 
-                                                    stroke={color} 
-                                                    strokeWidth={3} 
-                                                    dot={{ r: 4, stroke: color, strokeWidth: 2, fill: '#111827' }}
-                                                    activeDot={{ r: 6, stroke: color, strokeWidth: 2, fill: '#fff' }}
-                                                    name={platform} 
-                                                    connectNulls
-                                                />
-                                            );
-                                        })}
-                                    </LineChart>
-                                </ResponsiveContainer>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest ml-1">Revenue (₦)</label>
+                                        <input
+                                            type="number" required min="0" step="0.01"
+                                            className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-3.5 text-sm focus:border-red-600 focus:ring-0 transition-colors"
+                                            value={statsForm.revenue || ''} onChange={e => setStatsForm({ ...statsForm, revenue: parseFloat(e.target.value) || 0 })}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex gap-3 mt-8">
+                                    <button type="button" onClick={() => setEditingRelease(null)} className="flex-1 py-4 text-xs font-black uppercase text-zinc-500 hover:text-white transition-colors">Cancel</button>
+                                    <button type="submit" className="flex-1 py-4 bg-red-600 text-black rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-red-600/40 active:scale-95 transition-all">Submit Entry</button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </motion.div>
+                )}
+
+                {viewingRelease && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/90 backdrop-blur-2xl flex items-center justify-center z-50 p-4"
+                    >
+                        <motion.div 
+                            initial={{ scale: 0.95, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.95, opacity: 0 }}
+                            className="glass rounded-[2rem] p-8 w-full max-w-4xl relative border border-white/10"
+                        >
+                            <button
+                                onClick={() => setViewingRelease(null)}
+                                className="absolute top-6 right-6 p-3 text-zinc-500 hover:bg-white/5 rounded-2xl transition-all"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+
+                            <div className="mb-8">
+                                <p className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] mb-1">Performance Graph</p>
+                                <h3 className="text-3xl font-display uppercase italic text-white leading-none">{viewingRelease.title}</h3>
+                                <p className="text-xs font-bold text-zinc-500 mt-2 uppercase tracking-widest">by {viewingRelease.artist}</p>
                             </div>
-                        )}
-                    </div>
-                </div>
+
+                            <div className="h-80 md:h-[24rem] w-full">
+                                {loadingHistory ? (
+                                    <div className="flex items-center justify-center h-full">
+                                        <div className="w-8 h-8 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                                    </div>
+                                ) : history.length === 0 ? (
+                                    <div className="flex flex-col items-center justify-center h-full text-center bg-white/[0.02] rounded-3xl border border-white/5">
+                                        <TrendingUp className="w-16 h-16 text-zinc-800 mb-4" />
+                                        <p className="text-zinc-500 text-sm font-bold uppercase tracking-widest">No history data found</p>
+                                    </div>
+                                ) : (
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <LineChart 
+                                            data={Object.values(history.reduce((acc: any, curr: any) => {
+                                                if (!acc[curr.date]) acc[curr.date] = { date: curr.date };
+                                                acc[curr.date][curr.platform || 'Overall'] = curr.streams;
+                                                return acc;
+                                            }, {}))} 
+                                        >
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#222" vertical={false} />
+                                            <XAxis 
+                                                dataKey="date" 
+                                                tick={{ fontSize: 10, fill: '#666', fontWeight: 800 }} 
+                                                axisLine={false} 
+                                                tickLine={false} 
+                                            />
+                                            <YAxis 
+                                                tick={{ fontSize: 10, fill: '#666', fontWeight: 800 }} 
+                                                axisLine={false} 
+                                                tickLine={false} 
+                                            />
+                                            <Tooltip 
+                                                contentStyle={{ backgroundColor: '#000', border: '1px solid #333', borderRadius: '16px', color: '#fff' }}
+                                                itemStyle={{ fontSize: '12px', fontWeight: '900', textTransform: 'uppercase' }}
+                                                cursor={{ stroke: '#10b981', strokeWidth: 1 }}
+                                            />
+                                            <Legend verticalAlign="top" align="right" iconType="circle" />
+                                            {Array.from(new Set(history.map((h: any) => h.platform || 'Overall'))).map((platform: any) => {
+                                                const color = PLATFORM_COLORS[platform as string] || '#fff';
+                                                return (
+                                                    <Line 
+                                                        key={platform}
+                                                        type="monotone" 
+                                                        dataKey={platform} 
+                                                        stroke={color} 
+                                                        strokeWidth={4} 
+                                                        dot={false}
+                                                        activeDot={{ r: 8, stroke: '#000', strokeWidth: 3 }}
+                                                        name={platform} 
+                                                    />
+                                                );
+                                            })}
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                )}
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {activeTicket && (
+                <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+                >
+                    <motion.div 
+                        initial={{ scale: 0.95, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.95, opacity: 0 }}
+                        className="bg-zinc-950 border border-zinc-900 w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[80vh] max-h-[800px]"
+                    >
+                        <div className="p-5 border-b border-zinc-900 flex justify-between items-center bg-[#050505]">
+                            <div>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-red-600 mb-1">{activeTicket.user?.name} • {activeTicket.user?.email}</p>
+                                <h3 className="text-white font-black uppercase tracking-widest text-sm">{activeTicket.subject}</h3>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <select 
+                                    value={activeTicket.status}
+                                    onChange={(e) => handleTicketStatus(activeTicket._id, e.target.value)}
+                                    className="bg-zinc-900 border border-zinc-800 text-xs font-black uppercase tracking-widest rounded-lg px-3 py-1.5 focus:border-red-600 outline-none"
+                                >
+                                    <option value="Open">Open</option>
+                                    <option value="Resolved">Resolved</option>
+                                </select>
+                                <button onClick={() => setActiveTicket(null)} className="text-zinc-600 hover:text-white transition-colors bg-zinc-900 hover:bg-zinc-800 p-2 rounded-xl">
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-[#0a0a0a] bg-mesh">
+                            {activeTicket.messages.map((msg, idx) => {
+                                const isAdmin = msg.sender === 'admin';
+                                return (
+                                    <div key={idx} className={`flex flex-col ${isAdmin ? 'items-end' : 'items-start'}`}>
+                                        <div className={`flex items-center gap-2 mb-2 ${isAdmin ? 'flex-row-reverse' : 'flex-row'}`}>
+                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center border shadow-lg ${
+                                                isAdmin ? 'bg-red-600/20 border-red-600/30 text-red-500' : 'bg-blue-600/20 border-blue-600/30 text-blue-500'
+                                            }`}>
+                                                {isAdmin ? <LayoutDashboard className="w-4 h-4" /> : <UserCheck className="w-4 h-4" />}
+                                            </div>
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
+                                                {isAdmin ? 'Admin (You)' : activeTicket.user?.name}
+                                            </span>
+                                        </div>
+                                        <div className={`max-w-[85%] p-4 rounded-2xl text-sm font-bold shadow-xl leading-relaxed whitespace-pre-wrap ${
+                                            isAdmin 
+                                                ? 'bg-zinc-900 text-white rounded-tr-none border border-zinc-800' 
+                                                : 'glass-dark border border-white/10 text-zinc-200 rounded-tl-none'
+                                        }`}>
+                                            {msg.content}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        <form onSubmit={handleTicketReply} className="p-4 bg-[#050505] border-t border-zinc-900 flex gap-3">
+                            <input 
+                                type="text" 
+                                value={replyMessage}
+                                onChange={(e) => setReplyMessage(e.target.value)}
+                                placeholder="Type your reply here..."
+                                className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:border-red-600/50 outline-none transition-colors font-bold text-sm shadow-inner"
+                            />
+                            <button 
+                                type="submit" 
+                                disabled={!replyMessage.trim() || replying}
+                                className="px-6 bg-red-600 text-black hover:bg-red-500 rounded-xl font-black text-sm uppercase tracking-widest transition-all shadow-xl shadow-red-600/20 flex items-center justify-center disabled:opacity-50"
+                            >
+                                {replying ? <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" /> : <Send className="w-5 h-5" />}
+                            </button>
+                        </form>
+                    </motion.div>
+                </motion.div>
             )}
         </div>
     );
