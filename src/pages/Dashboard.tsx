@@ -40,23 +40,23 @@ export default function Dashboard() {
   }, []);
 
   const getPlanLabel = (plan: string) => {
-    const labels = {
-      basic: { name: 'Basic Plan', desc: 'Standard distribution' },
-      standard: { name: 'Standard Plan', desc: 'Pro distribution' },
-      premium: { name: 'Premium Plan', desc: 'Full distribution suite' },
-      premium_plus: { name: 'Premium Plus', desc: 'Unlimited distribution' }
+    const labels: Record<string, { name: string; desc: string }> = {
+      basic: { name: 'Artiste Plan', desc: 'Basic distribution' },
+      premium: { name: 'Record Label Plan', desc: 'Professional distribution' },
+      plus: { name: 'Record Label Plus', desc: 'Advanced distribution' },
+      standard: { name: 'Enterprise Edition', desc: 'Premium distribution' }
     };
     return labels[plan] || labels.basic;
   };
 
   const getPlanLimits = (plan: string) => {
-    const limits = { basic: 3, standard: 10, premium: 25, premium_plus: -1 };
-    const analytics = { basic: false, standard: true, premium: true, premium_plus: true };
-    const revenue = { basic: false, standard: false, premium: true, premium_plus: true };
+    // All plans have unlimited releases now
+    const analytics = { basic: true, premium: true, plus: true, standard: true };
+    const revenue = { basic: true, premium: true, plus: true, standard: true };
     return {
-      maxReleases: limits[plan] ?? 3,
-      analytics: analytics[plan] ?? false,
-      revenue: revenue[plan] ?? false
+      maxReleases: -1,
+      analytics: analytics[plan as keyof typeof analytics] ?? true,
+      revenue: revenue[plan as keyof typeof revenue] ?? true
     };
   };
 

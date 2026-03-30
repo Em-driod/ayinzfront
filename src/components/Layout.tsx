@@ -31,7 +31,7 @@ export default function Layout({ children }: LayoutProps) {
   if (userStr) {
     try {
       const u = JSON.parse(userStr);
-      if (u.email === 'sheenleen2@gmail.com') isAdmin = true;
+      if (u.email === 'Ayinzcontact@gmail.com') isAdmin = true;
     } catch (e) { }
   }
 

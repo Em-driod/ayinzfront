@@ -8,11 +8,13 @@ const inputClass = 'w-full bg-black/60 border border-zinc-800 rounded-xl px-4 py
 const labelClass = 'block text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-2';
 
 const plans = [
-  { id: 'basic', name: 'Basic', price: '₦20,000/mo', icon: Music },
-  { id: 'premium', name: 'Premium', price: '₦40,000/mo', icon: Zap },
-  { id: 'premium_plus', name: 'Premium+', price: '₦80,000/mo', icon: Star },
-  { id: 'standard', name: 'Standard', price: '₦320,000/mo', icon: Globe },
+  { id: 'basic', name: 'Artiste', price: '₦35,000/yr', icon: Music, amount: 35000 },
+  { id: 'premium', name: 'Record Label', price: '₦50,000/yr', icon: Zap, amount: 50000 },
+  { id: 'plus', name: 'Label Plus', price: '₦85,000/yr', icon: Star, amount: 85000 },
+  { id: 'standard', name: 'Enterprise', price: '₦350,000/yr', icon: Globe, amount: 350000 },
 ];
+
+declare const PaystackPop: any;
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
@@ -31,18 +33,66 @@ export default function Register() {
     e.preventDefault();
     if (!formData.agreeToTerms) { setError('Please agree to the Terms of Service.'); return; }
     setError('');
+    
+    const selectedPlan = plans.find(p => p.id === formData.subscription);
+    if (!selectedPlan) return;
+
     setLoading(true);
+
     try {
-      const response = await api.post('/auth/register', {
-        name: formData.name, email: formData.email,
-        password: formData.password, subscription: formData.subscription
+      const pstack = (window as any).PaystackPop;
+      if (!pstack) {
+        setError('Payment system (Paystack) not loaded. Please refresh or check your internet.');
+        setLoading(false);
+        return;
+      }
+
+      const publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
+      if (!publicKey) {
+        setError('Payment system error: Public key missing. Please contact support.');
+        setLoading(false);
+        return;
+      }
+
+      const handler = pstack.setup({
+        key: publicKey,
+        email: formData.email,
+        amount: selectedPlan.amount * 100, // kobo
+        currency: 'NGN',
+        callback: (response: any) => {
+          console.log('Paystack payment complete. Response:', response);
+          // Payment successful! Now register.
+          const reference = response.reference || response.trxref || (typeof response === 'string' ? response : null);
+          
+          const registerUser = async () => {
+            try {
+              const res = await api.post('/auth/register', {
+                name: formData.name,
+                email: formData.email,
+                password: formData.password,
+                subscription: formData.subscription,
+                paymentReference: reference
+              });
+              localStorage.setItem('token', res.data.token);
+              localStorage.setItem('user', JSON.stringify(res.data.user));
+              navigate('/dashboard');
+            } catch (err: any) {
+              console.error('Registration API error:', err.response?.data || err.message);
+              setError(err.response?.data?.error || 'Registration failed after payment. Please contact support.');
+              setLoading(false);
+            }
+          };
+          registerUser();
+        },
+        onClose: () => {
+          setLoading(false);
+          setError('Payment cancelled. You must pay to create an account.');
+        }
       });
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      navigate('/dashboard');
+      handler.openIframe();
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Registration failed. Please try again.');
-    } finally {
+      console.error('Paystack initialization error:', err);
+      setError('Payment initialization failed. Please ensure you have a stable internet connection.');
       setLoading(false);
     }
   };

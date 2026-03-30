@@ -383,7 +383,7 @@ export default function AdminDashboard() {
                                                 </td>
                                                 <td className="px-8 py-5">
                                                     <span className={`text-[10px] font-black uppercase px-3 py-1.5 rounded-full border ${
-                                                        u.subscription === 'premium_plus' ? 'bg-red-600/10 border-red-600/20 text-red-600' :
+                                                        u.subscription === 'plus' ? 'bg-red-600/10 border-red-600/20 text-red-600' :
                                                         u.subscription === 'premium' ? 'bg-blue-500/10 border-blue-500/20 text-blue-500' :
                                                         'bg-zinc-900 border-white/5 text-zinc-500'
                                                     }`}>

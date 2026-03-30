@@ -70,20 +70,20 @@ export default function Settings() {
 
   const planInfo: Record<string, { label: string; desc: string; perks: string[] }> = {
     basic: {
-      label: 'Basic Plan', desc: 'Standard distribution',
-      perks: ['1 Artist Account', 'Unlimited releases', '4–7 day delivery', 'Daily stream insights']
+      label: 'Artiste Plan', desc: 'Basic distribution',
+      perks: ['1 Artist Account', 'Unlimited releases', 'Analytics suite', '4–7 day delivery']
     },
     premium: {
-      label: 'Premium Plan', desc: 'Professional distribution',
-      perks: ['3–4 Artist Accounts', 'Unlimited releases', '4–7 day delivery', 'Royalty Advances']
+      label: 'Record Label Plan', desc: 'Professional distribution',
+      perks: ['10–15 Artist Accounts', 'Unlimited releases', 'Easy payouts', '4–7 day delivery']
     },
-    premium_plus: {
-      label: 'Premium Plus', desc: 'Full distribution suite',
-      perks: ['8–10 Artist Accounts', 'Unlimited releases', 'Priority delivery', 'Royalty Advances']
+    plus: {
+      label: 'Record Label Plus', desc: 'Advanced distribution',
+      perks: ['20+ Artist Accounts', 'Unlimited releases', 'Easy payouts', 'Priority delivery']
     },
     standard: {
-      label: 'Standard Plan', desc: 'Label-grade distribution',
-      perks: ['Unlimited Accounts', 'Unlimited releases', 'Priority delivery', 'Royalty Advances']
+      label: 'Enterprise Edition', desc: 'Label-grade distribution',
+      perks: ['Unlimited Artist Accounts', 'Unlimited releases', 'Transparent payouts', 'Priority support']
     }
   };
 

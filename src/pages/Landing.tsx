@@ -310,10 +310,10 @@ export default function Landing() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
             {[
-              { name: 'Basic', subtitle: 'Artiste Plan', price: '₦20k', accounts: '01 Account', featured: false },
-              { name: 'Premium', subtitle: 'Record Label Plan', price: '₦40k', accounts: '04 Accounts', featured: true },
-              { name: 'Plus', subtitle: 'Record Label Plus', price: '₦80k', accounts: '10 Accounts', featured: false },
-              { name: 'Standard', subtitle: 'Enterprise Edition', price: '₦320k', accounts: 'Unlimited', featured: false }
+              { name: 'Basic', subtitle: 'Artiste Plan', price: '₦35k', accounts: '01 Account', featured: false },
+              { name: 'Premium', subtitle: 'Record Label Plan', price: '₦50k', accounts: '10–15 Accounts', featured: true },
+              { name: 'Plus', subtitle: 'Record Label Plus', price: '₦85k', accounts: '20+ Accounts', featured: false },
+              { name: 'Standard', subtitle: 'Enterprise Edition', price: '₦350k', accounts: 'Unlimited', featured: false }
             ].map((plan, i) => (
               <motion.div 
                 key={i}

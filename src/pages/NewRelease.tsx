@@ -7,7 +7,7 @@ import api from '../utils/api';
 const PLAN_TYPES: Record<string, string[]> = {
   basic: ['Single', 'EP', 'Album'],
   premium: ['Single', 'EP', 'Album'],
-  premium_plus: ['Single', 'EP', 'Album'],
+  plus: ['Single', 'EP', 'Album'],
   standard: ['Single', 'EP', 'Album'],
 };
 
