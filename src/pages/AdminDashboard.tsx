@@ -198,6 +198,28 @@ export default function AdminDashboard() {
         }
     };
 
+    const handleDeleteUser = async (id: string, name: string) => {
+        if (!window.confirm(`Are you sure you want to delete artist "${name}" and all their releases? This cannot be undone.`)) return;
+        try {
+            await api.delete(`/admin/users/${id}`);
+            setUsers(users.filter(u => u._id !== id));
+            // Also remove their releases from the state
+            setReleases(releases.filter(r => (r.user as any)._id !== id));
+        } catch (err) {
+            alert('Failed to delete user');
+        }
+    };
+
+    const handleDeleteRelease = async (id: string, title: string) => {
+        if (!window.confirm(`Are you sure you want to delete the release "${title}"? This cannot be undone.`)) return;
+        try {
+            await api.delete(`/admin/releases/${id}`);
+            setReleases(releases.filter(r => r.id !== id));
+        } catch (err) {
+            alert('Failed to delete release');
+        }
+    };
+
     if (loading) return (
         <div className="min-h-screen bg-[#050505] flex items-center justify-center">
             <div className="w-12 h-12 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
@@ -365,6 +387,7 @@ export default function AdminDashboard() {
                                             <th className="px-8 py-5">Artist</th>
                                             <th className="px-8 py-5">Subscription</th>
                                             <th className="px-8 py-5 text-right">Joined</th>
+                                            <th className="px-8 py-5 text-right">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-white/5">
@@ -392,6 +415,15 @@ export default function AdminDashboard() {
                                                 </td>
                                                 <td className="px-8 py-5 text-right text-xs font-bold text-zinc-600">
                                                     {new Date(u.created_at).toLocaleDateString()}
+                                                </td>
+                                                <td className="px-8 py-5 text-right">
+                                                    <button 
+                                                        onClick={() => handleDeleteUser(u._id, u.name)}
+                                                        className="p-2 hover:bg-rose-500/10 text-zinc-600 hover:text-rose-500 rounded-xl transition-all"
+                                                        title="Delete User"
+                                                    >
+                                                        <X className="w-4 h-4" />
+                                                    </button>
                                                 </td>
                                             </tr>
                                         ))}
@@ -479,6 +511,15 @@ export default function AdminDashboard() {
                                                         defaultValue={r.price || 0}
                                                         onBlur={(e) => handleUpdatePrice(r.id, Number(e.target.value))}
                                                     />
+                                                </div>
+                                                <div className="flex flex-col items-center justify-center border-l border-white/5 pl-2">
+                                                    <button 
+                                                        onClick={() => handleDeleteRelease(r.id, r.title)}
+                                                        className="p-3 bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white rounded-xl transition-all"
+                                                        title="Delete Release"
+                                                    >
+                                                        <X className="w-4 h-4" />
+                                                    </button>
                                                 </div>
                                             </div>
 
@@ -853,4 +894,4 @@ export default function AdminDashboard() {
             )}
         </div>
     );
-}
+}      
