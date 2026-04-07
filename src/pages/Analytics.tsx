@@ -28,7 +28,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
           <div key={entry.name} className="flex items-center justify-between space-x-4 mt-1">
             <span className="flex items-center">
               <span className="w-1.5 h-1.5 rounded-full mr-2" style={{ backgroundColor: entry.color || entry.fill }} />
-              <span className="text-zinc-500 text-xs">{entry.name}:</span>
+              <span className="text-white text-xs">{entry.name}:</span>
             </span>
             <span className="text-white font-mono font-black text-xs">{typeof entry.value === 'number' ? entry.value.toLocaleString() : entry.value}</span>
           </div>
@@ -112,7 +112,7 @@ export default function Analytics() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <p className="label-elite mb-2">Performance Metrics</p>
+            <p className="label-caps mb-2">Performance Metrics</p>
             <h1 className="text-4xl md:text-6xl font-display italic tracking-tight text-white uppercase leading-[0.85]">
               Project<br/>
               <span className="text-gradient-red">Analytics</span>
@@ -133,13 +133,13 @@ export default function Analytics() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="glass-card-elite p-6 md:p-8 flex flex-col justify-between h-full min-h-[140px] group cursor-default"
+            className="glass-card-premium p-6 md:p-8 flex flex-col justify-between h-full min-h-[140px] group cursor-default"
           >
             <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${card.accent} flex items-center justify-center mb-6 shadow-xl border border-white/5 group-hover:scale-110 transition-transform duration-500`}>
                 <card.icon className="w-5 h-5 text-white" />
             </div>
             <div>
-                <p className="label-elite opacity-60 group-hover:opacity-100 transition-opacity mb-1">{card.label}</p>
+                <p className="label-caps opacity-60 group-hover:opacity-100 transition-opacity mb-1">{card.label}</p>
                 <p className="text-xl md:text-2xl font-black text-white tracking-tight truncate">{card.value}</p>
             </div>
           </motion.div>
@@ -148,9 +148,9 @@ export default function Analytics() {
 
       {releases.length === 0 ? (
         <div className="bg-zinc-950 border border-zinc-900 rounded-2xl p-16 text-center">
-          <Music className="w-10 h-10 text-zinc-900 mx-auto mb-3" />
+          <Music className="w-10 h-10 text-white mx-auto mb-3" />
           <h2 className="text-base font-black text-white mb-1">No releases yet</h2>
-          <p className="text-sm text-zinc-700 font-bold">Submit a release to start seeing analytics.</p>
+          <p className="text-sm text-white font-bold">Submit a release to start seeing analytics.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -159,11 +159,11 @@ export default function Analytics() {
           <div className="lg:col-span-2 space-y-5">
 
             {/* Streaming Trend */}
-            <div className="glass-card-elite overflow-hidden flex flex-col rounded-[2.5rem]">
+            <div className="glass-card-premium overflow-hidden flex flex-col rounded-[2.5rem]">
               <div className="px-8 py-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
                 <div>
                   <h2 className="text-lg font-black text-white tracking-tight uppercase leading-none">Streaming Trend</h2>
-                  <p className="label-elite mt-2 opacity-60">Daily Performance</p>
+                  <p className="label-caps mt-2 opacity-60">Daily Performance</p>
                 </div>
                 <div className="relative">
                   <select
@@ -176,7 +176,7 @@ export default function Analytics() {
                   >
                     {releases.map(r => <option key={r.id} value={r.id}>{r.title.toUpperCase()}</option>)}
                   </select>
-                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600 pointer-events-none" />
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white pointer-events-none" />
                 </div>
               </div>
 
@@ -187,8 +187,8 @@ export default function Analytics() {
                       </div>
                   ) : chartData.length === 0 ? (
                       <div className="flex flex-col items-center justify-center h-[300px] text-center">
-                          <TrendingUp className="w-12 h-12 text-zinc-900 mb-4" />
-                          <p className="text-xs text-zinc-600 font-black uppercase tracking-widest">Awaiting daily streaming logs...</p>
+                          <TrendingUp className="w-12 h-12 text-white mb-4" />
+                          <p className="text-xs text-white font-black uppercase tracking-widest">Awaiting daily streaming logs...</p>
                       </div>
                   ) : (
                       <ResponsiveContainer width="100%" height={300}>
@@ -210,10 +210,10 @@ export default function Analytics() {
             </div>
 
             {/* Platform Distribution Bar Chart */}
-            <div className="glass-card-elite rounded-[2.5rem] p-8 md:p-10 flex flex-col">
+            <div className="glass-card-premium rounded-[2.5rem] p-8 md:p-10 flex flex-col">
               <div className="mb-8">
                   <h2 className="text-lg font-black text-white tracking-tight uppercase leading-none">Competitive Analysis</h2>
-                  <p className="label-elite mt-2 opacity-60">Platform-specific Market Share</p>
+                  <p className="label-caps mt-2 opacity-60">Platform-specific Market Share</p>
               </div>
               <ResponsiveContainer width="100%" height={240}>
                 <BarChart data={releases.map(r => ({ title: r.title.substring(0, 10) + '...', ...r.platformStats }))} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
@@ -234,8 +234,8 @@ export default function Analytics() {
           <div className="space-y-6 md:space-y-10">
             
             {/* Market Share Donut */}
-            <div className="glass-card-elite rounded-[2.5rem] p-8 md:p-10">
-              <p className="label-elite mb-8">Audience Distribution</p>
+            <div className="glass-card-premium rounded-[2.5rem] p-8 md:p-10">
+              <p className="label-caps mb-8">Audience Distribution</p>
               {pieData.length > 0 ? (
                 <>
                   <div className="h-64 relative">
@@ -250,7 +250,7 @@ export default function Analytics() {
                       </PieChart>
                     </ResponsiveContainer>
                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                       <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Volume</p>
+                       <p className="text-[10px] font-black text-white uppercase tracking-widest">Volume</p>
                        <p className="text-2xl font-black text-white leading-none">{totalStreams > 1000 ? (totalStreams/1000).toFixed(1) + 'K' : totalStreams}</p>
                     </div>
                   </div>
@@ -259,7 +259,7 @@ export default function Analytics() {
                       <div key={p.name} className="flex items-center justify-between group">
                         <div className="flex items-center">
                           <div className="w-2.5 h-2.5 rounded-full mr-4 shadow-lg shadow-black/50" style={{ backgroundColor: PLATFORM_COLORS[p.name] || '#52525b' }} />
-                          <span className="text-[11px] text-zinc-500 font-black uppercase tracking-widest group-hover:text-white transition-colors">{p.name}</span>
+                          <span className="text-[11px] text-white font-black uppercase tracking-widest group-hover:text-white transition-colors">{p.name}</span>
                         </div>
                         <span className="text-sm font-black text-white font-mono">{totalStreams > 0 ? Math.round((p.value / totalStreams) * 100) : 0}%</span>
                       </div>
@@ -268,8 +268,8 @@ export default function Analytics() {
                 </>
               ) : (
                 <div className="flex flex-col items-center justify-center h-64 text-center">
-                  <Globe className="w-12 h-12 text-zinc-900 mb-4" />
-                  <p className="text-xs text-zinc-700 font-black uppercase tracking-widest">Global metrics pending...</p>
+                  <Globe className="w-12 h-12 text-white mb-4" />
+                  <p className="text-xs text-white font-black uppercase tracking-widest">Global metrics pending...</p>
                 </div>
               )}
             </div>
@@ -279,16 +279,16 @@ export default function Analytics() {
               <motion.div 
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="glass-card-elite rounded-[2rem] p-8 border-l-4 border-l-red-600 relative overflow-hidden group"
+                  className="glass-card-premium rounded-[2rem] p-8 border-l-4 border-l-red-600 relative overflow-hidden group"
               >
                   <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/5 blur-3xl pointer-events-none" />
                   <div className="flex items-center gap-3 mb-4">
                       <TrendingUp className="w-5 h-5 text-red-500" />
-                      <p className="label-elite !text-red-500">Elite Growth Insight</p>
+                      <p className="label-caps !text-red-500">Growth Insight</p>
                   </div>
-                  <p className="text-sm text-zinc-400 font-bold leading-relaxed">
+                  <p className="text-sm text-white font-bold leading-relaxed">
                       Global data indicates that <span className="text-white font-black">{topPlatform.name}</span> is currently your primary growth engine, commanding <span className="text-red-500 font-black">{topPlatformPercent}%</span> of your total audience. 
-                      <span className="block mt-4 text-[11px] text-zinc-500 uppercase tracking-widest font-black group-hover:text-zinc-300 transition-colors">Strategic Priority: Heavy Marketing Push</span>
+                      <span className="block mt-4 text-[11px] text-white uppercase tracking-widest font-black group-hover:text-zinc-300 transition-colors">Strategic Priority: Heavy Marketing Push</span>
                   </p>
               </motion.div>
             )}

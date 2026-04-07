@@ -41,7 +41,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
           <div key={entry.name} className="flex items-center justify-between space-x-4 mt-1">
             <span className="flex items-center">
               <span className="w-1.5 h-1.5 rounded-full mr-2" style={{ backgroundColor: entry.color || entry.fill }} />
-              <span className="text-zinc-500 text-xs">{entry.name}:</span>
+              <span className="text-white text-xs">{entry.name}:</span>
             </span>
             <span className="text-white font-mono font-black text-xs">₦{typeof entry.value === 'number' ? entry.value.toLocaleString() : entry.value}</span>
           </div>
@@ -53,7 +53,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 const inputClass = 'w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3.5 text-white placeholder-zinc-700 focus:border-zinc-600 focus:outline-none transition-colors font-medium text-sm';
-const labelClass = 'block text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-2';
+const labelClass = 'block text-[10px] font-black text-white uppercase tracking-[0.2em] mb-2';
 
 export default function Revenue() {
   const [releases, setReleases] = useState<Release[]>([]);
@@ -138,7 +138,7 @@ export default function Revenue() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <p className="label-elite mb-2">Financial Records</p>
+            <p className="label-caps mb-2">Financial Records</p>
             <h1 className="text-4xl md:text-6xl font-display italic tracking-tight text-white uppercase leading-[0.85]">
               Revenue<br/>
               <span className="text-gradient-red">Management</span>
@@ -146,17 +146,17 @@ export default function Revenue() {
           </motion.div>
         </div>
 
-        {/* ─── Top Cards: Elite Balance & Highlights ─── */}
+        {/* ─── Top Cards: Balance & Highlights ─── */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10">
           
-          {/* THE ELITE BALANCE CARD */}
+          {/* THE PREMIUM BALANCE CARD */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="lg:col-span-1 relative group"
           >
             <div className="absolute -inset-0.5 bg-gradient-to-r from-red-600 to-amber-600 rounded-[2.5rem] blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-            <div className="relative glass-card-elite rounded-[2.5rem] p-8 md:p-10 h-full overflow-hidden flex flex-col justify-between min-h-[300px]">
+            <div className="relative glass-card-premium rounded-[2.5rem] p-8 md:p-10 h-full overflow-hidden flex flex-col justify-between min-h-[300px]">
                 {/* Background Decor */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-red-600/10 blur-[80px] -mr-32 -mt-32 rounded-full pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-32 h-32 bg-amber-500/5 blur-[50px] -ml-16 -mb-16 rounded-full pointer-events-none" />
@@ -166,9 +166,9 @@ export default function Revenue() {
                         <div className="w-14 h-9 bg-zinc-900/50 border border-white/5 rounded-lg flex items-center justify-center overflow-hidden">
                             <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-amber-700 blur-[2px] opacity-50" />
                         </div>
-                        <CreditCard className="w-6 h-6 text-zinc-600" />
+                        <CreditCard className="w-6 h-6 text-white" />
                     </div>
-                    <p className="label-elite opacity-50 mb-2">Available Balance</p>
+                    <p className="label-caps opacity-50 mb-2">Available Balance</p>
                     <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter leading-none">
                         ₦{netBalance.toLocaleString()}
                     </h2>
@@ -198,15 +198,15 @@ export default function Revenue() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="glass-card-elite p-8 md:p-10 rounded-[2.5rem] flex flex-col justify-between group"
+                className="glass-card-premium p-8 md:p-10 rounded-[2.5rem] flex flex-col justify-between group"
               >
                   <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center mb-10 shadow-2xl group-hover:scale-110 transition-transform duration-500">
                     <TrendingUp className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="label-elite mb-2 opacity-60">Lifetime Earnings</p>
+                    <p className="label-caps mb-2 opacity-60">Lifetime Earnings</p>
                     <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-2">₦{totalRevenue.toLocaleString()}</h2>
-                    <p className="text-[11px] text-zinc-500 font-bold uppercase tracking-widest flex items-center">
+                    <p className="text-[11px] text-white font-bold uppercase tracking-widest flex items-center">
                         <ArrowUpRight className="w-3.5 h-3.5 mr-1.5 text-red-500" /> All-time project performance
                     </p>
                   </div>
@@ -217,17 +217,17 @@ export default function Revenue() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="glass-card-elite p-8 md:p-10 rounded-[2.5rem] flex flex-col justify-between group"
+                className="glass-card-premium p-8 md:p-10 rounded-[2.5rem] flex flex-col justify-between group"
               >
                   <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center mb-10 shadow-2xl group-hover:bg-zinc-800 transition-colors duration-500">
-                    <Music className="w-6 h-6 text-zinc-400 group-hover:text-red-500 transition-colors" />
+                    <Music className="w-6 h-6 text-white group-hover:text-red-500 transition-colors" />
                   </div>
                   <div>
-                    <p className="label-elite mb-2 opacity-60">Top Earner</p>
+                    <p className="label-caps mb-2 opacity-60">Top Earner</p>
                     <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight truncate leading-none mb-3">
                         {topRelease?.title.toUpperCase() || '—'}
                     </h2>
-                    <p className="text-[11px] text-zinc-500 font-black uppercase tracking-widest">
+                    <p className="text-[11px] text-white font-black uppercase tracking-widest">
                         ₦{topRelease?.revenue?.toLocaleString() || 0} Generated
                     </p>
                   </div>
@@ -237,8 +237,8 @@ export default function Revenue() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10">
           {/* Revenue Distribution */}
-          <div className="glass-card-elite rounded-[2.5rem] p-8 md:p-10">
-            <p className="label-elite mb-8">Revenue Distribution</p>
+          <div className="glass-card-premium rounded-[2.5rem] p-8 md:p-10">
+            <p className="label-caps mb-8">Revenue Distribution</p>
             {pieData.length > 0 ? (
               <>
                 <div className="h-64 relative">
@@ -253,7 +253,7 @@ export default function Revenue() {
                     </PieChart>
                   </ResponsiveContainer>
                   <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                       <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Share</p>
+                       <p className="text-[10px] font-black text-white uppercase tracking-widest">Share</p>
                        <p className="text-xl font-black text-white leading-none">TOTAL</p>
                   </div>
                 </div>
@@ -262,7 +262,7 @@ export default function Revenue() {
                     <div key={p.name} className="flex items-center justify-between group">
                       <div className="flex items-center">
                         <div className="w-2.5 h-2.5 rounded-full mr-4 shadow-lg shadow-black/50" style={{ backgroundColor: PLATFORM_COLORS[p.name] || '#52525b' }} />
-                        <span className="text-[11px] text-zinc-500 font-black uppercase tracking-widest group-hover:text-white transition-colors">{p.name}</span>
+                        <span className="text-[11px] text-white font-black uppercase tracking-widest group-hover:text-white transition-colors">{p.name}</span>
                       </div>
                       <span className="text-sm font-black text-white font-mono">₦{Math.round(p.value).toLocaleString()}</span>
                     </div>
@@ -271,29 +271,29 @@ export default function Revenue() {
               </>
             ) : (
               <div className="flex flex-col items-center justify-center h-64 text-center">
-                <Globe className="w-12 h-12 text-zinc-900 mb-4" />
-                <p className="text-xs text-zinc-700 font-black uppercase tracking-widest">Global revenue pending...</p>
+                <Globe className="w-12 h-12 text-white mb-4" />
+                <p className="text-xs text-white font-black uppercase tracking-widest">Global revenue pending...</p>
               </div>
             )}
           </div>
 
           {/* Payout History */}
-          <div className="lg:col-span-2 glass-card-elite rounded-[2.5rem] p-8 md:p-10 flex flex-col">
+          <div className="lg:col-span-2 glass-card-premium rounded-[2.5rem] p-8 md:p-10 flex flex-col">
             <div className="flex items-center justify-between mb-8">
                 <div>
                    <h2 className="text-lg font-black text-white tracking-tight uppercase leading-none">Payout History</h2>
-                   <p className="label-elite mt-2 opacity-60">Transaction Logs</p>
+                   <p className="label-caps mt-2 opacity-60">Transaction Logs</p>
                 </div>
                 <div className="w-10 h-10 rounded-xl bg-zinc-950 border border-white/5 flex items-center justify-center">
-                    <Clock className="w-5 h-5 text-zinc-600" />
+                    <Clock className="w-5 h-5 text-white" />
                 </div>
             </div>
             
             <div className="space-y-4 max-h-[460px] overflow-y-auto pr-2 custom-scrollbar">
               {payouts.length === 0 ? (
-                <div className="text-center py-24 flex flex-col items-center glass-card-elite rounded-[2rem] border-dashed border-white/5 bg-transparent">
-                  <CreditCard className="w-12 h-12 text-zinc-900 mb-4" />
-                  <p className="text-xs text-zinc-600 font-black uppercase tracking-widest">No transaction history found</p>
+                <div className="text-center py-24 flex flex-col items-center glass-card-premium rounded-[2rem] border-dashed border-white/5 bg-transparent">
+                  <CreditCard className="w-12 h-12 text-white mb-4" />
+                  <p className="text-xs text-white font-black uppercase tracking-widest">No transaction history found</p>
                 </div>
               ) : payouts.map((payout, i) => (
                 <motion.div 
@@ -310,13 +310,13 @@ export default function Revenue() {
                     }`}>
                       {payout.status === 'Completed'
                         ? <ArrowDownLeft className="w-5 h-5 text-red-500" />
-                        : payout.status === 'Rejected' ? <X className="w-5 h-5 text-zinc-600" />
+                        : payout.status === 'Rejected' ? <X className="w-5 h-5 text-white" />
                         : <Clock className="w-5 h-5 text-amber-500" />
                       }
                     </div>
                     <div>
                       <p className="text-white font-black text-lg font-mono">₦{payout.amount.toLocaleString()}</p>
-                      <p className="text-[10px] text-zinc-500 font-black uppercase tracking-[0.15em] mt-1">
+                      <p className="text-[10px] text-white font-black uppercase tracking-[0.15em] mt-1">
                         {new Date(payout.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} · {payout.bankName.toUpperCase()}
                       </p>
                     </div>
@@ -346,14 +346,14 @@ export default function Revenue() {
               exit={{ scale: 0.95, y: 20 }}
               className="bg-zinc-950 border border-zinc-900 rounded-2xl p-7 w-full max-w-md relative max-h-[90vh] overflow-y-auto"
             >
-              <button onClick={() => setShowModal(false)} className="absolute top-5 right-5 text-zinc-600 hover:text-white transition-colors">
+              <button onClick={() => setShowModal(false)} className="absolute top-5 right-5 text-white hover:text-white transition-colors">
                 <X className="w-5 h-5" />
               </button>
 
               <div className="mb-7">
-                <p className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-1">Payout Request</p>
+                <p className="text-[10px] font-black text-white uppercase tracking-[0.2em] mb-1">Payout Request</p>
                 <h3 className="text-xl font-black text-white">Withdraw Funds</h3>
-                <p className="text-xs text-zinc-600 font-bold mt-0.5">Processed within 7 working days</p>
+                <p className="text-xs text-white font-bold mt-0.5">Processed within 7 working days</p>
               </div>
 
               {formError && (
@@ -372,7 +372,7 @@ export default function Revenue() {
                     value={payoutForm.amount}
                     onChange={e => setPayoutForm({ ...payoutForm, amount: parseInt(e.target.value) || 0 })}
                   />
-                  <p className="text-[10px] text-zinc-700 mt-2 font-bold">MIN ₦1,000 · AVAILABLE ₦{netBalance.toLocaleString()}</p>
+                  <p className="text-[10px] text-white mt-2 font-bold">MIN ₦1,000 · AVAILABLE ₦{netBalance.toLocaleString()}</p>
                 </div>
 
                 <div>
@@ -396,7 +396,7 @@ export default function Revenue() {
 
                 <div className="flex space-x-3 pt-2">
                   <button type="button" onClick={() => setShowModal(false)}
-                    className="flex-1 py-3.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 rounded-xl font-black text-sm transition-all">
+                    className="flex-1 py-3.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl font-black text-sm transition-all">
                     Cancel
                   </button>
                   <button type="submit" disabled={submitting}

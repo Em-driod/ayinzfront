@@ -4,8 +4,8 @@ import { Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '../utils/api';
 
-const inputClass = 'w-full bg-black/60 border border-zinc-800 rounded-xl px-4 py-3.5 text-white placeholder-zinc-700 focus:border-zinc-600 focus:outline-none transition-colors font-medium text-sm';
-const labelClass = 'block text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-2';
+const inputClass = 'w-full bg-black/60 border border-zinc-800 rounded-xl px-4 py-3.5 text-white placeholder-white focus:border-white focus:outline-none transition-colors font-medium text-sm';
+const labelClass = 'block text-[10px] font-black text-white uppercase tracking-[0.2em] mb-2';
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -48,16 +48,16 @@ export default function Login() {
           {/* Logo */}
           <div className="flex items-center justify-center space-x-2.5 mb-10">
             <div className="w-8 h-8 rounded-xl overflow-hidden border border-zinc-800">
-              <img src="/ayinz.jpeg" alt="Ayinz" className="w-full h-full object-cover" />
+              <img src="/ayinz.jpeg" alt="Sonic Distro" className="w-full h-full object-cover" />
             </div>
-            <span className="text-xl font-black text-white tracking-tight">Ayinz</span>
+            <span className="text-xl font-black text-white tracking-tight">Sonic Distro</span>
           </div>
 
           {/* Card */}
           <div className="bg-zinc-950/80 backdrop-blur-xl border border-zinc-900 rounded-2xl p-7">
             <div className="mb-7">
               <h1 className="text-xl font-black text-white tracking-tight">Sign In</h1>
-              <p className="text-xs text-zinc-600 font-bold mt-0.5">Welcome back — continue distributing your music.</p>
+              <p className="text-xs text-white font-bold mt-0.5">Welcome back — continue distributing your music.</p>
             </div>
 
             {error && (
@@ -85,14 +85,14 @@ export default function Login() {
                     value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })}
                   />
                   <button type="button" onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-600 hover:text-zinc-400 transition-colors">
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white hover:text-zinc-400 transition-colors">
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
 
               <div className="flex justify-end">
-                <a href="#" className="text-[11px] text-zinc-600 hover:text-zinc-400 transition-colors font-bold">Forgot password?</a>
+                <a href="#" className="text-[11px] text-white hover:text-zinc-400 transition-colors font-bold">Forgot password?</a>
               </div>
 
               <button
@@ -106,8 +106,8 @@ export default function Login() {
               </button>
             </form>
 
-            <p className="text-center text-xs text-zinc-700 font-bold mt-6">
-              New to Ayinz?{' '}
+            <p className="text-center text-xs text-white font-bold mt-6">
+              New to Sonic Distro?{' '}
               <Link to="/register" className="text-zinc-400 hover:text-white transition-colors font-black">
                 Create an account
               </Link>

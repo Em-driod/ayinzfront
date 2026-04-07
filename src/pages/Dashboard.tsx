@@ -76,7 +76,7 @@ export default function Dashboard() {
     if (status === 'approved') return 'bg-red-600/10 text-red-500 border border-red-600/20';
     if (status === 'pending') return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
     if (status === 'rejected') return 'bg-red-500/10 text-red-400 border border-red-500/20';
-    return 'bg-zinc-800 text-zinc-400';
+    return 'bg-zinc-800 text-white';
   };
 
   const statCards = [
@@ -98,7 +98,7 @@ export default function Dashboard() {
             className="flex flex-col md:flex-row md:items-end justify-between gap-6"
         >
             <div>
-                <p className="label-elite mb-2">Workspace Overview</p>
+                <p className="label-caps mb-2">Workspace Overview</p>
                 <h1 className="text-4xl md:text-6xl font-display italic tracking-tight text-white uppercase leading-[0.85]">
                     Welcome back,<br/>
                     <span className="text-gradient-red">{user.name?.split(' ')[0] || 'Artist'}</span>
@@ -107,9 +107,9 @@ export default function Dashboard() {
             <div className="flex flex-col items-start md:items-end gap-2">
                 <div className="px-5 py-2 glass-dark rounded-2xl border border-white/10 flex items-center gap-3">
                     <div className="w-2 h-2 rounded-full bg-red-600 animate-pulse shadow-[0_0_12px_rgba(220,38,38,0.8)]" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">{planLabel.name} ACTIVE</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-white">{planLabel.name} ACTIVE</span>
                 </div>
-                <p className="text-[10px] font-black text-zinc-700 uppercase tracking-widest">{planLabel.desc}</p>
+                <p className="text-[10px] font-black text-white uppercase tracking-widest">{planLabel.desc}</p>
             </div>
         </motion.div>
 
@@ -122,13 +122,13 @@ export default function Dashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
               whileHover={{ y: -5, scale: 1.02 }}
-              className="glass-card-elite p-6 md:p-8 flex flex-col justify-between h-full min-h-[160px] cursor-default group"
+              className="glass-card-premium p-6 md:p-8 flex flex-col justify-between h-full min-h-[160px] cursor-default group"
             >
               <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${stat.accent} flex items-center justify-center mb-6 shadow-xl shadow-black/50 group-hover:shadow-red-600/20 transition-all duration-500`}>
                 <stat.icon className="w-6 h-6 text-white" />
               </div>
               <div>
-                <p className="label-elite opacity-60 group-hover:opacity-100 transition-opacity mb-1">{stat.label}</p>
+                <p className="label-caps opacity-60 group-hover:opacity-100 transition-opacity mb-1">{stat.label}</p>
                 <p className="text-2xl md:text-3xl font-black text-white tracking-tight">{stat.value}</p>
               </div>
             </motion.div>
@@ -143,12 +143,12 @@ export default function Dashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="lg:col-span-2 glass-card-elite overflow-hidden flex flex-col"
+            className="lg:col-span-2 glass-card-premium overflow-hidden flex flex-col"
           >
             <div className="px-8 py-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
               <div>
                 <h2 className="text-lg font-black text-white tracking-tight uppercase">Recent Releases</h2>
-                <p className="label-elite mt-1">Catalogue Activity</p>
+                <p className="label-caps mt-1">Catalogue Activity</p>
               </div>
               <button
                 onClick={() => navigate('/releases')}
@@ -162,10 +162,10 @@ export default function Dashboard() {
               {userReleases.length === 0 ? (
                 <div className="py-24 text-center px-10">
                   <div className="w-16 h-16 rounded-[2rem] bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto mb-6 shadow-2xl">
-                    <Music className="w-7 h-7 text-zinc-700" />
+                    <Music className="w-7 h-7 text-white" />
                   </div>
                   <p className="text-lg font-black text-white mb-2 uppercase">No catalogue yet</p>
-                  <p className="text-xs text-zinc-600 mb-8 max-w-xs mx-auto font-bold leading-relaxed">
+                  <p className="text-xs text-white mb-8 max-w-xs mx-auto font-bold leading-relaxed">
                     Submit your first release and we'll distribute it to 150+ major stores globally.
                   </p>
                   <button
@@ -200,11 +200,11 @@ export default function Dashboard() {
                             <span className={`px-2.5 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest border transition-all ${getStatusStyle(release.status)}`}>
                                 {release.status}
                             </span>
-                            <p className="text-[10px] text-zinc-600 font-black uppercase tracking-widest">{release.artist} · {formatNumber(release.streams || 0)} STREAMS</p>
+                            <p className="text-[10px] text-white font-black uppercase tracking-widest">{release.artist} · {formatNumber(release.streams || 0)} STREAMS</p>
                           </div>
                         </div>
                       </div>
-                      <ChevronRight className="w-5 h-5 text-zinc-800 group-hover:text-white transition-all transform group-hover:translate-x-1" />
+                      <ChevronRight className="w-5 h-5 text-white group-hover:text-white transition-all transform group-hover:translate-x-1" />
                     </motion.div>
                   ))}
                 </div>
@@ -214,7 +214,7 @@ export default function Dashboard() {
 
           {/* Quick Actions Column */}
           <div className="space-y-6 md:space-y-8 flex flex-col">
-            <h3 className="label-elite pl-2">Operations Center</h3>
+            <h3 className="label-caps pl-2">Operations Center</h3>
             <div className="grid grid-cols-1 gap-4 md:gap-6 flex-1">
               {[
                 {
@@ -257,7 +257,7 @@ export default function Dashboard() {
                   className={`relative rounded-[2rem] p-8 text-left border transition-all duration-500 overflow-hidden group shadow-2xl flex flex-col justify-end min-h-[140px] md:min-h-0 md:flex-1 ${
                     action.locked
                       ? 'bg-zinc-950/50 border-zinc-900 opacity-40 cursor-not-allowed'
-                      : 'glass-card-elite hover:border-red-600/50'
+                      : 'glass-card-premium hover:border-red-600/50'
                   }`}
                 >
                   <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${action.accent} opacity-10 blur-3xl group-hover:opacity-30 transition-opacity`} />
@@ -266,20 +266,20 @@ export default function Dashboard() {
                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 border transition-all ${
                         action.active && !action.locked ? 'bg-red-600 border-red-500 shadow-lg shadow-red-600/20' : 'bg-zinc-900 border-white/5'
                     }`}>
-                      <action.icon className={`w-6 h-6 ${action.active && !action.locked ? 'text-white' : 'text-zinc-600'}`} />
+                      <action.icon className={`w-6 h-6 ${action.active && !action.locked ? 'text-white' : 'text-white'}`} />
                     </div>
                     <div>
-                      <p className={`text-lg font-black uppercase tracking-tight ${action.active && !action.locked ? 'text-white' : 'text-zinc-500'}`}>
+                      <p className={`text-lg font-black uppercase tracking-tight ${action.active && !action.locked ? 'text-white' : 'text-white'}`}>
                         {action.title}
                       </p>
-                      <p className={`text-[10px] font-black uppercase tracking-widest mt-1 ${action.active && !action.locked ? 'text-zinc-400' : 'text-zinc-700'}`}>
+                      <p className={`text-[10px] font-black uppercase tracking-widest mt-1 ${action.active && !action.locked ? 'text-white' : 'text-white'}`}>
                         {action.desc}
                       </p>
                     </div>
                   </div>
                   
                   {!action.locked && (
-                    <ChevronRight className={`absolute right-8 bottom-8 w-6 h-6 transform group-hover:translate-x-2 transition-transform ${action.active ? 'text-red-600' : 'text-zinc-800'}`} />
+                    <ChevronRight className={`absolute right-8 bottom-8 w-6 h-6 transform group-hover:translate-x-2 transition-transform ${action.active ? 'text-red-600' : 'text-white'}`} />
                   )}
                 </motion.button>
               ))}
@@ -293,7 +293,7 @@ export default function Dashboard() {
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
           <div className="flex items-center space-x-3 bg-zinc-950 border border-zinc-900 rounded-2xl px-6 py-4">
             <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
-            <span className="text-sm text-zinc-400 font-bold">Loading dashboard…</span>
+            <span className="text-sm text-white font-bold">Loading dashboard…</span>
           </div>
         </div>
       )}

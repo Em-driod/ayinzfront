@@ -27,7 +27,7 @@
     @apply bg-black/40 backdrop-blur-2xl border border-white/5;
   }
 
-  .glass-card-elite {
+  .glass-card-premium {
     @apply bg-black/60 backdrop-blur-[40px] border border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)];
   }
 
@@ -38,7 +38,7 @@
       radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
   }
 
-  .bg-mesh-elite {
+  .bg-mesh-main {
     background: 
       radial-gradient(circle at 0% 0%, rgba(220, 38, 38, 0.15) 0%, transparent 40%),
       radial-gradient(circle at 100% 0%, rgba(245, 158, 11, 0.1) 0%, transparent 40%),
@@ -55,8 +55,8 @@
     @apply bg-clip-text text-transparent bg-gradient-to-r from-amber-200 to-amber-500;
   }
 
-  .label-elite {
-    @apply text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600;
+  .label-caps {
+    @apply text-[10px] font-black uppercase tracking-[0.3em] text-white;
   }
 
   .marquee-track {

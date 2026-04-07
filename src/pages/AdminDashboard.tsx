@@ -279,7 +279,7 @@ export default function AdminDashboard() {
             <div className="glass-dark p-8 rounded-3xl max-w-sm">
                 <X className="w-12 h-12 text-rose-500 mx-auto mb-4" />
                 <h2 className="text-xl font-bold mb-2">Access Denied</h2>
-                <p className="text-zinc-600 text-sm mb-6">{error}</p>
+                <p className="text-white text-sm mb-6">{error}</p>
                 <button onClick={() => window.location.href = '/'} className="w-full py-3 bg-white text-black font-bold rounded-xl">Return Home</button>
             </div>
         </div>
@@ -292,7 +292,7 @@ export default function AdminDashboard() {
                 <div className={`w-12 h-12 rounded-2xl bg-${color}-500/20 flex items-center justify-center mb-4 ring-1 ring-${color}-500/30 shadow-lg shadow-${color}-500/20`}>
                     <Icon className={`w-6 h-6 text-${color}-400`} />
                 </div>
-                <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-1">{title}</p>
+                <p className="text-[10px] font-black text-white uppercase tracking-[0.2em] mb-1">{title}</p>
                 <h3 className="text-3xl font-display text-white tracking-tight">{value}</h3>
             </div>
         </div>
@@ -324,7 +324,7 @@ export default function AdminDashboard() {
                                 className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap ${
                                     activeTab === tab.id 
                                     ? 'bg-red-600 text-black' 
-                                    : 'text-zinc-500 hover:text-white hover:bg-white/5'
+                                    : 'text-white hover:text-white hover:bg-white/5'
                                 }`}
                             >
                                 <tab.icon className="w-3.5 h-3.5" />
@@ -362,14 +362,14 @@ export default function AdminDashboard() {
                                                     </div>
                                                     <div>
                                                         <p className="font-bold text-sm">{u.name}</p>
-                                                        <p className="text-xs text-zinc-500">{u.email}</p>
+                                                        <p className="text-xs text-white">{u.email}</p>
                                                     </div>
                                                 </div>
-                                                <span className="text-[10px] font-black uppercase text-zinc-600 bg-black/40 px-2.5 py-1 rounded-full border border-white/5">{u.subscription}</span>
+                                                <span className="text-[10px] font-black uppercase text-white bg-black/40 px-2.5 py-1 rounded-full border border-white/5">{u.subscription}</span>
                                             </div>
                                         ))}
                                     </div>
-                                    <button onClick={() => setActiveTab('users')} className="w-full mt-6 py-4 text-xs font-black uppercase tracking-widest text-zinc-500 hover:text-red-600 transition-colors flex items-center justify-center gap-2">
+                                    <button onClick={() => setActiveTab('users')} className="w-full mt-6 py-4 text-xs font-black uppercase tracking-widest text-white hover:text-red-600 transition-colors flex items-center justify-center gap-2">
                                         View All Users <ChevronRight className="w-4 h-4" />
                                     </button>
                                 </div>
@@ -385,16 +385,16 @@ export default function AdminDashboard() {
                                                     </div>
                                                     <div>
                                                         <p className="font-bold text-sm tracking-tight">{r.title}</p>
-                                                        <p className="text-xs text-zinc-500">{r.artist}</p>
+                                                        <p className="text-xs text-white">{r.artist}</p>
                                                     </div>
                                                 </div>
-                                                <button onClick={() => setActiveTab('releases')} className="p-2 hover:bg-white/10 rounded-xl text-zinc-500 transition-colors">
+                                                <button onClick={() => setActiveTab('releases')} className="p-2 hover:bg-white/10 rounded-xl text-white transition-colors">
                                                     <ChevronRight className="w-5 h-5" />
                                                 </button>
                                             </div>
                                         ))}
                                         {releases.filter(r => r.status === 'pending').length === 0 && (
-                                            <div className="text-center py-12 text-zinc-600">
+                                            <div className="text-center py-12 text-white">
                                                 <CheckCircle className="w-12 h-12 mx-auto mb-4 opacity-10" />
                                                 <p className="text-sm font-bold uppercase tracking-widest">All Clear</p>
                                                 <p className="text-xs mt-1">No pending releases to review.</p>
@@ -402,7 +402,7 @@ export default function AdminDashboard() {
                                         )}
                                     </div>
                                     {releases.filter(r => r.status === 'pending').length > 5 && (
-                                        <button onClick={() => setActiveTab('releases')} className="w-full mt-6 py-4 text-xs font-black uppercase tracking-widest text-zinc-500 hover:text-red-600 transition-colors flex items-center justify-center gap-2">
+                                        <button onClick={() => setActiveTab('releases')} className="w-full mt-6 py-4 text-xs font-black uppercase tracking-widest text-white hover:text-red-600 transition-colors flex items-center justify-center gap-2">
                                             Manage All Releases <ChevronRight className="w-4 h-4" />
                                         </button>
                                     )}
@@ -425,7 +425,7 @@ export default function AdminDashboard() {
                                 </h2>
                                 <div className="flex items-center gap-3">
                                     <div className="hidden md:flex items-center gap-2 bg-black/40 px-4 py-2 rounded-xl border border-white/5">
-                                        <Search className="w-4 h-4 text-zinc-600" />
+                                        <Search className="w-4 h-4 text-white" />
                                         <input type="text" placeholder="Search artists..." className="bg-transparent border-none text-xs focus:ring-0 w-48 font-bold" />
                                     </div>
                                     <button 
@@ -438,7 +438,7 @@ export default function AdminDashboard() {
                             </div>
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left">
-                                    <thead className="bg-white/5 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
+                                    <thead className="bg-white/5 text-[10px] font-black uppercase tracking-[0.2em] text-white">
                                         <tr>
                                             <th className="px-8 py-5">Artist</th>
                                             <th className="px-8 py-5">Subscription</th>
@@ -451,12 +451,12 @@ export default function AdminDashboard() {
                                             <tr key={u._id} className="hover:bg-white/[0.02] transition-colors group">
                                                 <td className="px-8 py-5">
                                                     <div className="flex items-center gap-4">
-                                                        <div className="w-10 h-10 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center font-bold text-zinc-400 group-hover:border-blue-500/50 transition-colors">
+                                                        <div className="w-10 h-10 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center font-bold text-white group-hover:border-blue-500/50 transition-colors">
                                                             {u.name[0]}
                                                         </div>
                                                         <div>
                                                             <p className="font-bold text-sm">{u.name}</p>
-                                                            <p className="text-xs text-zinc-500">{u.email}</p>
+                                                            <p className="text-xs text-white">{u.email}</p>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -464,18 +464,18 @@ export default function AdminDashboard() {
                                                     <span className={`text-[10px] font-black uppercase px-3 py-1.5 rounded-full border ${
                                                         u.subscription === 'plus' ? 'bg-red-600/10 border-red-600/20 text-red-600' :
                                                         u.subscription === 'premium' ? 'bg-blue-500/10 border-blue-500/20 text-blue-500' :
-                                                        'bg-zinc-900 border-white/5 text-zinc-500'
+                                                        'bg-zinc-900 border-white/5 text-white'
                                                     }`}>
                                                         {u.subscription.replace('_', ' ')}
                                                     </span>
                                                 </td>
-                                                <td className="px-8 py-5 text-right text-xs font-bold text-zinc-600">
+                                                <td className="px-8 py-5 text-right text-xs font-bold text-white">
                                                     {new Date(u.created_at).toLocaleDateString()}
                                                 </td>
                                                 <td className="px-8 py-5 text-right">
                                                     <button 
                                                         onClick={() => handleDeleteUser(u._id, u.name)}
-                                                        className="p-2 hover:bg-rose-500/10 text-zinc-600 hover:text-rose-500 rounded-xl transition-all"
+                                                        className="p-2 hover:bg-rose-500/10 text-white hover:text-rose-500 rounded-xl transition-all"
                                                         title="Delete User"
                                                     >
                                                         <X className="w-4 h-4" />
@@ -514,17 +514,17 @@ export default function AdminDashboard() {
                                                         {r.cover_url ? (
                                                             <img src={r.cover_url} alt={r.title} className="w-full h-full object-cover" />
                                                         ) : (
-                                                            <div className="w-full h-full flex items-center justify-center text-zinc-600">
+                                                            <div className="w-full h-full flex items-center justify-center text-white">
                                                                 <Music className="w-8 h-8" />
                                                             </div>
                                                         )}
                                                     </div>
                                                     <div>
                                                         <h3 className="font-bold text-xl tracking-tighter text-white group-hover:text-red-400 transition-colors uppercase leading-tight">{r.title}</h3>
-                                                        <p className="text-xs font-black text-zinc-400 uppercase tracking-widest mt-1">by {r.artist}</p>
+                                                        <p className="text-xs font-black text-white uppercase tracking-widest mt-1">by {r.artist}</p>
                                                         <div className="flex items-center gap-2 mt-3">
                                                             <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-red-600/10 rounded-md border border-red-600/20 text-red-500">{r.type}</span>
-                                                            <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-white/5 rounded-md border border-white/10 text-zinc-400">{r.genre}</span>
+                                                            <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-white/5 rounded-md border border-white/10 text-white">{r.genre}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -552,15 +552,15 @@ export default function AdminDashboard() {
 
                                             <div className="grid grid-cols-3 gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/5 mb-6">
                                                 <div>
-                                                    <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-1">Streams</p>
+                                                    <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">Streams</p>
                                                     <p className="font-display text-xl text-white">{r.streams.toLocaleString()}</p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-1">Revenue</p>
+                                                    <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">Revenue</p>
                                                     <p className="font-display text-xl text-red-500">₦{r.revenue.toLocaleString()}</p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-1">Price</p>
+                                                    <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">Price</p>
                                                     <input
                                                         type="number"
                                                         className="w-full bg-transparent border-none p-0 font-display text-xl text-blue-500 focus:ring-0"
@@ -629,12 +629,12 @@ export default function AdminDashboard() {
                                                     </div>
                                                     <div>
                                                         <p className="font-bold text-sm text-white">{p.user?.name}</p>
-                                                        <p className="text-xs text-zinc-500">{p.user?.email}</p>
+                                                        <p className="text-xs text-white">{p.user?.email}</p>
                                                     </div>
                                                 </div>
 
                                                 <div className="flex flex-col gap-1">
-                                                    <p className="text-[9px] font-black uppercase tracking-widest text-zinc-600">Amount to pay</p>
+                                                    <p className="text-[9px] font-black uppercase tracking-widest text-white">Amount to pay</p>
                                                     <p className="text-3xl font-display text-red-500 tracking-tight">₦{p.amount.toLocaleString()}</p>
                                                 </div>
 
@@ -644,12 +644,12 @@ export default function AdminDashboard() {
                                                         <div className="h-px flex-1 bg-white/5" />
                                                     </div>
                                                     <p className="text-sm font-mono tracking-wider text-white">{p.accountNumber}</p>
-                                                    <p className="text-[10px] font-bold text-zinc-500 uppercase italic tracking-tighter">Holder: {p.accountName}</p>
+                                                    <p className="text-[10px] font-bold text-white uppercase italic tracking-tighter">Holder: {p.accountName}</p>
                                                 </div>
                                             </div>
 
                                             <div className="flex items-center gap-4">
-                                                <p className="text-[10px] font-black uppercase text-zinc-600 hidden lg:block">{new Date(p.created_at).toLocaleDateString()}</p>
+                                                <p className="text-[10px] font-black uppercase text-white hidden lg:block">{new Date(p.created_at).toLocaleDateString()}</p>
                                                 <select
                                                     value={p.status}
                                                     onChange={(e) => handlePayoutStatus(p._id, e.target.value)}
@@ -668,7 +668,7 @@ export default function AdminDashboard() {
                                         </div>
                                     ))}
                                     {payouts.length === 0 && (
-                                        <div className="text-center py-24 text-zinc-700">
+                                        <div className="text-center py-24 text-white">
                                             <TrendingUp className="w-16 h-16 mx-auto mb-6 opacity-5" />
                                             <h3 className="text-sm font-black uppercase tracking-[0.3em]">No Pending Payouts</h3>
                                         </div>
@@ -697,23 +697,23 @@ export default function AdminDashboard() {
                                             <div className="flex flex-col gap-1">
                                                 <div className="flex items-center gap-2">
                                                     {t.unreadAdmin && <div className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />}
-                                                    <h3 className={`text-sm font-black uppercase tracking-widest ${t.unreadAdmin ? 'text-white' : 'text-zinc-400'}`}>{t.subject}</h3>
+                                                    <h3 className={`text-sm font-black uppercase tracking-widest ${t.unreadAdmin ? 'text-white' : 'text-white'}`}>{t.subject}</h3>
                                                 </div>
-                                                <p className="text-xs text-zinc-500">From: {t.user?.name} ({t.user?.email})</p>
-                                                <p className="text-[10px] text-zinc-600 uppercase font-black uppercase mt-1">Updated: {new Date(t.updatedAt).toLocaleDateString()}</p>
+                                                <p className="text-xs text-white">From: {t.user?.name} ({t.user?.email})</p>
+                                                <p className="text-[10px] text-white uppercase font-black uppercase mt-1">Updated: {new Date(t.updatedAt).toLocaleDateString()}</p>
                                             </div>
                                             <div className="flex items-center gap-4">
                                                 <span className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border ${
-                                                    t.status === 'Resolved' ? 'bg-zinc-900 border-zinc-800 text-zinc-500' : 'bg-red-600/10 border-red-600/20 text-red-500'
+                                                    t.status === 'Resolved' ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-red-600/10 border-red-600/20 text-red-500'
                                                 }`}>
                                                     {t.status}
                                                 </span>
-                                                <ChevronRight className="text-zinc-600 group-hover:text-red-500 transition-colors" />
+                                                <ChevronRight className="text-white group-hover:text-red-500 transition-colors" />
                                             </div>
                                         </div>
                                     ))}
                                     {tickets.length === 0 && (
-                                        <div className="text-center py-24 text-zinc-700">
+                                        <div className="text-center py-24 text-white">
                                             <CheckCircle className="w-16 h-16 mx-auto mb-6 opacity-5" />
                                             <h3 className="text-sm font-black uppercase tracking-[0.3em]">No Open Tickets</h3>
                                         </div>
@@ -741,11 +741,11 @@ export default function AdminDashboard() {
                             className="glass rounded-[2rem] p-8 w-full max-w-md border border-white/10"
                         >
                             <h3 className="text-2xl font-display uppercase italic mb-1">Update Stats</h3>
-                            <p className="text-xs font-bold text-zinc-500 mb-8 uppercase tracking-widest">{editingRelease.title} — {editingRelease.artist}</p>
+                            <p className="text-xs font-bold text-white mb-8 uppercase tracking-widest">{editingRelease.title} — {editingRelease.artist}</p>
 
                             <form onSubmit={handleUpdateStats} className="space-y-5">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest ml-1">Period</label>
+                                    <label className="text-[10px] font-black text-white uppercase tracking-widest ml-1">Period</label>
                                     <input
                                         type="text" required placeholder="e.g. March 2024"
                                         className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-3.5 text-sm focus:border-red-600 focus:ring-0 transition-colors"
@@ -753,7 +753,7 @@ export default function AdminDashboard() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest ml-1">Platform</label>
+                                    <label className="text-[10px] font-black text-white uppercase tracking-widest ml-1">Platform</label>
                                     <select
                                         className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-3.5 text-sm focus:border-red-600 focus:ring-0 transition-colors"
                                         value={statsForm.platform} onChange={e => setStatsForm({ ...statsForm, platform: e.target.value })}
@@ -763,7 +763,7 @@ export default function AdminDashboard() {
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest ml-1">New Streams</label>
+                                        <label className="text-[10px] font-black text-white uppercase tracking-widest ml-1">New Streams</label>
                                         <input
                                             type="number" required min="0"
                                             className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-3.5 text-sm focus:border-red-600 focus:ring-0 transition-colors"
@@ -771,7 +771,7 @@ export default function AdminDashboard() {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest ml-1">Revenue (₦)</label>
+                                        <label className="text-[10px] font-black text-white uppercase tracking-widest ml-1">Revenue (₦)</label>
                                         <input
                                             type="number" required min="0" step="0.01"
                                             className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-3.5 text-sm focus:border-red-600 focus:ring-0 transition-colors"
@@ -780,7 +780,7 @@ export default function AdminDashboard() {
                                     </div>
                                 </div>
                                 <div className="flex gap-3 mt-8">
-                                    <button type="button" onClick={() => setEditingRelease(null)} className="flex-1 py-4 text-xs font-black uppercase text-zinc-500 hover:text-white transition-colors">Cancel</button>
+                                    <button type="button" onClick={() => setEditingRelease(null)} className="flex-1 py-4 text-xs font-black uppercase text-white hover:text-white transition-colors">Cancel</button>
                                     <button type="submit" className="flex-1 py-4 bg-red-600 text-black rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-red-600/40 active:scale-95 transition-all">Submit Entry</button>
                                 </div>
                             </form>
@@ -803,7 +803,7 @@ export default function AdminDashboard() {
                         >
                             <button
                                 onClick={() => setViewingRelease(null)}
-                                className="absolute top-6 right-6 p-3 text-zinc-500 hover:bg-white/5 rounded-2xl transition-all"
+                                className="absolute top-6 right-6 p-3 text-white hover:bg-white/5 rounded-2xl transition-all"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -811,7 +811,7 @@ export default function AdminDashboard() {
                             <div className="mb-8">
                                 <p className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] mb-1">Performance Graph</p>
                                 <h3 className="text-3xl font-display uppercase italic text-white leading-none">{viewingRelease.title}</h3>
-                                <p className="text-xs font-bold text-zinc-500 mt-2 uppercase tracking-widest">by {viewingRelease.artist}</p>
+                                <p className="text-xs font-bold text-white mt-2 uppercase tracking-widest">by {viewingRelease.artist}</p>
                             </div>
 
                             <div className="h-80 md:h-[24rem] w-full">
@@ -821,8 +821,8 @@ export default function AdminDashboard() {
                                     </div>
                                 ) : history.length === 0 ? (
                                     <div className="flex flex-col items-center justify-center h-full text-center bg-white/[0.02] rounded-3xl border border-white/5">
-                                        <TrendingUp className="w-16 h-16 text-zinc-800 mb-4" />
-                                        <p className="text-zinc-500 text-sm font-bold uppercase tracking-widest">No history data found</p>
+                                        <TrendingUp className="w-16 h-16 text-white mb-4" />
+                                        <p className="text-white text-sm font-bold uppercase tracking-widest">No history data found</p>
                                     </div>
                                 ) : (
                                     <ResponsiveContainer width="100%" height="100%">
@@ -894,7 +894,7 @@ export default function AdminDashboard() {
                                         {selectedRelease.cover_url ? (
                                             <img src={selectedRelease.cover_url} alt={selectedRelease.title} className="w-full h-full object-cover" />
                                         ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-zinc-700">
+                                            <div className="w-full h-full flex items-center justify-center text-white">
                                                 <Music className="w-12 h-12" />
                                             </div>
                                         )}
@@ -904,17 +904,17 @@ export default function AdminDashboard() {
                                             <span className="text-[10px] font-black uppercase tracking-[0.3em] px-3 py-1 bg-red-600 text-black rounded-full">
                                                 {selectedRelease.status}
                                             </span>
-                                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500">
+                                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white">
                                                 {selectedRelease.type} • {selectedRelease.genre}
                                             </span>
                                         </div>
                                         <h2 className="text-4xl font-display uppercase italic tracking-tight text-white mb-1 leading-none">{selectedRelease.title}</h2>
-                                        <p className="text-sm font-black text-zinc-500 uppercase tracking-widest">by {selectedRelease.artist}</p>
+                                        <p className="text-sm font-black text-white uppercase tracking-widest">by {selectedRelease.artist}</p>
                                     </div>
                                 </div>
                                 <button 
                                     onClick={() => setSelectedRelease(null)}
-                                    className="p-4 bg-white/5 hover:bg-white/10 rounded-2xl text-zinc-500 transition-all border border-white/5"
+                                    className="p-4 bg-white/5 hover:bg-white/10 rounded-2xl text-white transition-all border border-white/5"
                                 >
                                     <X className="w-6 h-6" />
                                 </button>
@@ -931,15 +931,15 @@ export default function AdminDashboard() {
                                         <h4 className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] border-b border-red-600/20 pb-3">Identification</h4>
                                         <div className="space-y-4">
                                             <div>
-                                                <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-1.5">ISRC CODE</p>
+                                                <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1.5">ISRC CODE</p>
                                                 <p className="text-sm font-mono tracking-widest text-white">{selectedRelease.isrc || 'NOT ASSIGNED'}</p>
                                             </div>
                                             <div>
-                                                <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-1.5">UPC / BARCODE</p>
+                                                <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1.5">UPC / BARCODE</p>
                                                 <p className="text-sm font-mono tracking-widest text-white">{selectedRelease.upc || 'NOT ASSIGNED'}</p>
                                             </div>
                                             <div>
-                                                <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-1.5">LABEL</p>
+                                                <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1.5">LABEL</p>
                                                 <p className="text-sm font-bold text-white uppercase">{selectedRelease.label || 'INDIE / NONE'}</p>
                                             </div>
                                         </div>
@@ -950,19 +950,19 @@ export default function AdminDashboard() {
                                         <h4 className="text-[10px] font-black text-blue-500 uppercase tracking-[0.4em] border-b border-blue-500/20 pb-3">Technical Specs</h4>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
-                                                <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-1">LANGUAGE</p>
+                                                <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">LANGUAGE</p>
                                                 <p className="text-xs font-bold text-white uppercase">{selectedRelease.language || 'English'}</p>
                                             </div>
                                             <div>
-                                                <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-1">EXPLICIT</p>
-                                                <p className={`text-xs font-bold uppercase ${selectedRelease.explicit === 'Yes' ? 'text-red-500' : 'text-zinc-400'}`}>{selectedRelease.explicit || 'No'}</p>
+                                                <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">EXPLICIT</p>
+                                                <p className={`text-xs font-bold uppercase ${selectedRelease.explicit === 'Yes' ? 'text-red-500' : 'text-white'}`}>{selectedRelease.explicit || 'No'}</p>
                                             </div>
                                             <div>
-                                                <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-1">AI ASSISTED</p>
+                                                <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">AI ASSISTED</p>
                                                 <p className="text-xs font-bold text-white uppercase">{selectedRelease.ai_assisted || 'No'}</p>
                                             </div>
                                             <div>
-                                                <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-1">INSTRUMENTAL</p>
+                                                <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">INSTRUMENTAL</p>
                                                 <p className="text-xs font-bold text-white uppercase">{selectedRelease.is_instrumental ? 'Yes' : 'No'}</p>
                                             </div>
                                         </div>
@@ -973,16 +973,16 @@ export default function AdminDashboard() {
                                         <h4 className="text-[10px] font-black text-purple-500 uppercase tracking-[0.4em] border-b border-purple-500/20 pb-3">Rights & Timeline</h4>
                                         <div className="space-y-4">
                                             <div>
-                                                <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-1">RELEASE DATE</p>
+                                                <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">RELEASE DATE</p>
                                                 <p className="text-xs font-bold text-white">{selectedRelease.release_date ? new Date(selectedRelease.release_date).toLocaleDateString() : 'TBD'}</p>
                                             </div>
                                             <div>
-                                                <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-1">COPYRIGHT RECORDING</p>
-                                                <p className="text-xs font-bold text-zinc-400 uppercase italic">© {selectedRelease.copyright_date_recording || 'N/A'}</p>
+                                                <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">COPYRIGHT RECORDING</p>
+                                                <p className="text-xs font-bold text-white uppercase italic">© {selectedRelease.copyright_date_recording || 'N/A'}</p>
                                             </div>
                                             <div>
-                                                <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-1">COPYRIGHT COMPOSITION</p>
-                                                <p className="text-xs font-bold text-zinc-400 uppercase italic">℗ {selectedRelease.copyright_date_release || 'N/A'}</p>
+                                                <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">COPYRIGHT COMPOSITION</p>
+                                                <p className="text-xs font-bold text-white uppercase italic">℗ {selectedRelease.copyright_date_release || 'N/A'}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -991,7 +991,7 @@ export default function AdminDashboard() {
                                 {/* Personnel Sections */}
                                 <div className="grid md:grid-cols-2 gap-12">
                                     <div className="space-y-6">
-                                        <h4 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em] border-b border-white/5 pb-3">Production Team</h4>
+                                        <h4 className="text-[10px] font-black text-white uppercase tracking-[0.4em] border-b border-white/5 pb-3">Production Team</h4>
                                         <div className="space-y-3">
                                             {selectedRelease.contributors && selectedRelease.contributors.length > 0 ? (
                                                 selectedRelease.contributors.map((c: any, idx: number) => (
@@ -1001,40 +1001,40 @@ export default function AdminDashboard() {
                                                     </div>
                                                 ))
                                             ) : (
-                                                <p className="text-xs text-zinc-600 italic">No contributors listed</p>
+                                                <p className="text-xs text-white italic">No contributors listed</p>
                                             )}
                                         </div>
                                     </div>
 
                                     <div className="space-y-6">
-                                        <h4 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em] border-b border-white/5 pb-3">Composition & Performance</h4>
+                                        <h4 className="text-[10px] font-black text-white uppercase tracking-[0.4em] border-b border-white/5 pb-3">Composition & Performance</h4>
                                         <div className="grid grid-cols-1 gap-4">
                                             <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
-                                                <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-2">SONGWRITERS</p>
+                                                <p className="text-[9px] font-black text-white uppercase tracking-widest mb-2">SONGWRITERS</p>
                                                 <div className="flex flex-wrap gap-2">
                                                     {selectedRelease.songwriters && selectedRelease.songwriters.length > 0 ? (
                                                         selectedRelease.songwriters.map((s: string, idx: number) => (
                                                             <span key={idx} className="text-xs font-bold text-white flex items-center gap-1.5 bg-black/40 px-3 py-1.5 rounded-xl">
-                                                                <Users className="w-3 h-3 text-zinc-500" /> {s}
+                                                                <Users className="w-3 h-3 text-white" /> {s}
                                                             </span>
                                                         ))
                                                     ) : (
-                                                        <span className="text-xs text-zinc-600 italic">None listed</span>
+                                                        <span className="text-xs text-white italic">None listed</span>
                                                     )}
                                                 </div>
                                             </div>
                                             <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
-                                                <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-2">MUSICIANS</p>
+                                                <p className="text-[9px] font-black text-white uppercase tracking-widest mb-2">MUSICIANS</p>
                                                 <div className="space-y-2">
                                                     {selectedRelease.musicians && selectedRelease.musicians.length > 0 ? (
                                                         selectedRelease.musicians.map((m: any, idx: number) => (
                                                             <div key={idx} className="flex justify-between text-xs font-bold">
                                                                 <span className="text-white">{m.name}</span>
-                                                                <span className="text-zinc-500 italic uppercase tracking-tighter">{m.instrument}</span>
+                                                                <span className="text-white italic uppercase tracking-tighter">{m.instrument}</span>
                                                             </div>
                                                         ))
                                                     ) : (
-                                                        <p className="text-xs text-zinc-600 italic">No session musicians listed</p>
+                                                        <p className="text-xs text-white italic">No session musicians listed</p>
                                                     )}
                                                 </div>
                                             </div>
@@ -1044,21 +1044,21 @@ export default function AdminDashboard() {
 
                                 {/* Media Section */}
                                 <div className="space-y-6">
-                                    <h4 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em] border-b border-white/5 pb-3">Master Recording & Content</h4>
+                                    <h4 className="text-[10px] font-black text-white uppercase tracking-[0.4em] border-b border-white/5 pb-3">Master Recording & Content</h4>
                                     <div className="grid md:grid-cols-2 gap-8">
                                         <div className="space-y-4">
-                                            <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">AUDIO PLAYBACK</p>
+                                            <p className="text-[9px] font-black text-white uppercase tracking-widest">AUDIO PLAYBACK</p>
                                             {selectedRelease.song_file ? (
                                                 <div className="p-6 rounded-3xl bg-zinc-950 border border-white/5 shadow-inner">
                                                     <audio controls src={selectedRelease.song_file} className="w-full h-12 invert" />
                                                 </div>
                                             ) : (
-                                                <div className="p-6 text-center text-zinc-700 bg-white/5 rounded-3xl border border-dashed border-white/10">No audio file available</div>
+                                                <div className="p-6 text-center text-white bg-white/5 rounded-3xl border border-dashed border-white/10">No audio file available</div>
                                             )}
                                         </div>
                                         <div className="space-y-4">
-                                            <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">LYRICS</p>
-                                            <div className="p-6 rounded-3xl bg-white/5 border border-white/5 min-h-[160px] max-h-[300px] overflow-y-auto no-scrollbar whitespace-pre-wrap text-sm font-medium text-zinc-400 leading-relaxed italic">
+                                            <p className="text-[9px] font-black text-white uppercase tracking-widest">LYRICS</p>
+                                            <div className="p-6 rounded-3xl bg-white/5 border border-white/5 min-h-[160px] max-h-[300px] overflow-y-auto no-scrollbar whitespace-pre-wrap text-sm font-medium text-white leading-relaxed italic">
                                                 {selectedRelease.lyrics || "Lyrics not provided for this release."}
                                             </div>
                                         </div>
@@ -1070,13 +1070,13 @@ export default function AdminDashboard() {
                             <div className="p-8 border-t border-white/5 bg-black/40 flex justify-between items-center">
                                 <div className="flex gap-4">
                                     <div className="flex flex-col">
-                                        <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-0.5">Contact Email</p>
+                                        <p className="text-[9px] font-black text-white uppercase tracking-widest mb-0.5">Contact Email</p>
                                         <p className="text-xs font-bold text-white">{selectedRelease.contact_email}</p>
                                     </div>
                                     <div className="w-px h-8 bg-white/5 self-center mx-2" />
                                     <div className="flex flex-col">
-                                        <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-0.5">Artist Email</p>
-                                        <p className="text-xs font-bold text-zinc-400">{selectedRelease.user?.email}</p>
+                                        <p className="text-[9px] font-black text-white uppercase tracking-widest mb-0.5">Artist Email</p>
+                                        <p className="text-xs font-bold text-white">{selectedRelease.user?.email}</p>
                                     </div>
                                 </div>
                                 <button 
@@ -1118,7 +1118,7 @@ export default function AdminDashboard() {
                                     <option value="Open">Open</option>
                                     <option value="Resolved">Resolved</option>
                                 </select>
-                                <button onClick={() => setActiveTicket(null)} className="text-zinc-600 hover:text-white transition-colors bg-zinc-900 hover:bg-zinc-800 p-2 rounded-xl">
+                                <button onClick={() => setActiveTicket(null)} className="text-white hover:text-white transition-colors bg-zinc-900 hover:bg-zinc-800 p-2 rounded-xl">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
@@ -1135,7 +1135,7 @@ export default function AdminDashboard() {
                                             }`}>
                                                 {isAdmin ? <LayoutDashboard className="w-4 h-4" /> : <UserCheck className="w-4 h-4" />}
                                             </div>
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-white">
                                                 {isAdmin ? 'Admin (You)' : activeTicket.user?.name}
                                             </span>
                                         </div>

@@ -16,7 +16,7 @@ export default function Landing() {
   }, [isMenuOpen]);
 
   const testimonials = [
-    { name: "SARAH JOHNSON", role: "Vocalist", content: "Complete operational control. Absolutely no compromise on fidelity. Ayinz handles everything." },
+    { name: "SARAH JOHNSON", role: "Vocalist", content: "Complete operational control. Absolutely no compromise on fidelity. Sonic Distro handles everything." },
     { name: "MARCUS CHEN", role: "Producer", content: "The analytics architecture is unforgivingly precise. Exactly what our label required." },
     { name: "ELENA DAVIS", role: "Composer", content: "A distribution matrix that respects the art form. Transparent, instantaneous royalty reports." }
   ];
@@ -27,7 +27,7 @@ export default function Landing() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#020202] text-zinc-300 font-sans selection:bg-red-600 selection:text-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#020202] text-white font-sans selection:bg-red-600 selection:text-white overflow-x-hidden">
       
       {/* Editorial Navigation */}
       <motion.header 
@@ -39,17 +39,17 @@ export default function Landing() {
         <div className="container mx-auto px-6 lg:px-12 flex justify-between items-center">
           <Link to="/" className="flex items-center gap-3 group">
             <div className="w-8 h-8 rounded overflow-hidden">
-              <img src="/ayinz.jpeg" alt="Ayinz" className="w-full h-full object-cover filter grayscale contrast-125 group-hover:scale-110 group-hover:grayscale-0 transition-all duration-700" />
+              <img src="/ayinz.jpeg" alt="Sonic Distro" className="w-full h-full object-cover filter grayscale contrast-125 group-hover:scale-110 group-hover:grayscale-0 transition-all duration-700" />
             </div>
             <div className="flex items-baseline">
-              <span className="text-xl font-bold tracking-widest uppercase text-white">Ayinz</span>
+              <span className="text-xl font-bold tracking-widest uppercase text-white">Sonic Distro</span>
               <span className="w-1.5 h-1.5 bg-red-600 rounded-full ml-1 animate-[pulse_2s_ease-in-out_infinite] shadow-[0_0_10px_rgba(220,38,38,0.8)]" />
             </div>
           </Link>
 
           <nav className="hidden md:flex items-center gap-10">
             {['Platforms', 'Architecture', 'Pricing', 'Clients'].map((item) => (
-               <a key={item} href={`#${item.toLowerCase()}`} className="text-[10px] uppercase tracking-[0.2em] font-medium text-zinc-400 hover:text-white transition-colors duration-300 relative group">
+               <a key={item} href={`#${item.toLowerCase()}`} className="text-[10px] uppercase tracking-[0.2em] font-medium text-white hover:text-white transition-colors duration-300 relative group">
                 {item}
                 <span className="absolute -bottom-2 left-0 w-0 h-px bg-red-600 group-hover:w-full transition-all duration-500 ease-out" />
               </a>
@@ -57,7 +57,7 @@ export default function Landing() {
           </nav>
 
           <div className="hidden md:flex items-center gap-6">
-            <Link to="/login" className="text-[10px] uppercase tracking-[0.2em] font-medium text-zinc-400 hover:text-white transition-colors">Login </Link>
+            <Link to="/login" className="text-[10px] uppercase tracking-[0.2em] font-medium text-white hover:text-white transition-colors">Login </Link>
             <Link to="/register" className="group rounded-full flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold text-white bg-white/5 border border-white/10 px-6 py-2.5 backdrop-blur-md hover:bg-red-600 hover:border-red-600 transition-all duration-500">
               Sign up <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </Link>
@@ -80,7 +80,7 @@ export default function Landing() {
             className="fixed inset-0 z-[60] bg-[#020202]/95 flex flex-col p-6 lg:p-12"
           >
             <div className="flex justify-between items-center mt-2">
-              <div className="flex items-baseline"><span className="text-xl font-bold tracking-widest uppercase text-white">Ayinz</span><span className="w-1.5 h-1.5 bg-red-600 rounded-full ml-1 animate-[pulse_2s_ease-in-out_infinite] shadow-[0_0_10px_rgba(220,38,38,0.8)]" /></div>
+              <div className="flex items-baseline"><span className="text-xl font-bold tracking-widest uppercase text-white">Sonic Distro</span><span className="w-1.5 h-1.5 bg-red-600 rounded-full ml-1 animate-[pulse_2s_ease-in-out_infinite] shadow-[0_0_10px_rgba(220,38,38,0.8)]" /></div>
               <button onClick={() => setIsMenuOpen(false)} className="text-white hover:text-red-500 transition-colors"><X className="w-8 h-8" /></button>
             </div>
 
@@ -101,7 +101,7 @@ export default function Landing() {
             </nav>
 
             <div className="mt-auto pt-8 border-t border-white/10 flex flex-col gap-6">
-              <Link to="/login" className="text-xs uppercase tracking-[0.2em] font-medium text-zinc-400" onClick={() => setIsMenuOpen(false)}>Client Portal</Link>
+              <Link to="/login" className="text-xs uppercase tracking-[0.2em] font-medium text-white" onClick={() => setIsMenuOpen(false)}>Client Portal</Link>
               <Link to="/register" className="text-xs uppercase tracking-[0.2em] font-medium text-red-500" onClick={() => setIsMenuOpen(false)}>Apply For Access</Link>
             </div>
           </motion.div>
@@ -139,7 +139,7 @@ export default function Landing() {
             className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-8"
           >
             <span className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse" />
-            <span className="text-[9px] uppercase tracking-[0.3em] font-medium text-zinc-300">Independent Audio Network</span>
+            <span className="text-[9px] uppercase tracking-[0.3em] font-medium text-white">Independent Audio Network</span>
           </motion.div>
 
           {/* Refined Typography */}
@@ -158,16 +158,16 @@ export default function Landing() {
                 className="absolute inset-0 bg-red-600/20 blur-xl rounded-full -z-10"
               />
             </span> 
-            Elite.
+            Visionaries.
           </motion.h1>
 
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="text-sm md:text-base text-zinc-400 max-w-2xl font-light leading-relaxed mb-12"
+            className="text-sm md:text-base text-white max-w-2xl font-light leading-relaxed mb-12"
           >
-            Delivering high-fidelity catalogs to over 150 digital endpoints worldwide. <span className="text-zinc-300">Uncompromising royalty retention</span> with precision <span className="text-red-500">analytics.</span>
+            Delivering high-fidelity catalogs to over 150 digital endpoints worldwide. <span className="text-white">Uncompromising royalty retention</span> with precision <span className="text-red-500">analytics.</span>
           </motion.p>
 
           <motion.div 
@@ -179,7 +179,7 @@ export default function Landing() {
             <Link to="/register" className="group rounded-full flex items-center gap-4 bg-red-600 text-white px-8 py-4 text-xs uppercase tracking-[0.2em] font-bold transition-all hover:bg-red-700 shadow-lg shadow-red-900/20 hover:shadow-[0_0_30px_rgba(220,38,38,0.3)]">
               Launch Release <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <Link to="/login" className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] font-medium text-zinc-400 hover:text-white transition-colors">
+            <Link to="/login" className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] font-medium text-white hover:text-white transition-colors">
               <Play className="w-4 h-4" /> Watch Demo
             </Link>
           </motion.div>
@@ -214,7 +214,7 @@ export default function Landing() {
               The Network <span className="text-red-600 font-serif italic pr-1 drop-shadow-[0_0_10px_rgba(220,38,38,0.5)]">Matrix</span>
               <span className="hidden md:block w-12 h-px bg-gradient-to-l from-transparent to-red-600/80" />
             </h2>
-            <p className="text-xs uppercase tracking-[0.2em] font-medium text-zinc-500">Deploy your sound globally in 48 hours.</p>
+            <p className="text-xs uppercase tracking-[0.2em] font-medium text-white">Deploy your sound globally in 48 hours.</p>
           </motion.div>
 
           {/* Staggered elegant grid */}
@@ -228,7 +228,7 @@ export default function Landing() {
                 whileHover={{ scale: 1.05, y: -5 }}
                 className="px-6 py-3 rounded-full border border-white/10 bg-white/[0.02] hover:bg-red-600/10 hover:border-red-600/60 hover:shadow-[0_0_20px_rgba(220,38,38,0.15)] hover:text-white transition-all duration-500 cursor-pointer group"
               >
-                <span className="text-xs uppercase tracking-[0.1em] font-medium text-zinc-400 group-hover:text-red-100 transition-colors">{platform}</span>
+                <span className="text-xs uppercase tracking-[0.1em] font-medium text-white group-hover:text-red-100 transition-colors">{platform}</span>
               </motion.div>
             ))}
           </div>
@@ -263,7 +263,7 @@ export default function Landing() {
           >
             <div className="flex items-center gap-4 mb-6"><div className="w-8 h-[1px] bg-red-600" /><span className="text-[10px] uppercase tracking-[0.2em] font-medium text-red-500">Architecture</span></div>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight text-white mb-6">Designed For Precision.</h2>
-            <p className="text-sm text-zinc-400 font-light leading-relaxed">Our infrastructure replaces archaic label systems with modern, transparent code. You maintain absolute equity.</p>
+            <p className="text-sm text-white font-light leading-relaxed">Our infrastructure replaces archaic label systems with modern, transparent code. You maintain absolute equity.</p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -284,10 +284,10 @@ export default function Landing() {
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/5 rounded-full blur-2xl -mr-16 -mt-16 group-hover:bg-red-600/20 transition-all duration-500" />
                 <div className="mb-6 p-3 rounded-full bg-white/5 inline-block group-hover:bg-red-600/10 transition-colors">
-                   <feat.icon className="w-5 h-5 text-zinc-300 group-hover:text-red-500 transition-colors" />
+                   <feat.icon className="w-5 h-5 text-white group-hover:text-red-500 transition-colors" />
                 </div>
                 <h3 className="text-lg font-bold tracking-wide text-white mb-3">{feat.title}</h3>
-                <p className="text-xs text-zinc-500 font-light leading-relaxed">{feat.desc}</p>
+                <p className="text-xs text-white font-light leading-relaxed">{feat.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -305,7 +305,7 @@ export default function Landing() {
              className="text-center mb-24"
           >
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-4">Membership Tiers.</h2>
-            <p className="text-sm text-zinc-500 tracking-wide font-light">Scalable ecosystems for independent creators to establishing labels.</p>
+            <p className="text-sm text-white tracking-wide font-light">Scalable ecosystems for independent creators to establishing labels.</p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
@@ -330,14 +330,14 @@ export default function Landing() {
 
                 <div>
                   <h3 className={`text-xl font-bold tracking-tight ${plan.featured ? 'text-white' : 'text-zinc-200'}`}>{plan.name}</h3>
-                  <p className={`text-[9px] uppercase tracking-[0.2em] font-medium mt-1 ${plan.featured ? 'text-red-400' : 'text-zinc-500'}`}>{plan.subtitle}</p>
+                  <p className={`text-[9px] uppercase tracking-[0.2em] font-medium mt-1 ${plan.featured ? 'text-red-400' : 'text-white'}`}>{plan.subtitle}</p>
 
                   <div className="my-8 flex items-baseline">
-                    <span className={`text-4xl font-bold tracking-tighter ${plan.featured ? 'text-white' : 'text-zinc-300'}`}>{plan.price}</span>
-                    <span className={`text-[9px] uppercase tracking-widest ml-2 ${plan.featured ? 'text-zinc-400' : 'text-zinc-600'}`}>/ Annually</span>
+                    <span className={`text-4xl font-bold tracking-tighter ${plan.featured ? 'text-white' : 'text-white'}`}>{plan.price}</span>
+                    <span className={`text-[9px] uppercase tracking-widest ml-2 ${plan.featured ? 'text-white' : 'text-white'}`}>/ Annually</span>
                   </div>
 
-                  <div className={`text-xs font-light leading-relaxed ${plan.featured ? 'text-zinc-300' : 'text-zinc-500'}`}>
+                  <div className={`text-xs font-light leading-relaxed ${plan.featured ? 'text-white' : 'text-white'}`}>
                     <span className="font-bold">{plan.accounts}</span> allocated.<br/><br/>
                     Unlimited releases, analytics suite, 4-7 days release SLA, and transparent royalty payouts included.
                   </div>
@@ -380,13 +380,13 @@ export default function Landing() {
                 className="flex flex-col p-8 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-red-600/40 hover:shadow-[0_0_30px_rgba(220,38,38,0.1)] transition-all duration-500 relative overflow-hidden group"
               >
                 <div className="absolute top-0 right-0 w-24 h-24 bg-red-600/10 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-red-600/30 transition-all duration-500" />
-                <p className="text-lg lg:text-xl font-light text-zinc-300 leading-relaxed italic mb-8 flex-1 relative z-10">"{t.content}"</p>
+                <p className="text-lg lg:text-xl font-light text-white leading-relaxed italic mb-8 flex-1 relative z-10">"{t.content}"</p>
                 <div className="border-t border-white/10 pt-6 relative z-10">
                   <h4 className="text-xs font-bold uppercase tracking-widest text-white flex items-center gap-2">
                     <span className="w-1.5 h-1.5 bg-red-600 rounded-full" />
                     {t.name}
                   </h4>
-                  <p className="text-[9px] uppercase tracking-[0.2em] text-zinc-500 mt-1 ml-3.5">{t.role}</p>
+                  <p className="text-[9px] uppercase tracking-[0.2em] text-white mt-1 ml-3.5">{t.role}</p>
                 </div>
               </motion.div>
             ))}
@@ -405,7 +405,7 @@ export default function Landing() {
             className="flex flex-col items-center text-center max-w-4xl mx-auto mb-32"
           >
             <h2 className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-10 leading-[1.1]">
-              <span className="font-light italic font-serif text-red-600 drop-shadow-[0_0_20px_rgba(220,38,38,0.4)]">Elevate</span> your catalog. 
+              <span className="font-light italic font-serif text-red-600 drop-shadow-[0_0_20px_rgba(220,38,38,0.4)]">Sonic</span> Distro your catalog. 
             </h2>
              <Link to="/register" className="rounded-full bg-red-600 text-white px-12 py-5 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-red-700 hover:shadow-[0_0_30px_rgba(220,38,38,0.3)] transition-all">
               Begin Distribution
@@ -416,46 +416,46 @@ export default function Landing() {
             <div className="col-span-2 md:col-span-1">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-8 h-8 rounded bg-white overflow-hidden">
-                  <img src="/ayinz.jpeg" alt="Ayinz" className="w-full h-full object-cover filter grayscale contrast-125" />
+                  <img src="/ayinz.jpeg" alt="Sonic Distro" className="w-full h-full object-cover filter grayscale contrast-125" />
                 </div>
-                <span className="text-xl font-bold tracking-widest uppercase text-white">Ayinz</span>
+                <span className="text-xl font-bold tracking-widest uppercase text-white">Sonic Distro</span>
               </div>
-              <p className="text-[10px] font-medium tracking-[0.2em] uppercase text-zinc-500 leading-relaxed md:max-w-[200px]">A boutique approach to global music delivery.</p>
+              <p className="text-[10px] font-medium tracking-[0.2em] uppercase text-white leading-relaxed md:max-w-[200px]">A boutique approach to global music delivery.</p>
             </div>
             
             <div>
-              <p className="text-[9px] font-bold tracking-[0.3em] uppercase text-zinc-600 mb-6">Platform</p>
+              <p className="text-[9px] font-bold tracking-[0.3em] uppercase text-white mb-6">Platform</p>
               <ul className="space-y-4">
                 {['Network', 'Analytics', 'Defense', 'Support'].map(i => (
-                  <li key={i}><a href="#" className="text-[10px] font-medium uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">{i}</a></li>
+                  <li key={i}><a href="#" className="text-[10px] font-medium uppercase tracking-widest text-white hover:text-white transition-colors">{i}</a></li>
                 ))}
               </ul>
             </div>
 
             <div>
-               <p className="text-[9px] font-bold tracking-[0.3em] uppercase text-zinc-600 mb-6">Company</p>
+               <p className="text-[9px] font-bold tracking-[0.3em] uppercase text-white mb-6">Company</p>
               <ul className="space-y-4">
                 {['About', 'Brand', 'Careers', 'Contact'].map(i => (
-                  <li key={i}><a href="#" className="text-[10px] font-medium uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">{i}</a></li>
+                  <li key={i}><a href="#" className="text-[10px] font-medium uppercase tracking-widest text-white hover:text-white transition-colors">{i}</a></li>
                 ))}
               </ul>
             </div>
 
             <div>
-               <p className="text-[9px] font-bold tracking-[0.3em] uppercase text-zinc-600 mb-6">Socials</p>
+               <p className="text-[9px] font-bold tracking-[0.3em] uppercase text-white mb-6">Socials</p>
               <div className="flex gap-4">
-                <Instagram className="w-5 h-5 text-zinc-500 hover:text-red-500 hover:scale-110 transition-all cursor-pointer" />
-                <Twitter className="w-5 h-5 text-zinc-500 hover:text-red-500 hover:scale-110 transition-all cursor-pointer" />
-                <Facebook className="w-5 h-5 text-zinc-500 hover:text-red-500 hover:scale-110 transition-all cursor-pointer" />
+                <Instagram className="w-5 h-5 text-white hover:text-red-500 hover:scale-110 transition-all cursor-pointer" />
+                <Twitter className="w-5 h-5 text-white hover:text-red-500 hover:scale-110 transition-all cursor-pointer" />
+                <Facebook className="w-5 h-5 text-white hover:text-red-500 hover:scale-110 transition-all cursor-pointer" />
               </div>
             </div>
           </div>
 
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-white/5">
-            <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-600">© {new Date().getFullYear()} Ayinz Matrices.</p>
+            <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-white">© {new Date().getFullYear()} Sonic Distro Matrices.</p>
             <div className="flex gap-8">
-              <a href="#" className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-600 hover:text-white transition-colors">Privacy</a>
-              <a href="#" className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-600 hover:text-white transition-colors">Terms</a>
+              <a href="#" className="text-[9px] font-bold uppercase tracking-[0.2em] text-white hover:text-white transition-colors">Privacy</a>
+              <a href="#" className="text-[9px] font-bold uppercase tracking-[0.2em] text-white hover:text-white transition-colors">Terms</a>
             </div>
           </div>
         </div>

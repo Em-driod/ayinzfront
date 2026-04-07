@@ -4,8 +4,8 @@ import { Eye, EyeOff, ArrowRight, Music, Zap, Star, Globe, AlertCircle } from 'l
 import { motion } from 'framer-motion';
 import api from '../utils/api';
 
-const inputClass = 'w-full bg-black/60 border border-zinc-800 rounded-xl px-4 py-3.5 text-white placeholder-zinc-700 focus:border-zinc-600 focus:outline-none transition-colors font-medium text-sm';
-const labelClass = 'block text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-2';
+const inputClass = 'w-full bg-black/60 border border-zinc-800 rounded-xl px-4 py-3.5 text-white placeholder-white focus:border-white focus:outline-none transition-colors font-medium text-sm';
+const labelClass = 'block text-[10px] font-black text-white uppercase tracking-[0.2em] mb-2';
 
 const plans = [
   { id: 'basic', name: 'Artiste', price: '₦35,000/yr', icon: Music, amount: 35000 },
@@ -116,16 +116,16 @@ export default function Register() {
           {/* Logo */}
           <div className="flex items-center justify-center space-x-2.5 mb-10">
             <div className="w-8 h-8 rounded-xl overflow-hidden border border-zinc-800">
-              <img src="/ayinz.jpeg" alt="Ayinz" className="w-full h-full object-cover" />
+              <img src="/ayinz.jpeg" alt="Sonic Distro" className="w-full h-full object-cover" />
             </div>
-            <span className="text-xl font-black text-white tracking-tight">Ayinz</span>
+            <span className="text-xl font-black text-white tracking-tight">Sonic Distro</span>
           </div>
 
           {/* Card */}
           <div className="bg-zinc-950/80 backdrop-blur-xl border border-zinc-900 rounded-2xl p-7">
             <div className="mb-7">
               <h1 className="text-xl font-black text-white tracking-tight">Create Account</h1>
-              <p className="text-xs text-zinc-600 font-bold mt-0.5">Start distributing your music to every major store.</p>
+              <p className="text-xs text-white font-bold mt-0.5">Start distributing your music to every major store.</p>
             </div>
 
             {error && (
@@ -155,7 +155,7 @@ export default function Register() {
                     placeholder="Min. 8 characters" className={inputClass}
                     value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })} />
                   <button type="button" onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-600 hover:text-zinc-400 transition-colors">
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white hover:text-zinc-400 transition-colors">
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
@@ -173,12 +173,12 @@ export default function Register() {
                         className={`p-3 rounded-xl border transition-all text-center ${
                           isSelected
                             ? 'border-red-600 bg-red-600/10 text-white'
-                            : 'border-zinc-900 text-zinc-600 hover:border-zinc-700 hover:text-zinc-400'
+                            : 'border-zinc-900 text-white hover:border-zinc-700 hover:text-zinc-400'
                         }`}
                       >
-                        <plan.icon className={`w-4 h-4 mx-auto mb-1 ${isSelected ? 'text-red-500' : 'text-zinc-700'}`} />
+                        <plan.icon className={`w-4 h-4 mx-auto mb-1 ${isSelected ? 'text-red-500' : 'text-white'}`} />
                         <div className="text-[11px] font-black">{plan.name}</div>
-                        <div className="text-[9px] text-zinc-600 font-bold mt-0.5">{plan.price}</div>
+                        <div className="text-[9px] text-white font-bold mt-0.5">{plan.price}</div>
                       </button>
                     );
                   })}
@@ -191,11 +191,11 @@ export default function Register() {
                   className="mt-0.5 w-4 h-4 bg-zinc-900 border border-zinc-800 rounded"
                   checked={formData.agreeToTerms}
                   onChange={e => setFormData({ ...formData, agreeToTerms: e.target.checked })} />
-                <label htmlFor="terms" className="text-xs text-zinc-600 font-bold leading-relaxed">
+                <label htmlFor="terms" className="text-xs text-white font-bold leading-relaxed">
                   I agree to the{' '}
-                  <a href="#" className="text-zinc-400 hover:text-white transition-colors">Terms of Service</a>
+                  <a href="#" className="text-white hover:text-white transition-colors">Terms of Service</a>
                   {' '}and{' '}
-                  <a href="#" className="text-zinc-400 hover:text-white transition-colors">Privacy Policy</a>
+                  <a href="#" className="text-white hover:text-white transition-colors">Privacy Policy</a>
                 </label>
               </div>
 
@@ -209,9 +209,9 @@ export default function Register() {
               </button>
             </form>
 
-            <p className="text-center text-xs text-zinc-700 font-bold mt-6">
+            <p className="text-center text-xs text-white font-bold mt-6">
               Already have an account?{' '}
-              <Link to="/login" className="text-zinc-400 hover:text-white transition-colors font-black">
+              <Link to="/login" className="text-white hover:text-white transition-colors font-black">
                 Sign in
               </Link>
             </p>

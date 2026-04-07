@@ -103,12 +103,12 @@ export default function Pricing() {
       <nav className="relative z-10 flex items-center justify-between px-6 md:px-12 py-5 border-b border-zinc-900">
         <Link to="/" className="flex items-center space-x-2.5">
           <div className="w-8 h-8 rounded-xl overflow-hidden border border-zinc-800">
-            <img src="/ayinz.jpeg" alt="Ayinz" className="w-full h-full object-cover" />
+            <img src="/ayinz.jpeg" alt="Sonic Distro" className="w-full h-full object-cover" />
           </div>
-          <span className="text-lg font-black text-white tracking-tight">Ayinz</span>
+          <span className="text-lg font-black text-white tracking-tight">Sonic Distro</span>
         </Link>
         <div className="flex items-center space-x-4">
-          <Link to="/login" className="text-xs font-black text-zinc-500 hover:text-white transition-colors uppercase tracking-[0.15em]">Sign In</Link>
+          <Link to="/login" className="text-xs font-black text-white hover:text-white transition-colors uppercase tracking-[0.15em]">Sign In</Link>
           <Link to="/register" className="bg-white text-black text-xs font-black px-4 py-2 rounded-xl hover:bg-zinc-100 active:scale-95 transition-all">Get Started</Link>
         </div>
       </nav>
@@ -116,11 +116,11 @@ export default function Pricing() {
       {/* Hero */}
       <div className="relative z-10 text-center pt-16 pb-14 px-6">
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
-          <p className="text-[10px] font-black text-zinc-700 uppercase tracking-[0.4em] mb-4">Distribution Plans</p>
+          <p className="text-[10px] font-black text-white uppercase tracking-[0.4em] mb-4">Distribution Plans</p>
           <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">
             Simple, Transparent<br />Pricing
           </h1>
-          <p className="text-zinc-500 text-sm md:text-base font-bold max-w-lg mx-auto">
+          <p className="text-white text-sm md:text-base font-bold max-w-lg mx-auto">
             No hidden fees. No long-term contracts. Keep 100% of your royalties.
           </p>
         </motion.div>
@@ -153,13 +153,13 @@ export default function Pricing() {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-5">
                   <div>
-                    <p className={`text-[10px] font-black uppercase tracking-[0.2em] mb-0.5 ${plan.popular ? 'text-zinc-500' : 'text-zinc-700'}`}>
+                    <p className={`text-[10px] font-black uppercase tracking-[0.2em] mb-0.5 ${plan.popular ? 'text-white' : 'text-white'}`}>
                       {plan.subtitle}
                     </p>
                     <h3 className={`text-lg font-black tracking-tight ${plan.popular ? 'text-black' : 'text-white'}`}>{plan.name}</h3>
                   </div>
                   <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${plan.popular ? 'bg-black/10' : 'bg-zinc-900 border border-zinc-800'}`}>
-                    <plan.icon className={`w-4 h-4 ${plan.popular ? 'text-black' : 'text-zinc-600'}`} />
+                    <plan.icon className={`w-4 h-4 ${plan.popular ? 'text-black' : 'text-white'}`} />
                   </div>
                 </div>
 
@@ -169,9 +169,9 @@ export default function Pricing() {
                     <span className={`text-3xl font-black tracking-tight ${plan.popular ? 'text-black' : 'text-white'}`}>
                       ₦{plan.price.toLocaleString()}
                     </span>
-                    <span className={`text-xs font-bold pb-1 ${plan.popular ? 'text-zinc-500' : 'text-zinc-700'}`}>/ Annually</span>
+                    <span className={`text-xs font-bold pb-1 ${plan.popular ? 'text-white' : 'text-white'}`}>/ Annually</span>
                   </div>
-                  <p className={`text-[10px] font-black line-through ${plan.popular ? 'text-zinc-400' : 'text-zinc-700'}`}>
+                  <p className={`text-[10px] font-black line-through ${plan.popular ? 'text-white' : 'text-white'}`}>
                     ₦{plan.original.toLocaleString()}
                   </p>
                 </div>
@@ -185,7 +185,7 @@ export default function Pricing() {
                       }`}>
                         <Check className={`w-2.5 h-2.5 ${plan.popular ? 'text-black' : 'text-red-500'}`} />
                       </div>
-                      <span className={`text-xs font-bold ${plan.popular ? 'text-zinc-700' : 'text-zinc-500'}`}>{feature}</span>
+                      <span className={`text-xs font-bold ${plan.popular ? 'text-white' : 'text-white'}`}>{feature}</span>
                     </div>
                   ))}
                 </div>
@@ -209,8 +209,8 @@ export default function Pricing() {
         </div>
 
         {/* Footer note */}
-        <p className="text-center text-xs text-zinc-700 font-bold mt-10">
-          Join thousands of artists distributing their music worldwide with Ayinz.
+        <p className="text-center text-xs text-white font-bold mt-10">
+          Join thousands of artists distributing their music worldwide with Sonic Distro.
           <br />All plans include 100% royalty retention and no lock-in contracts.
         </p>
       </div>

@@ -59,7 +59,7 @@ export default function Layout({ children }: LayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#050505] bg-mesh-elite flex">
+    <div className="min-h-screen bg-[#050505] bg-mesh-main flex">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
@@ -75,19 +75,19 @@ export default function Layout({ children }: LayoutProps) {
       `}>
         <div className="flex items-center justify-between h-16 px-5 border-b border-zinc-900">
           <div className="flex items-center space-x-3">
-            <img src="/ayinz.jpeg" alt="Ayinz Logo" className="w-9 h-9 text-orange-500 rounded-xl object-cover shadow-lg border border-gray-800" />
-            <span className="text-2xl font-black text-white tracking-tighter">Ayinz</span>
+            <img src="/ayinz.jpeg" alt="Sonic Distro Logo" className="w-9 h-9 text-orange-500 rounded-xl object-cover shadow-lg border border-gray-800" />
+            <span className="text-2xl font-black text-white tracking-tighter">Sonic Distro</span>
           </div>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="lg:hidden p-1 rounded-xl text-zinc-600 hover:text-white hover:bg-zinc-900 transition-all"
+            className="lg:hidden p-1 rounded-xl text-white hover:text-white hover:bg-zinc-900 transition-all"
           >
             <X className="w-6 h-6" />
           </button>
         </div>
 
         <nav className="mt-6 px-3">
-          <p className="text-[9px] font-black text-zinc-700 uppercase tracking-[0.3em] mb-3 px-2">Navigation</p>
+          <p className="text-[9px] font-black text-white uppercase tracking-[0.3em] mb-3 px-2">Navigation</p>
           <div className="space-y-0.5">
             {navigation.map((item) => {
               const isActive = location.pathname === item.href;
@@ -99,11 +99,11 @@ export default function Layout({ children }: LayoutProps) {
                     group flex items-center px-3 py-2.5 text-sm font-bold rounded-xl transition-all duration-200
                     ${isActive
                       ? 'bg-red-600 text-white shadow-lg shadow-red-600/20'
-                      : 'text-zinc-500 hover:bg-zinc-900 hover:text-white'
+                      : 'text-white hover:bg-zinc-900 hover:text-white'
                     }
                   `}
                 >
-                  <item.icon className={`mr-3 h-4 w-4 flex-shrink-0 ${isActive ? 'text-white' : 'text-zinc-600 group-hover:text-zinc-400'}`} />
+                  <item.icon className={`mr-3 h-4 w-4 flex-shrink-0 ${isActive ? 'text-white' : 'text-white group-hover:text-white'}`} />
                   {item.name}
                 </Link>
               );
@@ -130,7 +130,7 @@ export default function Layout({ children }: LayoutProps) {
             <button 
               onClick={handleSignOut}
               disabled={isSigningOut}
-              className="w-full group flex items-center px-3 py-2.5 text-sm font-bold text-zinc-600 rounded-xl hover:bg-zinc-900 hover:text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full group flex items-center px-3 py-2.5 text-sm font-bold text-white rounded-xl hover:bg-zinc-900 hover:text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSigningOut ? (
                 <>
@@ -155,13 +155,13 @@ export default function Layout({ children }: LayoutProps) {
           <div className="flex items-center justify-between h-16 px-5">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="p-2 -ml-2 rounded-xl text-zinc-600 hover:text-white hover:bg-zinc-900 active:scale-90 transition-all"
+              className="p-2 -ml-2 rounded-xl text-white hover:text-white hover:bg-zinc-900 active:scale-90 transition-all"
             >
               <Menu className="w-6 h-6" />
             </button>
             <div className="flex items-center space-x-3">
-              <img src="/ayinz.jpeg" alt="Ayinz Logo" className="w-8 h-8 text-orange-600 rounded-lg object-cover shadow-md" />
-              <span className="text-xl font-black text-white tracking-tighter">Ayinz</span>
+              <img src="/ayinz.jpeg" alt="Sonic Distro Logo" className="w-8 h-8 text-orange-600 rounded-lg object-cover shadow-md" />
+              <span className="text-xl font-black text-white tracking-tighter">Sonic Distro</span>
             </div>
             <div className="w-10"></div> {/* Spacer for perfect optical centering */}
           </div>

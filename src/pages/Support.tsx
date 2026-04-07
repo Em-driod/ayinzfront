@@ -139,7 +139,7 @@ export default function Support() {
                 animate={{ opacity: 1, y: 0 }}
                 className="relative z-10 max-w-3xl mx-auto"
             >
-                <p className="label-elite text-red-500 mb-6 tracking-[0.5em]">Global Support Hub</p>
+                <p className="label-caps text-red-500 mb-6 tracking-[0.5em]">Global Support Hub</p>
                 <h1 className="text-5xl md:text-8xl font-display italic tracking-tight text-white uppercase leading-[0.8] mb-10">
                     How can we<br/>
                     <span className="text-gradient-red italic">assist you?</span>
@@ -149,7 +149,7 @@ export default function Support() {
                     <div className="absolute -inset-0.5 bg-gradient-to-r from-red-600/20 to-amber-600/20 rounded-3xl blur opacity-0 group-focus-within/search:opacity-100 transition duration-500" />
                     <div className="relative flex items-center bg-white/[0.03] border border-white/10 rounded-3xl overflow-hidden backdrop-blur-xl transition-all group-focus-within/search:border-red-600/50">
                         <div className="pl-6">
-                          <Search className="w-5 h-5 text-zinc-500" />
+                          <Search className="w-5 h-5 text-white" />
                         </div>
                         <input 
                             type="text" 
@@ -167,7 +167,7 @@ export default function Support() {
         <div className="space-y-8">
             <div className="flex items-center gap-4">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/5" />
-                <h3 className="label-elite opacity-50">Knowledge Clusters</h3>
+                <h3 className="label-caps opacity-50">Knowledge Clusters</h3>
                 <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/5" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -175,15 +175,15 @@ export default function Support() {
                     <motion.div 
                         key={category.id}
                         whileHover={{ y: -5 }}
-                        className="glass-card-elite p-8 rounded-[2rem] border-white/5 hover:border-red-600/30 transition-all cursor-pointer group"
+                        className="glass-card-premium p-8 rounded-[2rem] border-white/5 hover:border-red-600/30 transition-all cursor-pointer group"
                     >
                         <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-2xl">
-                            <category.icon className="w-6 h-6 text-zinc-600 group-hover:text-red-500 transition-colors" />
+                            <category.icon className="w-6 h-6 text-white group-hover:text-red-500 transition-colors" />
                         </div>
                         <h4 className="text-[11px] font-black text-white uppercase tracking-[0.2em] mb-2 group-hover:text-red-500 transition-colors">
                             {category.title}
                         </h4>
-                        <p className="text-[11px] font-bold text-zinc-500 leading-relaxed group-hover:text-zinc-400 transition-colors">
+                        <p className="text-[11px] font-bold text-white leading-relaxed group-hover:text-white transition-colors">
                             {category.description}
                         </p>
                     </motion.div>
@@ -195,19 +195,19 @@ export default function Support() {
             {/* FAQs */}
             <div className="space-y-10">
                 <div>
-                   <h3 className="label-elite text-red-500 mb-2">Verified Answers</h3>
+                   <h3 className="label-caps text-red-500 mb-2">Verified Answers</h3>
                    <h2 className="text-3xl font-black text-white tracking-tight uppercase leading-none">Frequently Asked</h2>
                 </div>
                 <div className="space-y-4">
                     {FAQS.map((faq, idx) => (
-                        <div key={idx} className="glass-card-elite border-white/5 rounded-[2rem] overflow-hidden hover:border-white/10 transition-all">
+                        <div key={idx} className="glass-card-premium border-white/5 rounded-[2rem] overflow-hidden hover:border-white/10 transition-all">
                             <button 
                                 onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                                 className="w-full p-8 text-left flex justify-between items-center bg-transparent group"
                             >
-                                <span className="text-sm font-black text-zinc-400 group-hover:text-white transition-colors pr-6 leading-relaxed uppercase tracking-tight">{faq.question}</span>
+                                <span className="text-sm font-black text-white group-hover:text-white transition-colors pr-6 leading-relaxed uppercase tracking-tight">{faq.question}</span>
                                 <div className={`w-10 h-10 rounded-xl bg-zinc-900 border border-white/5 flex items-center justify-center transition-transform ${openFaq === idx ? 'rotate-180 bg-red-600/10 border-red-600/20' : ''}`}>
-                                    <ChevronDown className={`w-5 h-5 ${openFaq === idx ? 'text-red-500' : 'text-zinc-600'}`} />
+                                    <ChevronDown className={`w-5 h-5 ${openFaq === idx ? 'text-red-500' : 'text-white'}`} />
                                 </div>
                             </button>
                             <AnimatePresence>
@@ -218,7 +218,7 @@ export default function Support() {
                                         exit={{ height: 0, opacity: 0 }}
                                         className="overflow-hidden"
                                     >
-                                        <div className="px-8 pb-8 text-[13px] font-bold text-zinc-500 leading-relaxed border-t border-white/5 pt-6 italic">
+                                        <div className="px-8 pb-8 text-[13px] font-bold text-white leading-relaxed border-t border-white/5 pt-6 italic">
                                             {faq.answer}
                                         </div>
                                     </motion.div>
@@ -232,10 +232,10 @@ export default function Support() {
             {/* Ticket Creation Form */}
             <div className="space-y-10">
                 <div>
-                   <h3 className="label-elite text-red-500 mb-2">Direct Contact</h3>
+                   <h3 className="label-caps text-red-500 mb-2">Direct Contact</h3>
                    <h2 className="text-3xl font-black text-white tracking-tight uppercase leading-none">Open a Ticket</h2>
                 </div>
-                <div className="glass-card-elite p-8 md:p-10 rounded-[2.5rem] relative overflow-hidden">
+                <div className="glass-card-premium p-8 md:p-10 rounded-[2.5rem] relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-red-600/5 blur-[80px] pointer-events-none" />
 
                     <form onSubmit={handleSupportSubmit} className="space-y-6 relative z-10">
@@ -255,7 +255,7 @@ export default function Support() {
                         </AnimatePresence>
 
                         <div className="space-y-2">
-                            <label className="label-elite opacity-50">Problem Categorization</label>
+                            <label className="label-caps opacity-50">Problem Categorization</label>
                             <input 
                                 type="text" 
                                 required
@@ -266,7 +266,7 @@ export default function Support() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="label-elite opacity-50">Detailed Briefing</label>
+                            <label className="label-caps opacity-50">Detailed Briefing</label>
                             <textarea 
                                 required
                                 value={form.message}
@@ -297,18 +297,18 @@ export default function Support() {
         <div className="pt-20 border-t border-white/5 space-y-10">
             <div className="flex items-center justify-between">
                 <div>
-                    <h3 className="label-elite text-red-500 mb-2">Active Communications</h3>
+                    <h3 className="label-caps text-red-500 mb-2">Active Communications</h3>
                     <h2 className="text-3xl font-black text-white tracking-tight uppercase leading-none">Your Tickets</h2>
                 </div>
                 <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center">
-                    <FileText className="w-6 h-6 text-zinc-600" />
+                    <FileText className="w-6 h-6 text-white" />
                 </div>
             </div>
 
             {tickets.length === 0 ? (
-                <div className="text-center py-20 glass-card-elite rounded-[3rem] border-dashed border-white/5 bg-transparent">
-                    <MessageSquare className="w-16 h-16 text-zinc-900 mx-auto mb-6" />
-                    <p className="text-zinc-600 font-black uppercase tracking-widest text-[11px]">No active support threads detected</p>
+                <div className="text-center py-20 glass-card-premium rounded-[3rem] border-dashed border-white/5 bg-transparent">
+                    <MessageSquare className="w-16 h-16 text-white mx-auto mb-6" />
+                    <p className="text-white font-black uppercase tracking-widest text-[11px]">No active support threads detected</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -319,7 +319,7 @@ export default function Support() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.05 }}
                             onClick={() => handleOpenTicket(ticket)}
-                            className="glass-card-elite p-8 rounded-[2.5rem] border-white/5 hover:border-red-600/30 transition-all cursor-pointer flex flex-col justify-between group h-48"
+                            className="glass-card-premium p-8 rounded-[2.5rem] border-white/5 hover:border-red-600/30 transition-all cursor-pointer flex flex-col justify-between group h-48"
                         >
                             <div className="flex items-start justify-between">
                                 <div className="flex items-center gap-4">
@@ -332,7 +332,7 @@ export default function Support() {
                                 </div>
                                 <div className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-colors ${
                                     ticket.status === 'Resolved' 
-                                        ? 'bg-zinc-900 border-zinc-800 text-zinc-600' 
+                                        ? 'bg-zinc-900 border-zinc-800 text-white' 
                                         : 'bg-red-600/10 border-red-600/20 text-red-500 group-hover:bg-red-600 group-hover:text-white'
                                     }`}>
                                     {ticket.status}
@@ -341,13 +341,13 @@ export default function Support() {
                             <div className="flex items-center justify-between mt-auto">
                                 <div className="flex items-center gap-3">
                                     <div className="w-8 h-8 rounded-lg bg-zinc-900 flex items-center justify-center">
-                                         <Clock className="w-4 h-4 text-zinc-600" />
+                                         <Clock className="w-4 h-4 text-white" />
                                     </div>
-                                    <p className="text-[10px] text-zinc-600 font-black uppercase tracking-[0.15em]">
+                                    <p className="text-[10px] text-white font-black uppercase tracking-[0.15em]">
                                         Ref: {ticket._id.slice(-8).toUpperCase()} · {new Date(ticket.createdAt).toLocaleDateString('en-GB')}
                                     </p>
                                 </div>
-                                <ArrowUpRight className="w-5 h-5 text-zinc-800 group-hover:text-red-500 transition-colors" />
+                                <ArrowUpRight className="w-5 h-5 text-white group-hover:text-red-500 transition-colors" />
                             </div>
                         </motion.div>
                     ))}
@@ -379,18 +379,18 @@ export default function Support() {
                                 <div className="flex items-center gap-4 mb-2">
                                     <h3 className="text-2xl font-black uppercase tracking-tight text-white">{activeTicket.subject}</h3>
                                     <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border shadow-2xl ${
-                                        activeTicket.status === 'Resolved' ? 'bg-zinc-900 text-zinc-600 border-zinc-800' : 'bg-red-600/10 border-red-600/20 text-red-500'
+                                        activeTicket.status === 'Resolved' ? 'bg-zinc-900 text-white border-zinc-800' : 'bg-red-600/10 border-red-600/20 text-red-500'
                                     }`}>
                                         {activeTicket.status}
                                     </span>
                                 </div>
-                                <p className="label-elite opacity-50 flex items-center gap-3">
+                                <p className="label-caps opacity-50 flex items-center gap-3">
                                     Ticket ID: <span className="font-mono text-white/40">{activeTicket._id.toUpperCase()}</span>
                                     <span className="w-1 h-1 rounded-full bg-zinc-800" />
                                     Updated {new Date(activeTicket.updatedAt).toLocaleString()}
                                 </p>
                             </div>
-                            <button onClick={() => setActiveTicket(null)} className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center text-zinc-500 hover:text-white hover:bg-red-600 hover:border-red-600 transition-all active:scale-90 group">
+                            <button onClick={() => setActiveTicket(null)} className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center text-white hover:text-white hover:bg-red-600 hover:border-red-600 transition-all active:scale-90 group">
                                 <X className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
                             </button>
                         </div>
@@ -408,22 +408,22 @@ export default function Support() {
                                     >
                                         <div className={`flex items-center gap-4 mb-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
                                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-2xl ${
-                                                isUser ? 'bg-red-600/20 border-red-600/30 text-red-500' : 'bg-zinc-900 border-white/10 text-zinc-400'
+                                                isUser ? 'bg-red-600/20 border-red-600/30 text-red-500' : 'bg-zinc-900 border-white/10 text-white'
                                             }`}>
                                                 {isUser ? <User className="w-5 h-5" /> : <ShieldAlert className="w-5 h-5" />}
                                             </div>
-                                            <span className="label-elite opacity-40">
+                                            <span className="label-caps opacity-40">
                                                 {isUser ? 'Authorized Artiste' : 'System Administrator'}
                                             </span>
                                         </div>
                                         <div className={`max-w-[75%] p-6 rounded-3xl text-sm font-bold shadow-2xl leading-relaxed whitespace-pre-wrap ${
                                             isUser 
                                                 ? 'bg-red-600 text-white rounded-tr-none border border-red-500 shadow-red-900/20' 
-                                                : 'glass-card-elite border-white/10 text-zinc-200 rounded-tl-none'
+                                                : 'glass-card-premium border-white/10 text-zinc-200 rounded-tl-none'
                                         }`}>
                                             {msg.content}
                                         </div>
-                                        <span className="text-[9px] text-zinc-600 font-black uppercase tracking-widest mt-3 px-2">
+                                        <span className="text-[9px] text-white font-black uppercase tracking-widest mt-3 px-2">
                                             {new Date(msg.timestamp).toLocaleString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' })}
                                         </span>
                                     </motion.div>
@@ -454,7 +454,7 @@ export default function Support() {
                                     </button>
                                 </form>
                             ) : (
-                                <div className="p-6 bg-zinc-900/50 border border-white/5 rounded-[2rem] text-center text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600 italic">
+                                <div className="p-6 bg-zinc-900/50 border border-white/5 rounded-[2rem] text-center text-[10px] font-black uppercase tracking-[0.3em] text-white italic">
                                     Transmission terminated · Ticket marked as resolved
                                 </div>
                             )}

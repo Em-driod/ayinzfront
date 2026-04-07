@@ -96,7 +96,7 @@ export default function Settings() {
   ];
 
   const inputClass = 'w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3.5 text-white placeholder-zinc-700 focus:border-zinc-600 focus:outline-none transition-colors font-medium text-sm';
-  const labelClass = 'block text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-2';
+  const labelClass = 'block text-[10px] font-black text-white uppercase tracking-[0.2em] mb-2';
 
   if (loading) {
     return (
@@ -116,7 +116,7 @@ export default function Settings() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <p className="label-elite mb-2">Management Center</p>
+            <p className="label-caps mb-2">Management Center</p>
             <h1 className="text-4xl md:text-6xl font-display italic tracking-tight text-white uppercase leading-[0.85]">
               Account<br/>
               <span className="text-gradient-red">Settings</span>
@@ -151,11 +151,11 @@ export default function Settings() {
                 className={`w-full flex items-center justify-between px-6 py-4 rounded-2xl text-sm font-black transition-all group ${
                   activeTab === tab.id
                     ? 'bg-red-600 text-white shadow-2xl shadow-red-600/20'
-                    : 'text-zinc-600 hover:text-zinc-400 hover:bg-white/5'
+                    : 'text-white hover:text-white hover:bg-white/5'
                 }`}
               >
                 <div className="flex items-center gap-4">
-                  <tab.icon className={`w-5 h-5 ${activeTab === tab.id ? 'text-white' : 'text-zinc-700 group-hover:text-zinc-500'}`} />
+                  <tab.icon className={`w-5 h-5 ${activeTab === tab.id ? 'text-white' : 'text-white group-hover:text-white'}`} />
                   <span className="uppercase tracking-widest">{tab.label}</span>
                 </div>
                 {activeTab === tab.id && <motion.div layoutId="activeTab" className="w-1.5 h-1.5 rounded-full bg-white shadow-glow" />}
@@ -174,7 +174,7 @@ export default function Settings() {
 
               {/* ── Profile Tab ── */}
               {activeTab === 'profile' && (
-                <div className="glass-card-elite p-8 md:p-12 rounded-[2.5rem]">
+                <div className="glass-card-premium p-8 md:p-12 rounded-[2.5rem]">
                   <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 mb-12">
                     <div className="relative group">
                        <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-amber-600 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
@@ -189,29 +189,29 @@ export default function Settings() {
                       </div>
                     </div>
                     <div className="pt-2 text-center sm:text-left">
-                       <p className="label-elite text-red-500 mb-1">Identity Verified</p>
+                       <p className="label-caps text-red-500 mb-1">Identity Verified</p>
                        <h3 className="text-3xl font-black text-white tracking-tight leading-none mb-2">{profile.name || 'ANONYMOUS'}</h3>
-                       <p className="text-[11px] text-zinc-600 font-black uppercase tracking-widest">Elite Artiste Tier</p>
+                       <p className="text-[11px] text-white font-black uppercase tracking-widest">Artiste Tier</p>
                     </div>
                   </div>
 
                   <form onSubmit={handleUpdateProfile} className="space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-2">
-                          <label className="label-elite opacity-50">Legal Full Name</label>
+                          <label className="label-caps opacity-50">Legal Full Name</label>
                           <input type="text" required className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold" value={profile.name}
                             onChange={e => setProfile({ ...profile, name: e.target.value })} />
                         </div>
                         <div className="space-y-2">
-                          <label className="label-elite opacity-50">Verified Email</label>
+                          <label className="label-caps opacity-50">Verified Email</label>
                           <div className="relative">
-                            <input type="email" readOnly className="w-full bg-white/[0.01] border border-white/5 rounded-2xl px-6 py-4 text-zinc-600 italic cursor-not-allowed font-bold" value={profile.email} />
+                            <input type="email" readOnly className="w-full bg-white/[0.01] border border-white/5 rounded-2xl px-6 py-4 text-white italic cursor-not-allowed font-bold" value={profile.email} />
                             <Shield className="absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-white/5" />
                           </div>
                         </div>
                     </div>
                     <div className="space-y-2">
-                      <label className="label-elite opacity-50">Custom Avatar Endpoint</label>
+                      <label className="label-caps opacity-50">Custom Avatar Endpoint</label>
                       <input type="text" placeholder="https://cdn.sonic.io/avatar/v1" className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold"
                         value={profile.avatar_url} onChange={e => setProfile({ ...profile, avatar_url: e.target.value })} />
                     </div>
@@ -231,28 +231,28 @@ export default function Settings() {
 
               {/* ── Security Tab ── */}
               {activeTab === 'security' && (
-                <div className="glass-card-elite p-8 md:p-12 rounded-[2.5rem]">
+                <div className="glass-card-premium p-8 md:p-12 rounded-[2.5rem]">
                   <div className="mb-10">
                     <h3 className="text-2xl font-black text-white tracking-tight uppercase">Security Vault</h3>
-                    <p className="label-elite mt-2 opacity-60">Manage authentication protocols</p>
+                    <p className="label-caps mt-2 opacity-60">Manage authentication protocols</p>
                   </div>
 
                   <form onSubmit={handleChangePassword} className="space-y-6">
                     <div className="space-y-2">
-                      <label className="label-elite opacity-50">Current Password</label>
+                      <label className="label-caps opacity-50">Current Password</label>
                       <input type="password" required placeholder="••••••••" className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold"
                         value={passwordData.currentPassword}
                         onChange={e => setPasswordData({ ...passwordData, currentPassword: e.target.value })} />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label className="label-elite opacity-50">New Password</label>
+                        <label className="label-caps opacity-50">New Password</label>
                         <input type="password" required minLength={6} placeholder="Min. 6 characters" className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold"
                           value={passwordData.newPassword}
                           onChange={e => setPasswordData({ ...passwordData, newPassword: e.target.value })} />
                       </div>
                       <div className="space-y-2">
-                        <label className="label-elite opacity-50">Confirm New Password</label>
+                        <label className="label-caps opacity-50">Confirm New Password</label>
                         <input type="password" required placeholder="Repeat new password" className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold"
                           value={passwordData.confirmPassword}
                           onChange={e => setPasswordData({ ...passwordData, confirmPassword: e.target.value })} />
@@ -274,19 +274,19 @@ export default function Settings() {
 
               {/* ── Plan Tab ── */}
               {activeTab === 'subscription' && (
-                <div className="glass-card-elite p-8 md:p-12 rounded-[2.5rem]">
+                <div className="glass-card-premium p-8 md:p-12 rounded-[2.5rem]">
                   <div className="mb-10">
-                    <h3 className="text-2xl font-black text-white tracking-tight uppercase">Elite Tier Status</h3>
-                    <p className="label-elite mt-2 opacity-60">Manage your distribution capacity</p>
+                    <h3 className="text-2xl font-black text-white tracking-tight uppercase">Tier Status</h3>
+                    <p className="label-caps mt-2 opacity-60">Manage your distribution capacity</p>
                   </div>
 
                   <div className="bg-gradient-to-br from-red-600/20 to-zinc-950 border border-red-600/20 rounded-[2rem] p-8 md:p-10 mb-8 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/10 blur-3xl pointer-events-none" />
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
                       <div>
-                        <p className="label-elite text-red-500 mb-3">Active Distribution Tier</p>
+                        <p className="label-caps text-red-500 mb-3">Active Distribution Tier</p>
                         <h4 className="text-4xl md:text-5xl font-display italic text-white tracking-tight leading-none mb-2">{currentPlan.label}</h4>
-                        <p className="text-xs text-zinc-500 font-black uppercase tracking-widest">{currentPlan.desc}</p>
+                        <p className="text-xs text-white font-black uppercase tracking-widest">{currentPlan.desc}</p>
                       </div>
                       <div className="flex-shrink-0">
                         <button
@@ -305,7 +305,7 @@ export default function Settings() {
                         <div className="w-8 h-8 rounded-lg bg-red-600/10 flex items-center justify-center">
                             <CheckCircle className="w-4 h-4 text-red-500 group-hover:scale-110 transition-transform" />
                         </div>
-                        <span className="text-[11px] font-black text-zinc-400 uppercase tracking-widest">{perk}</span>
+                        <span className="text-[11px] font-black text-white uppercase tracking-widest">{perk}</span>
                       </div>
                     ))}
                   </div>

@@ -20,7 +20,7 @@ const getStatusStyle = (status: string) => {
   if (status === 'approved') return { cls: 'bg-red-600/10 text-red-500 border border-red-600/20', icon: <CheckCircle className="w-2.5 h-2.5" />, label: 'Approved' };
   if (status === 'pending') return { cls: 'bg-amber-500/10 text-amber-400 border border-amber-500/20', icon: <Clock className="w-2.5 h-2.5" />, label: 'Pending' };
   if (status === 'rejected') return { cls: 'bg-red-500/10 text-red-400 border border-red-500/20', icon: <AlertCircle className="w-2.5 h-2.5" />, label: 'Rejected' };
-  return { cls: 'bg-zinc-800 text-zinc-400', icon: <CheckCircle className="w-2.5 h-2.5" />, label: status };
+  return { cls: 'bg-zinc-800 text-white', icon: <CheckCircle className="w-2.5 h-2.5" />, label: status };
 };
 
 export default function Releases() {
@@ -61,7 +61,7 @@ export default function Releases() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <p className="label-elite mb-2">Catalogue Management</p>
+            <p className="label-caps mb-2">Catalogue Management</p>
             <h1 className="text-4xl md:text-6xl font-display italic tracking-tight text-white uppercase leading-[0.85]">
               Your<br/>
               <span className="text-gradient-red">Catalogue</span>
@@ -71,7 +71,7 @@ export default function Releases() {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
             {/* Search */}
             <div className="relative min-w-[280px]">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white" />
                 <input
                 type="text"
                 placeholder="Search catalogue…"
@@ -122,15 +122,15 @@ export default function Releases() {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col items-center justify-center py-32 text-center glass-card-elite rounded-[3rem]"
+                className="flex flex-col items-center justify-center py-32 text-center glass-card-premium rounded-[3rem]"
             >
                 <div className="w-20 h-20 bg-zinc-950 border border-white/5 rounded-[2.5rem] flex items-center justify-center mb-8 shadow-2xl">
-                    <Music className="w-8 h-8 text-zinc-800" />
+                    <Music className="w-8 h-8 text-white" />
                 </div>
                 <h2 className="text-2xl font-black text-white mb-2 uppercase tracking-widest">
                     {search ? 'Track Not Found' : 'Catalogue Empty'}
                 </h2>
-                <p className="text-xs text-zinc-600 mb-10 max-w-xs font-bold uppercase tracking-widest leading-relaxed">
+                <p className="text-xs text-white mb-10 max-w-xs font-bold uppercase tracking-widest leading-relaxed">
                     {search ? 'Try adjusting your search filters or browse all titles.' : 'Begin your journey by uploading your first masterpiece for global distribution.'}
                 </p>
                 {!search && (
@@ -164,7 +164,7 @@ export default function Releases() {
                       transition={{ duration: 0.4, delay: i * 0.05 }}
                       whileHover={{ y: -8, scale: 1.02 }}
                       onClick={() => navigate('/analytics')}
-                      className="glass-card-elite flex flex-col group cursor-pointer overflow-hidden rounded-[2.5rem]"
+                      className="glass-card-premium flex flex-col group cursor-pointer overflow-hidden rounded-[2.5rem]"
                     >
                       {/* Artwork Container */}
                       <div className="aspect-square relative overflow-hidden bg-zinc-950">
@@ -199,22 +199,22 @@ export default function Releases() {
                       {/* Info Area */}
                       <div className="p-6 md:p-8 flex flex-col flex-1 bg-white/[0.02]">
                           <h3 className="text-lg md:text-xl font-black text-white truncate uppercase tracking-tight group-hover:text-red-500 transition-colors mb-1">{release.title}</h3>
-                          <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-6">{release.artist} · {release.type}</p>
+                          <p className="text-[10px] font-black text-white uppercase tracking-widest mb-6">{release.artist} · {release.type}</p>
                           
                           <div className="mt-auto space-y-4">
                               <div className="pt-4 border-t border-white/5 flex items-center justify-between">
                                   <div>
-                                      <p className="label-elite opacity-50 mb-0.5">Streams</p>
+                                      <p className="label-caps opacity-50 mb-0.5">Streams</p>
                                       <p className="text-sm font-black text-white font-mono">{release.streams?.toLocaleString() || '—'}</p>
                                   </div>
                                   <div className="text-right">
-                                      <p className="label-elite opacity-50 mb-0.5">Revenue</p>
+                                      <p className="label-caps opacity-50 mb-0.5">Revenue</p>
                                       <p className="text-sm font-black text-red-500 font-mono">
                                           {release.revenue > 0 ? `₦${release.revenue.toLocaleString()}` : '—'}
                                       </p>
                                   </div>
                               </div>
-                              <div className="flex items-center gap-2 text-[9px] font-black text-zinc-700 uppercase tracking-widest">
+                              <div className="flex items-center gap-2 text-[9px] font-black text-white uppercase tracking-widest">
                                   <Calendar className="w-3 h-3" />
                                   <span>Added {date}</span>
                               </div>
