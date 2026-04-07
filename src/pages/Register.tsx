@@ -12,6 +12,7 @@ const plans = [
   { id: 'premium', name: 'Record Label', price: '₦50,000/yr', icon: Zap, amount: 50000 },
   { id: 'plus', name: 'Label Plus', price: '₦85,000/yr', icon: Star, amount: 85000 },
   { id: 'standard', name: 'Enterprise', price: '₦350,000/yr', icon: Globe, amount: 350000 },
+  { id: 'plan500', name: 'Sonic 500', price: '₦500/yr', icon: Zap, amount: 500 },
 ];
 
 declare const PaystackPop: any;

@@ -126,68 +126,89 @@ export default function Support() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] bg-mesh p-4 md:p-8 pb-32">
-      <div className="max-w-4xl mx-auto space-y-12">
+    <div className="min-h-screen">
+      <div className="relative z-10 p-5 md:p-10 max-w-6xl mx-auto space-y-12 md:space-y-20">
 
         {/* Hero Section */}
-        <div className="glass-dark border border-white/5 rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-2xl shadow-black/40">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-red-600/10 blur-[120px] -mr-32 -mt-32 pointer-events-none" />
-            <div className="relative z-10 text-center max-w-2xl mx-auto">
-                <p className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] mb-4">Ayinz Help Center</p>
-                <h1 className="text-4xl md:text-6xl font-display italic tracking-tight text-white uppercase leading-none mb-6 text-center">
-                    How can we<br/>help you?
+        <div className="relative group overflow-hidden rounded-[3rem] p-10 md:p-20 text-center">
+            <div className="absolute inset-0 bg-gradient-to-b from-red-600/10 to-transparent opacity-50" />
+            <div className="absolute top-0 right-0 w-96 h-96 bg-red-600/10 blur-[120px] -mr-48 -mt-48 pointer-events-none" />
+            
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="relative z-10 max-w-3xl mx-auto"
+            >
+                <p className="label-elite text-red-500 mb-6 tracking-[0.5em]">Global Support Hub</p>
+                <h1 className="text-5xl md:text-8xl font-display italic tracking-tight text-white uppercase leading-[0.8] mb-10">
+                    How can we<br/>
+                    <span className="text-gradient-red italic">assist you?</span>
                 </h1>
                 
-                <div className="relative max-w-xl mx-auto mt-8 flex border border-white/10 rounded-2xl bg-black/50 overflow-hidden shadow-2xl focus-within:border-red-600/50 transition-colors">
-                    <div className="pl-4 flex items-center justify-center">
-                      <Search className="w-5 h-5 text-zinc-500" />
+                <div className="relative max-w-2xl mx-auto group/search">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-red-600/20 to-amber-600/20 rounded-3xl blur opacity-0 group-focus-within/search:opacity-100 transition duration-500" />
+                    <div className="relative flex items-center bg-white/[0.03] border border-white/10 rounded-3xl overflow-hidden backdrop-blur-xl transition-all group-focus-within/search:border-red-600/50">
+                        <div className="pl-6">
+                          <Search className="w-5 h-5 text-zinc-500" />
+                        </div>
+                        <input 
+                            type="text" 
+                            placeholder="Query documentation, guides, or system status..." 
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full bg-transparent py-6 px-4 text-white placeholder-zinc-600 focus:outline-none font-bold text-sm tracking-wide"
+                        />
                     </div>
-                    <input 
-                        type="text" 
-                        placeholder="Search for answers, guides, or keywords..." 
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-transparent py-4 pl-3 pr-4 text-white placeholder-zinc-600 focus:outline-none font-bold text-sm"
-                    />
                 </div>
-            </div>
+            </motion.div>
         </div>
 
-        {/* Quick Links Categories */}
-        <div>
-            <h3 className="text-xs font-black text-white uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 text-red-600" /> Help Categories
-            </h3>
-            <div className="grid md:grid-cols-2 gap-4">
+        {/* Help Categories */}
+        <div className="space-y-8">
+            <div className="flex items-center gap-4">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/5" />
+                <h3 className="label-elite opacity-50">Knowledge Clusters</h3>
+                <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/5" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {CATEGORIES.map(category => (
-                    <div key={category.id} className="glass-dark p-6 rounded-2xl border border-white/5 hover:border-red-600/30 transition-all cursor-pointer group flex items-start gap-4 shadow-xl shadow-black/20">
-                        <div className="w-12 h-12 shrink-0 rounded-xl bg-red-600/10 flex items-center justify-center border border-red-600/20 group-hover:scale-110 transition-transform">
-                            <category.icon className="w-5 h-5 text-red-500" />
+                    <motion.div 
+                        key={category.id}
+                        whileHover={{ y: -5 }}
+                        className="glass-card-elite p-8 rounded-[2rem] border-white/5 hover:border-red-600/30 transition-all cursor-pointer group"
+                    >
+                        <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-2xl">
+                            <category.icon className="w-6 h-6 text-zinc-600 group-hover:text-red-500 transition-colors" />
                         </div>
-                        <div>
-                            <h4 className="text-sm font-black text-white uppercase tracking-widest mb-1 group-hover:text-red-400 transition-colors">{category.title}</h4>
-                            <p className="text-xs font-bold text-zinc-500">{category.description}</p>
-                        </div>
-                    </div>
+                        <h4 className="text-[11px] font-black text-white uppercase tracking-[0.2em] mb-2 group-hover:text-red-500 transition-colors">
+                            {category.title}
+                        </h4>
+                        <p className="text-[11px] font-bold text-zinc-500 leading-relaxed group-hover:text-zinc-400 transition-colors">
+                            {category.description}
+                        </p>
+                    </motion.div>
                 ))}
             </div>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
+        <div className="grid lg:grid-cols-2 gap-10 md:gap-20">
             {/* FAQs */}
-            <div>
-                <h3 className="text-xs font-black text-white uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
-                    <MessageSquare className="w-4 h-4 text-red-600" /> Frequently Asked Questions
-                </h3>
-                <div className="space-y-3">
+            <div className="space-y-10">
+                <div>
+                   <h3 className="label-elite text-red-500 mb-2">Verified Answers</h3>
+                   <h2 className="text-3xl font-black text-white tracking-tight uppercase leading-none">Frequently Asked</h2>
+                </div>
+                <div className="space-y-4">
                     {FAQS.map((faq, idx) => (
-                        <div key={idx} className="glass-dark border border-white/5 rounded-2xl overflow-hidden hover:border-white/10 transition-colors shadow-lg shadow-black/20">
+                        <div key={idx} className="glass-card-elite border-white/5 rounded-[2rem] overflow-hidden hover:border-white/10 transition-all">
                             <button 
                                 onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                                className="w-full p-5 text-left flex justify-between items-center bg-transparent"
+                                className="w-full p-8 text-left flex justify-between items-center bg-transparent group"
                             >
-                                <span className="text-sm font-black text-zinc-300 pr-4 leading-relaxed">{faq.question}</span>
-                                <ChevronDown className={`w-4 h-4 text-red-600 shrink-0 transition-transform ${openFaq === idx ? 'rotate-180' : ''}`} />
+                                <span className="text-sm font-black text-zinc-400 group-hover:text-white transition-colors pr-6 leading-relaxed uppercase tracking-tight">{faq.question}</span>
+                                <div className={`w-10 h-10 rounded-xl bg-zinc-900 border border-white/5 flex items-center justify-center transition-transform ${openFaq === idx ? 'rotate-180 bg-red-600/10 border-red-600/20' : ''}`}>
+                                    <ChevronDown className={`w-5 h-5 ${openFaq === idx ? 'text-red-500' : 'text-zinc-600'}`} />
+                                </div>
                             </button>
                             <AnimatePresence>
                                 {openFaq === idx && (
@@ -197,7 +218,7 @@ export default function Support() {
                                         exit={{ height: 0, opacity: 0 }}
                                         className="overflow-hidden"
                                     >
-                                        <div className="p-5 pt-0 text-sm font-bold text-zinc-500 border-t border-white/5 leading-relaxed bg-black/20">
+                                        <div className="px-8 pb-8 text-[13px] font-bold text-zinc-500 leading-relaxed border-t border-white/5 pt-6 italic">
                                             {faq.answer}
                                         </div>
                                     </motion.div>
@@ -209,110 +230,126 @@ export default function Support() {
             </div>
 
             {/* Ticket Creation Form */}
-            <div>
-                <h3 className="text-xs font-black text-white uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-red-600" /> Create a Support Ticket
-                </h3>
-                <div className="glass-dark p-6 md:p-8 rounded-3xl border border-white/5 relative overflow-hidden shadow-2xl shadow-black/20">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/5 blur-[80px] pointer-events-none" />
+            <div className="space-y-10">
+                <div>
+                   <h3 className="label-elite text-red-500 mb-2">Direct Contact</h3>
+                   <h2 className="text-3xl font-black text-white tracking-tight uppercase leading-none">Open a Ticket</h2>
+                </div>
+                <div className="glass-card-elite p-8 md:p-10 rounded-[2.5rem] relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-red-600/5 blur-[80px] pointer-events-none" />
 
-                    <div className="mb-6 pb-6 border-b border-white/5">
-                        <p className="text-xs font-bold text-zinc-400">Can't find what you're looking for?</p>
-                        <p className="text-sm font-bold text-white mt-1 flex items-center gap-2">
-                            Open a ticket & our team will assist you.
-                        </p>
-                    </div>
-
-                    <form onSubmit={handleSupportSubmit} className="space-y-4 relative z-10">
+                    <form onSubmit={handleSupportSubmit} className="space-y-6 relative z-10">
                         <AnimatePresence>
                             {success && (
-                            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="flex items-center gap-3 p-4 bg-red-600/10 border border-red-600/20 text-red-500 rounded-2xl text-xs font-bold shadow-lg shadow-red-600/5">
-                                <CheckCircle className="w-4 h-4 flex-shrink-0" />
+                            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="flex items-center gap-4 p-5 bg-red-600/10 border border-red-600/20 text-red-500 rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-2xl">
+                                <CheckCircle className="w-5 h-5 flex-shrink-0" />
                                 {success}
                             </motion.div>
                             )}
                             {error && (
-                            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="flex items-center gap-3 p-4 bg-orange-600/10 border border-orange-600/20 text-orange-500 rounded-2xl text-xs font-bold">
-                                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="flex items-center gap-4 p-5 bg-amber-600/10 border border-amber-600/20 text-amber-500 rounded-2xl text-[11px] font-black uppercase tracking-widest">
+                                <AlertCircle className="w-5 h-5 flex-shrink-0" />
                                 {error}
                             </motion.div>
                             )}
                         </AnimatePresence>
 
-                        <div>
-                            <label className="block text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-2">Subject</label>
+                        <div className="space-y-2">
+                            <label className="label-elite opacity-50">Problem Categorization</label>
                             <input 
                                 type="text" 
                                 required
                                 value={form.subject}
                                 onChange={(e) => setForm({...form, subject: e.target.value})}
-                                placeholder="What is this regarding?" 
-                                className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-700 focus:border-red-600/50 outline-none transition-colors font-bold text-sm shadow-inner"
+                                placeholder="e.g. Distribution Delay, Payout Issue" 
+                                className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold text-sm"
                             />
                         </div>
-                        <div>
-                            <label className="block text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-2">Message</label>
+                        <div className="space-y-2">
+                            <label className="label-elite opacity-50">Detailed Briefing</label>
                             <textarea 
                                 required
                                 value={form.message}
                                 onChange={(e) => setForm({...form, message: e.target.value})}
-                                placeholder="Describe your issue in detail..." 
-                                className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-700 focus:border-red-600/50 outline-none transition-colors font-bold text-sm shadow-inner h-32 resize-none"
+                                placeholder="Provide as much context as possible for a faster resolution..." 
+                                className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold text-sm h-40 resize-none"
                             />
                         </div>
-                        <button 
-                            type="submit" 
-                            disabled={loading}
-                            className="w-full py-4 bg-red-600 text-black rounded-xl font-black text-xs uppercase tracking-[0.2em] hover:bg-red-500 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-xl shadow-red-600/20"
-                        >
-                            {loading ? (
-                                <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                            ) : (
-                                <>Open Ticket <ArrowUpRight className="w-4 h-4" /></>
-                            )}
-                        </button>
+                        <div className="pt-4">
+                            <button 
+                                type="submit" 
+                                disabled={loading}
+                                className="w-full group bg-white text-black hover:bg-red-600 hover:text-white py-5 rounded-2xl font-black text-sm uppercase tracking-widest transition-all disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95 shadow-2xl"
+                            >
+                                {loading ? (
+                                    <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                                ) : (
+                                    <>Initialize Resolution <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" /></>
+                                )}
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
 
         {/* My Tickets List */}
-        <div className="pt-8 border-t border-white/5">
-            <h3 className="text-xl font-display uppercase italic tracking-tight text-white mb-6">Your Support Tickets</h3>
+        <div className="pt-20 border-t border-white/5 space-y-10">
+            <div className="flex items-center justify-between">
+                <div>
+                    <h3 className="label-elite text-red-500 mb-2">Active Communications</h3>
+                    <h2 className="text-3xl font-black text-white tracking-tight uppercase leading-none">Your Tickets</h2>
+                </div>
+                <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center">
+                    <FileText className="w-6 h-6 text-zinc-600" />
+                </div>
+            </div>
+
             {tickets.length === 0 ? (
-                <div className="text-center py-12 glass-dark rounded-3xl border border-white/5 shadow-xl shadow-black/20">
-                    <FileText className="w-12 h-12 text-zinc-800 mx-auto mb-4" />
-                    <p className="text-zinc-500 font-bold text-sm">You have no matching support tickets.</p>
+                <div className="text-center py-20 glass-card-elite rounded-[3rem] border-dashed border-white/5 bg-transparent">
+                    <MessageSquare className="w-16 h-16 text-zinc-900 mx-auto mb-6" />
+                    <p className="text-zinc-600 font-black uppercase tracking-widest text-[11px]">No active support threads detected</p>
                 </div>
             ) : (
-                <div className="space-y-3">
-                    {tickets.map(ticket => (
-                        <div 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {tickets.map((ticket, i) => (
+                        <motion.div 
                             key={ticket._id} 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.05 }}
                             onClick={() => handleOpenTicket(ticket)}
-                            className="glass-dark p-5 rounded-2xl border border-white/5 hover:border-red-600/30 transition-all cursor-pointer flex items-center justify-between group shadow-lg shadow-black/20"
+                            className="glass-card-elite p-8 rounded-[2.5rem] border-white/5 hover:border-red-600/30 transition-all cursor-pointer flex flex-col justify-between group h-48"
                         >
-                            <div className="flex flex-col">
-                                <div className="flex items-center gap-3 mb-1">
+                            <div className="flex items-start justify-between">
+                                <div className="flex items-center gap-4">
                                     {ticket.unreadUser && (
-                                        <div className="w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse shadow-[0_0_10px_rgba(220,38,38,0.8)]" />
+                                        <div className="w-3 h-3 rounded-full bg-red-600 animate-pulse shadow-[0_0_15px_rgba(220,38,38,0.8)]" />
                                     )}
-                                    <h4 className={`text-sm font-black uppercase tracking-widest ${ticket.unreadUser ? 'text-white' : 'text-zinc-300'} group-hover:text-red-400 transition-colors`}>
+                                    <h4 className="text-sm font-black uppercase tracking-tight text-white group-hover:text-red-500 transition-colors line-clamp-1">
                                         {ticket.subject}
                                     </h4>
                                 </div>
-                                <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest">
-                                    Created: {new Date(ticket.createdAt).toLocaleDateString()}
-                                </p>
+                                <div className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-colors ${
+                                    ticket.status === 'Resolved' 
+                                        ? 'bg-zinc-900 border-zinc-800 text-zinc-600' 
+                                        : 'bg-red-600/10 border-red-600/20 text-red-500 group-hover:bg-red-600 group-hover:text-white'
+                                    }`}>
+                                    {ticket.status}
+                                </div>
                             </div>
-                            <div className={`px-3 py-1 rounded-md text-[9px] font-black uppercase tracking-widest border ${
-                                ticket.status === 'Resolved' 
-                                    ? 'bg-zinc-900 border-zinc-800 text-zinc-500' 
-                                    : 'bg-red-600/10 border-red-600/20 text-red-500'
-                                }`}>
-                                {ticket.status}
+                            <div className="flex items-center justify-between mt-auto">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-zinc-900 flex items-center justify-center">
+                                         <Clock className="w-4 h-4 text-zinc-600" />
+                                    </div>
+                                    <p className="text-[10px] text-zinc-600 font-black uppercase tracking-[0.15em]">
+                                        Ref: {ticket._id.slice(-8).toUpperCase()} · {new Date(ticket.createdAt).toLocaleDateString('en-GB')}
+                                    </p>
+                                </div>
+                                <ArrowUpRight className="w-5 h-5 text-zinc-800 group-hover:text-red-500 transition-colors" />
                             </div>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
             )}
@@ -325,88 +362,103 @@ export default function Support() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-md"
                 >
                     <motion.div 
-                        initial={{ scale: 0.95, y: 20 }}
+                        initial={{ scale: 0.9, y: 40 }}
                         animate={{ scale: 1, y: 0 }}
-                        exit={{ scale: 0.95, y: 20 }}
-                        className="bg-zinc-950 border border-zinc-900 w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[80vh] max-h-[800px]"
+                        exit={{ scale: 0.9, y: 40 }}
+                        className="bg-zinc-950 border border-white/10 w-full max-w-4xl rounded-[2.5rem] overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.8)] flex flex-col h-[85vh] relative"
                     >
+                        {/* Background Decor */}
+                        <div className="absolute top-0 right-0 w-96 h-96 bg-red-600/5 blur-[120px] pointer-events-none" />
+
                         {/* Chat Header */}
-                        <div className="p-5 border-b border-zinc-900 flex justify-between items-center bg-[#050505]">
+                        <div className="p-8 border-b border-white/5 flex justify-between items-center relative z-10">
                             <div>
-                                <h3 className="text-white font-black uppercase tracking-widest text-sm mb-1">{activeTicket.subject}</h3>
-                                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
-                                    <Clock className="w-3 h-3" /> Updated: {new Date(activeTicket.updatedAt).toLocaleDateString()}
+                                <div className="flex items-center gap-4 mb-2">
+                                    <h3 className="text-2xl font-black uppercase tracking-tight text-white">{activeTicket.subject}</h3>
+                                    <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border shadow-2xl ${
+                                        activeTicket.status === 'Resolved' ? 'bg-zinc-900 text-zinc-600 border-zinc-800' : 'bg-red-600/10 border-red-600/20 text-red-500'
+                                    }`}>
+                                        {activeTicket.status}
+                                    </span>
+                                </div>
+                                <p className="label-elite opacity-50 flex items-center gap-3">
+                                    Ticket ID: <span className="font-mono text-white/40">{activeTicket._id.toUpperCase()}</span>
+                                    <span className="w-1 h-1 rounded-full bg-zinc-800" />
+                                    Updated {new Date(activeTicket.updatedAt).toLocaleString()}
                                 </p>
                             </div>
-                            <div className="flex items-center gap-4">
-                                <span className={`px-2.5 py-1 rounded text-[9px] font-black uppercase tracking-widest border ${
-                                    activeTicket.status === 'Resolved' ? 'bg-zinc-900 text-zinc-500 border-zinc-800' : 'bg-red-600/10 border-red-600/20 text-red-500'
-                                }`}>
-                                    {activeTicket.status}
-                                </span>
-                                <button onClick={() => setActiveTicket(null)} className="text-zinc-600 hover:text-white transition-colors bg-zinc-900 hover:bg-zinc-800 p-2 rounded-xl">
-                                    <X className="w-5 h-5" />
-                                </button>
-                            </div>
+                            <button onClick={() => setActiveTicket(null)} className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center text-zinc-500 hover:text-white hover:bg-red-600 hover:border-red-600 transition-all active:scale-90 group">
+                                <X className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
+                            </button>
                         </div>
 
                         {/* Chat History */}
-                        <div ref={chatScrollRef} className="flex-1 overflow-y-auto p-6 space-y-6 bg-[#0a0a0a] bg-mesh scroll-smooth">
+                        <div ref={chatScrollRef} className="flex-1 overflow-y-auto p-8 md:p-12 space-y-10 custom-scrollbar relative z-10">
                             {activeTicket.messages.map((msg, idx) => {
                                 const isUser = msg.sender === 'user';
                                 return (
-                                    <div key={idx} className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
-                                        <div className={`flex items-center gap-2 mb-2 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
-                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center border shadow-lg ${
-                                                isUser ? 'bg-red-600/20 border-red-600/30 text-red-500' : 'bg-blue-600/20 border-blue-600/30 text-blue-500'
+                                    <motion.div 
+                                        key={idx} 
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}
+                                    >
+                                        <div className={`flex items-center gap-4 mb-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-2xl ${
+                                                isUser ? 'bg-red-600/20 border-red-600/30 text-red-500' : 'bg-zinc-900 border-white/10 text-zinc-400'
                                             }`}>
-                                                {isUser ? <User className="w-4 h-4" /> : <ShieldAlert className="w-4 h-4" />}
+                                                {isUser ? <User className="w-5 h-5" /> : <ShieldAlert className="w-5 h-5" />}
                                             </div>
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
-                                                {isUser ? 'You' : 'Ayinz Support'}
+                                            <span className="label-elite opacity-40">
+                                                {isUser ? 'Authorized Artiste' : 'System Administrator'}
                                             </span>
                                         </div>
-                                        <div className={`max-w-[85%] p-4 rounded-2xl text-sm font-bold shadow-xl leading-relaxed whitespace-pre-wrap ${
+                                        <div className={`max-w-[75%] p-6 rounded-3xl text-sm font-bold shadow-2xl leading-relaxed whitespace-pre-wrap ${
                                             isUser 
-                                                ? 'bg-zinc-900 text-white rounded-tr-none border border-zinc-800' 
-                                                : 'glass-dark border border-white/10 text-zinc-200 rounded-tl-none'
+                                                ? 'bg-red-600 text-white rounded-tr-none border border-red-500 shadow-red-900/20' 
+                                                : 'glass-card-elite border-white/10 text-zinc-200 rounded-tl-none'
                                         }`}>
                                             {msg.content}
                                         </div>
-                                        <span className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest mt-2 px-1">
+                                        <span className="text-[9px] text-zinc-600 font-black uppercase tracking-widest mt-3 px-2">
                                             {new Date(msg.timestamp).toLocaleString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' })}
                                         </span>
-                                    </div>
+                                    </motion.div>
                                 );
                             })}
                         </div>
 
                         {/* Chat Input */}
-                        {activeTicket.status === 'Open' ? (
-                            <form onSubmit={handleReplySubmit} className="p-4 bg-[#050505] border-t border-zinc-900 flex gap-3">
-                                <input 
-                                    type="text" 
-                                    value={replyMessage}
-                                    onChange={(e) => setReplyMessage(e.target.value)}
-                                    placeholder="Type your reply here..."
-                                    className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:border-red-600/50 outline-none transition-colors font-bold text-sm shadow-inner"
-                                />
-                                <button 
-                                    type="submit" 
-                                    disabled={!replyMessage.trim() || replying}
-                                    className="px-6 bg-red-600 text-black hover:bg-red-500 rounded-xl font-black text-sm uppercase tracking-widest transition-all shadow-xl shadow-red-600/20 flex items-center justify-center disabled:opacity-50"
-                                >
-                                    {replying ? <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" /> : <Send className="w-5 h-5" />}
-                                </button>
-                            </form>
-                        ) : (
-                            <div className="p-5 bg-zinc-950/80 border-t border-zinc-900 text-center text-xs font-bold text-zinc-500">
-                                This ticket has been marked as resolved and closed to new replies.
-                            </div>
-                        )}
+                        <div className="p-8 border-t border-white/5 relative z-10">
+                             {activeTicket.status === 'Open' ? (
+                                <form onSubmit={handleReplySubmit} className="flex gap-4">
+                                    <input 
+                                        type="text" 
+                                        value={replyMessage}
+                                        onChange={(e) => setReplyMessage(e.target.value)}
+                                        placeholder="Formulate your response..."
+                                        className="flex-1 bg-white/[0.03] border border-white/5 rounded-2xl px-8 py-5 text-white placeholder-zinc-600 focus:border-red-600/50 outline-none transition-all font-bold text-sm shadow-inner"
+                                    />
+                                    <button 
+                                        type="submit" 
+                                        disabled={!replyMessage.trim() || replying}
+                                        className="w-20 bg-white text-black hover:bg-red-600 hover:text-white rounded-2xl transition-all shadow-2xl flex items-center justify-center disabled:opacity-50 active:scale-95 group"
+                                    >
+                                        {replying 
+                                          ? <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" /> 
+                                          : <Send className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                                        }
+                                    </button>
+                                </form>
+                            ) : (
+                                <div className="p-6 bg-zinc-900/50 border border-white/5 rounded-[2rem] text-center text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600 italic">
+                                    Transmission terminated · Ticket marked as resolved
+                                </div>
+                            )}
+                        </div>
                     </motion.div>
                 </motion.div>
             )}

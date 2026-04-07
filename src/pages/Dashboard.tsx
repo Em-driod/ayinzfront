@@ -87,233 +87,205 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen">
 
-      {/* Subtle top gradient wash */}
-      <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-red-950/20 to-transparent pointer-events-none" />
+      <div className="relative z-10 p-5 md:p-10 space-y-10">
 
-      {/* ─── Header ─── */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative z-10 border-b border-zinc-900 bg-[#0a0a0a]/95 backdrop-blur-md"
-      >
-        <div className="px-5 md:px-8 py-6">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+        {/* ─── Welcome Header ─── */}
+        <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex flex-col md:flex-row md:items-end justify-between gap-6"
+        >
             <div>
-              <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.3em] mb-1.5">
-                {user.name || 'Artist'} · {planLabel.desc}
-              </p>
-              <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">
-                Your Dashboard
-              </h1>
+                <p className="label-elite mb-2">Workspace Overview</p>
+                <h1 className="text-4xl md:text-6xl font-display italic tracking-tight text-white uppercase leading-[0.85]">
+                    Welcome back,<br/>
+                    <span className="text-gradient-red">{user.name?.split(' ')[0] || 'Artist'}</span>
+                </h1>
             </div>
-            <div className="self-start sm:self-auto">
-              <span className="inline-block px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.15em] bg-zinc-900 text-zinc-400 border border-zinc-800">
-                {planLabel.name}
-              </span>
+            <div className="flex flex-col items-start md:items-end gap-2">
+                <div className="px-5 py-2 glass-dark rounded-2xl border border-white/10 flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-red-600 animate-pulse shadow-[0_0_12px_rgba(220,38,38,0.8)]" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">{planLabel.name} ACTIVE</span>
+                </div>
+                <p className="text-[10px] font-black text-zinc-700 uppercase tracking-widest">{planLabel.desc}</p>
             </div>
-          </div>
-        </div>
-      </motion.div>
-
-      <div className="relative z-10 p-4 md:p-8 space-y-6 md:space-y-8">
+        </motion.div>
 
         {/* ─── Stats Grid ─── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4"
-        >
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {statCards.map((stat, i) => (
             <motion.div
               key={i}
-              whileHover={{ y: -2 }}
-              className="bg-zinc-950 border border-zinc-900 rounded-2xl p-4 md:p-5 group cursor-default"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              whileHover={{ y: -5, scale: 1.02 }}
+              className="glass-card-elite p-6 md:p-8 flex flex-col justify-between h-full min-h-[160px] cursor-default group"
             >
-              <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${stat.accent} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                <stat.icon className="w-4 h-4 text-white" />
+              <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${stat.accent} flex items-center justify-center mb-6 shadow-xl shadow-black/50 group-hover:shadow-red-600/20 transition-all duration-500`}>
+                <stat.icon className="w-6 h-6 text-white" />
               </div>
-              <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.2em] mb-1">{stat.label}</p>
-              <p className="text-lg md:text-xl font-black text-white tracking-tight truncate">{stat.value}</p>
+              <div>
+                <p className="label-elite opacity-60 group-hover:opacity-100 transition-opacity mb-1">{stat.label}</p>
+                <p className="text-2xl md:text-3xl font-black text-white tracking-tight">{stat.value}</p>
+              </div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
 
-        {/* ─── Recent Releases ─── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="bg-zinc-950 border border-zinc-900 rounded-2xl overflow-hidden"
-        >
-          <div className="px-5 md:px-6 py-4 border-b border-zinc-900 flex items-center justify-between">
-            <div>
-              <h2 className="text-sm font-black text-white tracking-tight">Recent Releases</h2>
-              <p className="text-[10px] text-zinc-600 font-bold mt-0.5 uppercase tracking-wider">Latest tracks submitted for distribution</p>
-            </div>
-            <button
-              onClick={() => navigate('/releases')}
-              className="text-[10px] font-black text-red-500 hover:text-red-400 uppercase tracking-[0.2em] flex items-center transition-colors"
-            >
-              All <ChevronRight className="w-3 h-3 ml-0.5" />
-            </button>
-          </div>
-
-          {/* Desktop Table */}
-          <div className="hidden md:block">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-zinc-900/50">
-                  <th className="px-6 py-3 text-left text-[9px] font-black text-zinc-700 uppercase tracking-[0.2em]">Title</th>
-                  <th className="px-6 py-3 text-left text-[9px] font-black text-zinc-700 uppercase tracking-[0.2em]">Artist</th>
-                  <th className="px-6 py-3 text-left text-[9px] font-black text-zinc-700 uppercase tracking-[0.2em]">Status</th>
-                  <th className="px-6 py-3 text-left text-[9px] font-black text-zinc-700 uppercase tracking-[0.2em]">Streams</th>
-                  <th className="px-6 py-3 text-right text-[9px] font-black text-zinc-700 uppercase tracking-[0.2em]"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {userReleases.slice(0, 5).map((release: any, i) => (
-                  <motion.tr
-                    key={release._id}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: i * 0.05 }}
-                    className="border-b border-zinc-900/40 hover:bg-zinc-900/30 transition-colors group"
-                  >
-                    <td className="px-6 py-4 text-sm font-bold text-white whitespace-nowrap">{release.title}</td>
-                    <td className="px-6 py-4 text-sm text-zinc-500 whitespace-nowrap">{release.artist}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider ${getStatusStyle(release.status)}`}>
-                        {release.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-zinc-500 font-mono">{formatNumber(release.streams || 0)}</td>
-                    <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={() => navigate('/analytics')}
-                        className="text-[9px] font-black text-red-600 hover:text-red-400 uppercase tracking-widest flex items-center ml-auto transition-colors"
-                      >
-                        View <ChevronRight className="w-3 h-3 ml-0.5" />
-                      </button>
-                    </td>
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Mobile Cards */}
-          <div className="md:hidden divide-y divide-zinc-900/50">
-            {userReleases.slice(0, 5).map((release: any, i) => (
-              <motion.div
-                key={release._id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: i * 0.05 }}
-                onClick={() => navigate('/analytics')}
-                className="p-4 flex items-center justify-between active:bg-zinc-900 transition-colors"
-              >
-                <div className="flex items-center space-x-3 min-w-0">
-                  <div className="w-9 h-9 rounded-xl bg-zinc-900 flex items-center justify-center flex-shrink-0 border border-zinc-800">
-                    <Music className="w-4 h-4 text-red-500" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-bold text-white truncate">{release.title}</p>
-                    <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-wider">{release.artist} · {formatNumber(release.streams || 0)} plays</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-2 flex-shrink-0 pl-2">
-                  <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider ${getStatusStyle(release.status)}`}>
-                    {release.status}
-                  </span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-700" />
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {userReleases.length === 0 && (
-            <div className="py-16 text-center px-6">
-              <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto mb-4">
-                <Music className="w-5 h-5 text-zinc-700" />
+        {/* ─── Recent Releases & Actions ─── */}
+        <div className="grid lg:grid-cols-3 gap-6 md:gap-10">
+          
+          {/* Recent Releases Column */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="lg:col-span-2 glass-card-elite overflow-hidden flex flex-col"
+          >
+            <div className="px-8 py-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+              <div>
+                <h2 className="text-lg font-black text-white tracking-tight uppercase">Recent Releases</h2>
+                <p className="label-elite mt-1">Catalogue Activity</p>
               </div>
-              <p className="text-sm font-bold text-white mb-1">No releases yet</p>
-              <p className="text-xs text-zinc-600 mb-6 max-w-xs mx-auto">
-                Submit your first release and we'll distribute it to all major stores globally.
-              </p>
               <button
-                onClick={() => navigate('/releases/new')}
-                className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-xl text-[11px] font-black uppercase tracking-widest transition-colors"
+                onClick={() => navigate('/releases')}
+                className="text-[11px] font-black text-red-500 hover:text-red-400 uppercase tracking-[0.2em] flex items-center transition-colors bg-red-600/10 px-4 py-2 rounded-xl border border-red-600/20"
               >
-                Submit Release
+                View All <ChevronRight className="w-3.5 h-3.5 ml-1" />
               </button>
             </div>
-          )}
-        </motion.div>
 
-        {/* ─── Quick Actions ─── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4"
-        >
-          {[
-            {
-              icon: Upload,
-              title: 'New Release',
-              desc: planLimits.maxReleases === -1 ? 'Unlimited submissions' : `${userReleases.length} / ${planLimits.maxReleases} used`,
-              route: '/releases/new',
-              locked: planLimits.maxReleases !== -1 && userReleases.length >= planLimits.maxReleases,
-              active: true
-            },
-            {
-              icon: BarChart3,
-              title: 'Analytics',
-              desc: planLimits.analytics ? 'Streams, charts & insights' : 'Upgrade to access',
-              route: '/analytics',
-              locked: !planLimits.analytics,
-              active: planLimits.analytics
-            },
-            {
-              icon: DollarSign,
-              title: 'Revenue',
-              desc: planLimits.revenue ? 'Earnings & payouts' : 'Upgrade to access',
-              route: '/revenue',
-              locked: !planLimits.revenue,
-              active: planLimits.revenue
-            }
-          ].map((action, i) => (
-            <motion.button
-              key={i}
-              onClick={() => !action.locked && navigate(action.route)}
-              disabled={action.locked}
-              whileHover={action.locked ? {} : { y: -2 }}
-              whileTap={action.locked ? {} : { scale: 0.98 }}
-              className={`relative rounded-2xl p-5 text-left border transition-all duration-200 ${
-                action.locked
-                  ? 'bg-zinc-950 border-zinc-900 opacity-50 cursor-not-allowed'
-                  : action.active
-                  ? 'bg-red-600 border-red-700 hover:bg-red-700'
-                  : 'bg-zinc-950 border-zinc-900 hover:border-zinc-700'
-              }`}
-            >
-              <action.icon className={`w-6 h-6 mb-4 ${action.active && !action.locked ? 'text-white' : 'text-zinc-500'}`} />
-              <p className={`text-sm font-black ${action.active && !action.locked ? 'text-white' : 'text-zinc-400'}`}>
-                {action.title}
-              </p>
-              <p className={`text-[11px] mt-0.5 ${action.active && !action.locked ? 'text-red-200' : 'text-zinc-600'}`}>
-                {action.desc}
-              </p>
-              {!action.locked && (
-                <ChevronRight className={`absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 ${action.active ? 'text-red-200' : 'text-zinc-700'}`} />
+            <div className="flex-1 overflow-hidden">
+              {userReleases.length === 0 ? (
+                <div className="py-24 text-center px-10">
+                  <div className="w-16 h-16 rounded-[2rem] bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto mb-6 shadow-2xl">
+                    <Music className="w-7 h-7 text-zinc-700" />
+                  </div>
+                  <p className="text-lg font-black text-white mb-2 uppercase">No catalogue yet</p>
+                  <p className="text-xs text-zinc-600 mb-8 max-w-xs mx-auto font-bold leading-relaxed">
+                    Submit your first release and we'll distribute it to 150+ major stores globally.
+                  </p>
+                  <button
+                    onClick={() => navigate('/releases/new')}
+                    className="bg-white text-black px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all hover:bg-zinc-200 active:scale-95 shadow-xl shadow-white/5"
+                  >
+                    Start Distribution
+                  </button>
+                </div>
+              ) : (
+                <div className="divide-y divide-white/5">
+                  {userReleases.slice(0, 5).map((release: any, i) => (
+                    <motion.div
+                      key={release._id}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.05 }}
+                      onClick={() => navigate('/analytics')}
+                      className="p-6 md:p-8 flex items-center justify-between hover:bg-white/[0.03] transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center space-x-6 min-w-0">
+                        <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-zinc-900 flex items-center justify-center flex-shrink-0 border border-white/5 shadow-2xl overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                          {release.cover_url ? (
+                            <img src={release.cover_url} alt={release.title} className="w-full h-full object-cover" />
+                          ) : (
+                            <Music className="w-6 h-6 text-red-500" />
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-base md:text-lg font-black text-white truncate group-hover:text-red-500 transition-colors uppercase leading-tight mb-1">{release.title}</p>
+                          <div className="flex items-center gap-3">
+                            <span className={`px-2.5 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest border transition-all ${getStatusStyle(release.status)}`}>
+                                {release.status}
+                            </span>
+                            <p className="text-[10px] text-zinc-600 font-black uppercase tracking-widest">{release.artist} · {formatNumber(release.streams || 0)} STREAMS</p>
+                          </div>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-zinc-800 group-hover:text-white transition-all transform group-hover:translate-x-1" />
+                    </motion.div>
+                  ))}
+                </div>
               )}
-            </motion.button>
-          ))}
-        </motion.div>
+            </div>
+          </motion.div>
+
+          {/* Quick Actions Column */}
+          <div className="space-y-6 md:space-y-8 flex flex-col">
+            <h3 className="label-elite pl-2">Operations Center</h3>
+            <div className="grid grid-cols-1 gap-4 md:gap-6 flex-1">
+              {[
+                {
+                  icon: Upload,
+                  title: 'New Release',
+                  desc: planLimits.maxReleases === -1 ? 'Unlimited submissions' : `${userReleases.length} / ${planLimits.maxReleases} used`,
+                  route: '/releases/new',
+                  locked: planLimits.maxReleases !== -1 && userReleases.length >= planLimits.maxReleases,
+                  accent: 'from-red-600 to-red-900',
+                  active: true
+                },
+                {
+                  icon: BarChart3,
+                  title: 'Analytics',
+                  desc: planLimits.analytics ? 'Streams, charts & insights' : 'Upgrade to access',
+                  route: '/analytics',
+                  locked: !planLimits.analytics,
+                  accent: 'from-zinc-800 to-black',
+                  active: planLimits.analytics
+                },
+                {
+                  icon: DollarSign,
+                  title: 'Revenue',
+                  desc: planLimits.revenue ? 'Earnings & payouts' : 'Upgrade to access',
+                  route: '/revenue',
+                  locked: !planLimits.revenue,
+                  accent: 'from-zinc-800 to-black',
+                  active: planLimits.revenue
+                }
+              ].map((action, i) => (
+                <motion.button
+                  key={i}
+                  onClick={() => !action.locked && navigate(action.route)}
+                  disabled={action.locked}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4 + (i * 0.1) }}
+                  whileHover={action.locked ? {} : { x: 5, scale: 1.02 }}
+                  whileTap={action.locked ? {} : { scale: 0.98 }}
+                  className={`relative rounded-[2rem] p-8 text-left border transition-all duration-500 overflow-hidden group shadow-2xl flex flex-col justify-end min-h-[140px] md:min-h-0 md:flex-1 ${
+                    action.locked
+                      ? 'bg-zinc-950/50 border-zinc-900 opacity-40 cursor-not-allowed'
+                      : 'glass-card-elite hover:border-red-600/50'
+                  }`}
+                >
+                  <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${action.accent} opacity-10 blur-3xl group-hover:opacity-30 transition-opacity`} />
+                  
+                  <div className="relative z-10">
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 border transition-all ${
+                        action.active && !action.locked ? 'bg-red-600 border-red-500 shadow-lg shadow-red-600/20' : 'bg-zinc-900 border-white/5'
+                    }`}>
+                      <action.icon className={`w-6 h-6 ${action.active && !action.locked ? 'text-white' : 'text-zinc-600'}`} />
+                    </div>
+                    <div>
+                      <p className={`text-lg font-black uppercase tracking-tight ${action.active && !action.locked ? 'text-white' : 'text-zinc-500'}`}>
+                        {action.title}
+                      </p>
+                      <p className={`text-[10px] font-black uppercase tracking-widest mt-1 ${action.active && !action.locked ? 'text-zinc-400' : 'text-zinc-700'}`}>
+                        {action.desc}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {!action.locked && (
+                    <ChevronRight className={`absolute right-8 bottom-8 w-6 h-6 transform group-hover:translate-x-2 transition-transform ${action.active ? 'text-red-600' : 'text-zinc-800'}`} />
+                  )}
+                </motion.button>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Loading overlay */}

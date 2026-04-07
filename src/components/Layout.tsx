@@ -59,7 +59,7 @@ export default function Layout({ children }: LayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-black flex">
+    <div className="min-h-screen bg-[#050505] bg-mesh-elite flex">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div

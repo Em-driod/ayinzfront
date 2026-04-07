@@ -107,13 +107,21 @@ export default function Settings() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] p-4 md:p-8 pb-24">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen">
+      <div className="relative z-10 p-5 md:p-10 max-w-6xl mx-auto space-y-10">
 
-        {/* Page header */}
-        <div className="mb-8 pb-6 border-b border-zinc-900">
-          <p className="text-[10px] font-black text-zinc-700 uppercase tracking-[0.3em] mb-1.5">Account</p>
-          <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">Settings</h1>
+        {/* ─── Header ─── */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+          >
+            <p className="label-elite mb-2">Management Center</p>
+            <h1 className="text-4xl md:text-6xl font-display italic tracking-tight text-white uppercase leading-[0.85]">
+              Account<br/>
+              <span className="text-gradient-red">Settings</span>
+            </h1>
+          </motion.div>
         </div>
 
         {/* Alert */}
@@ -132,28 +140,31 @@ export default function Settings() {
           </motion.div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
 
-          {/* Tab Navigation */}
-          <div className="flex md:flex-col gap-2 overflow-x-auto pb-1 md:pb-0">
+          {/* Navigation Sidebar */}
+          <div className="lg:col-span-1 space-y-2">
             {tabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-shrink-0 md:w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                className={`w-full flex items-center justify-between px-6 py-4 rounded-2xl text-sm font-black transition-all group ${
                   activeTab === tab.id
-                    ? 'bg-zinc-900 text-white border border-zinc-800'
-                    : 'text-zinc-600 hover:text-zinc-400 hover:bg-zinc-950'
+                    ? 'bg-red-600 text-white shadow-2xl shadow-red-600/20'
+                    : 'text-zinc-600 hover:text-zinc-400 hover:bg-white/5'
                 }`}
               >
-                <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-red-500' : 'text-zinc-700'}`} />
-                <span className="whitespace-nowrap">{tab.label}</span>
+                <div className="flex items-center gap-4">
+                  <tab.icon className={`w-5 h-5 ${activeTab === tab.id ? 'text-white' : 'text-zinc-700 group-hover:text-zinc-500'}`} />
+                  <span className="uppercase tracking-widest">{tab.label}</span>
+                </div>
+                {activeTab === tab.id && <motion.div layoutId="activeTab" className="w-1.5 h-1.5 rounded-full bg-white shadow-glow" />}
               </button>
             ))}
           </div>
 
           {/* Content Area */}
-          <div className="md:col-span-3">
+          <div className="lg:col-span-3">
             <motion.div
               key={activeTab}
               initial={{ opacity: 0, y: 10 }}
@@ -163,128 +174,138 @@ export default function Settings() {
 
               {/* ── Profile Tab ── */}
               {activeTab === 'profile' && (
-                <div className="bg-zinc-950 border border-zinc-900 rounded-2xl p-6 md:p-8">
-                  <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 mb-8 text-center sm:text-left">
-                    <div className="relative group flex-shrink-0">
-                      <div className="w-18 h-18 w-[72px] h-[72px] rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-white text-2xl font-black overflow-hidden">
+                <div className="glass-card-elite p-8 md:p-12 rounded-[2.5rem]">
+                  <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 mb-12">
+                    <div className="relative group">
+                       <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-amber-600 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
+                       <div className="relative w-24 h-24 rounded-3xl bg-zinc-900 border border-white/10 flex items-center justify-center text-white text-3xl font-display italic overflow-hidden">
                         {profile.avatar_url
                           ? <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
                           : profile.name.charAt(0).toUpperCase()
                         }
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer backdrop-blur-sm rounded-2xl">
-                          <Camera className="w-5 h-5 text-white" />
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer backdrop-blur-sm">
+                          <Camera className="w-6 h-6 text-white" />
                         </div>
                       </div>
                     </div>
-                    <div className="pt-1">
-                      <h3 className="text-lg font-black text-white mb-0.5">{profile.name || 'Your Name'}</h3>
-                      <p className="text-xs text-zinc-600 font-bold uppercase tracking-wider">Artist Profile</p>
+                    <div className="pt-2 text-center sm:text-left">
+                       <p className="label-elite text-red-500 mb-1">Identity Verified</p>
+                       <h3 className="text-3xl font-black text-white tracking-tight leading-none mb-2">{profile.name || 'ANONYMOUS'}</h3>
+                       <p className="text-[11px] text-zinc-600 font-black uppercase tracking-widest">Elite Artiste Tier</p>
                     </div>
                   </div>
 
-                  <form onSubmit={handleUpdateProfile} className="space-y-5">
-                    <div>
-                      <label className={labelClass}>Display Name</label>
-                      <input type="text" required className={inputClass} value={profile.name}
-                        onChange={e => setProfile({ ...profile, name: e.target.value })} />
+                  <form onSubmit={handleUpdateProfile} className="space-y-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-2">
+                          <label className="label-elite opacity-50">Legal Full Name</label>
+                          <input type="text" required className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold" value={profile.name}
+                            onChange={e => setProfile({ ...profile, name: e.target.value })} />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="label-elite opacity-50">Verified Email</label>
+                          <div className="relative">
+                            <input type="email" readOnly className="w-full bg-white/[0.01] border border-white/5 rounded-2xl px-6 py-4 text-zinc-600 italic cursor-not-allowed font-bold" value={profile.email} />
+                            <Shield className="absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-white/5" />
+                          </div>
+                        </div>
                     </div>
-                    <div>
-                      <label className={labelClass}>Account Email</label>
-                      <div className="relative">
-                        <input type="email" readOnly className={`${inputClass} cursor-not-allowed text-zinc-600 italic`} value={profile.email} />
-                        <Shield className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-800" />
-                      </div>
-                      <p className="text-[10px] text-zinc-700 mt-1.5 ml-1 font-bold uppercase tracking-wider">Contact support to change your email</p>
-                    </div>
-                    <div>
-                      <label className={labelClass}>Profile Photo URL</label>
-                      <input type="text" placeholder="https://example.com/photo.jpg" className={inputClass}
+                    <div className="space-y-2">
+                      <label className="label-elite opacity-50">Custom Avatar Endpoint</label>
+                      <input type="text" placeholder="https://cdn.sonic.io/avatar/v1" className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold"
                         value={profile.avatar_url} onChange={e => setProfile({ ...profile, avatar_url: e.target.value })} />
                     </div>
-                    <button type="submit" disabled={submitting}
-                      className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest transition-colors disabled:opacity-50 mt-2"
-                    >
-                      {submitting
-                        ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        : <><Save className="w-4 h-4" /> Save Changes</>
-                      }
-                    </button>
+                    <div className="pt-4">
+                        <button type="submit" disabled={submitting}
+                          className="w-full group bg-white text-black hover:bg-red-600 hover:text-white py-5 rounded-2xl font-black text-sm uppercase tracking-widest transition-all disabled:opacity-50 shadow-2xl flex items-center justify-center gap-3 active:scale-95"
+                        >
+                          {submitting
+                            ? <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                            : <><Save className="w-5 h-5 group-hover:scale-110 transition-transform" /> Synchronize Records</>
+                          }
+                        </button>
+                    </div>
                   </form>
                 </div>
               )}
 
               {/* ── Security Tab ── */}
               {activeTab === 'security' && (
-                <div className="bg-zinc-950 border border-zinc-900 rounded-2xl p-6 md:p-8">
-                  <div className="mb-7">
-                    <h3 className="text-base font-black text-white tracking-tight">Account Security</h3>
-                    <p className="text-xs text-zinc-600 font-bold mt-0.5 uppercase tracking-wider">Change your password</p>
+                <div className="glass-card-elite p-8 md:p-12 rounded-[2.5rem]">
+                  <div className="mb-10">
+                    <h3 className="text-2xl font-black text-white tracking-tight uppercase">Security Vault</h3>
+                    <p className="label-elite mt-2 opacity-60">Manage authentication protocols</p>
                   </div>
 
-                  <form onSubmit={handleChangePassword} className="space-y-5">
-                    <div>
-                      <label className={labelClass}>Current Password</label>
-                      <input type="password" required placeholder="••••••••" className={inputClass}
+                  <form onSubmit={handleChangePassword} className="space-y-6">
+                    <div className="space-y-2">
+                      <label className="label-elite opacity-50">Current Password</label>
+                      <input type="password" required placeholder="••••••••" className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold"
                         value={passwordData.currentPassword}
                         onChange={e => setPasswordData({ ...passwordData, currentPassword: e.target.value })} />
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                      <div>
-                        <label className={labelClass}>New Password</label>
-                        <input type="password" required minLength={6} placeholder="Min. 6 characters" className={inputClass}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="label-elite opacity-50">New Password</label>
+                        <input type="password" required minLength={6} placeholder="Min. 6 characters" className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold"
                           value={passwordData.newPassword}
                           onChange={e => setPasswordData({ ...passwordData, newPassword: e.target.value })} />
                       </div>
-                      <div>
-                        <label className={labelClass}>Confirm Password</label>
-                        <input type="password" required placeholder="Repeat new password" className={inputClass}
+                      <div className="space-y-2">
+                        <label className="label-elite opacity-50">Confirm New Password</label>
+                        <input type="password" required placeholder="Repeat new password" className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold"
                           value={passwordData.confirmPassword}
                           onChange={e => setPasswordData({ ...passwordData, confirmPassword: e.target.value })} />
                       </div>
                     </div>
-                    <button type="submit" disabled={submitting}
-                      className="w-full flex items-center justify-center gap-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest transition-colors disabled:opacity-50 mt-2"
-                    >
-                      {submitting
-                        ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        : 'Update Password'
-                      }
-                    </button>
+                    <div className="pt-4">
+                        <button type="submit" disabled={submitting}
+                          className="w-full bg-zinc-950 hover:bg-red-600/10 border border-white/5 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-widest transition-all disabled:opacity-50"
+                        >
+                          {submitting
+                            ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            : 'Update Authentication'
+                          }
+                        </button>
+                    </div>
                   </form>
                 </div>
               )}
 
               {/* ── Plan Tab ── */}
               {activeTab === 'subscription' && (
-                <div className="bg-zinc-950 border border-zinc-900 rounded-2xl p-6 md:p-8">
-                  <div className="mb-7">
-                    <h3 className="text-base font-black text-white tracking-tight">Active Plan</h3>
-                    <p className="text-xs text-zinc-600 font-bold mt-0.5 uppercase tracking-wider">Your current distribution tier</p>
+                <div className="glass-card-elite p-8 md:p-12 rounded-[2.5rem]">
+                  <div className="mb-10">
+                    <h3 className="text-2xl font-black text-white tracking-tight uppercase">Elite Tier Status</h3>
+                    <p className="label-elite mt-2 opacity-60">Manage your distribution capacity</p>
                   </div>
 
-                  <div className="bg-black border border-zinc-900 rounded-2xl p-5 md:p-6 mb-5">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
+                  <div className="bg-gradient-to-br from-red-600/20 to-zinc-950 border border-red-600/20 rounded-[2rem] p-8 md:p-10 mb-8 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/10 blur-3xl pointer-events-none" />
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
                       <div>
-                        <p className="text-[10px] font-black text-red-500 uppercase tracking-[0.25em] mb-2">Distribution Plan</p>
-                        <h4 className="text-2xl md:text-3xl font-black text-white tracking-tight mb-1">{currentPlan.label}</h4>
-                        <p className="text-xs text-zinc-600 font-bold uppercase tracking-wider">{currentPlan.desc}</p>
+                        <p className="label-elite text-red-500 mb-3">Active Distribution Tier</p>
+                        <h4 className="text-4xl md:text-5xl font-display italic text-white tracking-tight leading-none mb-2">{currentPlan.label}</h4>
+                        <p className="text-xs text-zinc-500 font-black uppercase tracking-widest">{currentPlan.desc}</p>
                       </div>
                       <div className="flex-shrink-0">
                         <button
                           onClick={() => window.location.href = '/pricing'}
-                          className="w-full md:w-auto bg-white text-black px-6 py-3 rounded-xl text-sm font-black hover:bg-zinc-100 active:scale-95 transition-all flex items-center gap-2"
+                          className="w-full md:w-auto bg-white text-black px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all active:scale-95 shadow-2xl"
                         >
-                          Change Plan <ChevronRight className="w-4 h-4" />
+                          Legacy Upgrade
                         </button>
                       </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {currentPlan.perks.map((perk, i) => (
-                      <div key={i} className="flex items-center gap-3 bg-black border border-zinc-900 p-3.5 rounded-xl">
-                        <CheckCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
-                        <span className="text-xs font-bold text-zinc-400">{perk}</span>
+                      <div key={i} className="flex items-center gap-4 bg-white/[0.03] border border-white/5 p-5 rounded-2xl group hover:bg-white/[0.05] transition-colors">
+                        <div className="w-8 h-8 rounded-lg bg-red-600/10 flex items-center justify-center">
+                            <CheckCircle className="w-4 h-4 text-red-500 group-hover:scale-110 transition-transform" />
+                        </div>
+                        <span className="text-[11px] font-black text-zinc-400 uppercase tracking-widest">{perk}</span>
                       </div>
                     ))}
                   </div>

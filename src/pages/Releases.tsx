@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Music, Calendar, Clock, CheckCircle, AlertCircle, Upload, ChevronRight, Search } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../utils/api';
 
 interface Release {
@@ -51,143 +51,182 @@ export default function Releases() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen">
+      
+      <div className="relative z-10 p-5 md:p-10 space-y-10">
 
-      {/* Header */}
-      <div className="border-b border-zinc-900 bg-[#0a0a0a]/95 backdrop-blur-md sticky top-0 z-10">
-        <div className="px-5 md:px-8 pt-6 pb-4">
-          <div className="flex flex-wrap items-end justify-between gap-4 mb-5">
-            <div>
-              <p className="text-[10px] font-black text-zinc-700 uppercase tracking-[0.3em] mb-1">Catalogue</p>
-              <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">Releases</h1>
+        {/* ─── Header ─── */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+          >
+            <p className="label-elite mb-2">Catalogue Management</p>
+            <h1 className="text-4xl md:text-6xl font-display italic tracking-tight text-white uppercase leading-[0.85]">
+              Your<br/>
+              <span className="text-gradient-red">Catalogue</span>
+            </h1>
+          </motion.div>
+          
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+            {/* Search */}
+            <div className="relative min-w-[280px]">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
+                <input
+                type="text"
+                placeholder="Search catalogue…"
+                className="w-full pl-11 pr-4 py-4 bg-zinc-950/50 border border-white/5 rounded-2xl text-sm text-white placeholder-zinc-700 focus:border-red-600/50 focus:outline-none transition-all font-bold"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                />
             </div>
-            <button
-              onClick={() => navigate('/releases/new')}
-              className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2.5 rounded-xl text-sm font-black transition-all active:scale-95"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Submit Release</span>
-            </button>
-          </div>
 
-          {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-700" />
-            <input
-              type="text"
-              placeholder="Search by title or artist…"
-              className="w-full pl-9 pr-4 py-2.5 bg-zinc-950 border border-zinc-900 rounded-xl text-sm text-white placeholder-zinc-700 focus:border-zinc-700 focus:outline-none transition-colors font-medium"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+            <motion.button
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                onClick={() => navigate('/releases/new')}
+                className="group relative px-8 py-4 bg-white text-black rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all hover:bg-zinc-200 active:scale-95 shadow-xl shadow-white/5 flex items-center justify-center gap-3"
+            >
+                <Plus className="w-4 h-4" />
+                New Release
+            </motion.button>
           </div>
         </div>
-      </div>
 
-      <div className="p-4 md:p-8">
-        {/* Loading */}
-        {loading && (
-          <div className="flex items-center justify-center py-24">
-            <div className="w-5 h-5 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
-          </div>
-        )}
-
-        {/* Error */}
-        {error && !loading && (
-          <div className="bg-red-500/5 border border-red-500/20 text-red-400 rounded-xl p-4 text-sm font-bold">
-            {error}
-          </div>
-        )}
-
-        {/* Empty state */}
-        {!loading && !error && filtered.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="w-14 h-14 bg-zinc-950 border border-zinc-900 rounded-2xl flex items-center justify-center mb-5">
-              <Music className="w-6 h-6 text-zinc-700" />
-            </div>
-            <h2 className="text-lg font-black text-white mb-1.5">
-              {search ? 'No results' : 'No releases yet'}
-            </h2>
-            <p className="text-sm text-zinc-600 mb-7 max-w-xs font-medium">
-              {search
-                ? 'Try a different search term.'
-                : 'Submit your first release and we\'ll distribute it globally within days.'}
-            </p>
-            {!search && (
-              <button
-                onClick={() => navigate('/releases/new')}
-                className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-xl font-black text-sm transition-all active:scale-95"
+        {/* ─── Content Area ─── */}
+        <div className="relative min-h-[400px]">
+          {/* Loading Overlay */}
+          <AnimatePresence>
+            {loading && (
+              <motion.div 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 flex items-center justify-center z-20 bg-[#050505]/50 backdrop-blur-sm"
               >
-                <Upload className="w-4 h-4" />
-                <span>Submit First Release</span>
-              </button>
+                <div className="w-10 h-10 border-4 border-red-600 border-t-transparent rounded-full animate-spin shadow-2xl shadow-red-600/20" />
+              </motion.div>
             )}
-          </div>
-        )}
+          </AnimatePresence>
 
-        {/* Release list */}
-        {!loading && !error && filtered.length > 0 && (
-          <div className="space-y-2">
-            {filtered.map((release, i) => {
-              const status = getStatusStyle(release.status);
-              const date = new Date(release.created_at).toLocaleDateString('en-GB', {
-                day: 'numeric', month: 'short', year: 'numeric',
-              });
+          {/* Error Message */}
+          {error && !loading && (
+            <div className="bg-red-600/10 border border-red-600/20 text-red-500 rounded-2xl p-6 text-sm font-black uppercase tracking-widest flex items-center gap-4">
+              <AlertCircle className="w-6 h-6" />
+              {error}
+            </div>
+          )}
 
-              return (
-                <motion.div
-                  key={release.id}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.04 }}
-                  onClick={() => navigate('/analytics')}
-                  className="bg-zinc-950 border border-zinc-900 rounded-2xl p-4 flex items-center justify-between hover:border-zinc-800 transition-all duration-200 cursor-pointer group"
-                >
-                  <div className="flex items-center space-x-4 min-w-0">
-                    {/* Cover art */}
-                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                      {release.cover_url
-                        ? <img src={release.cover_url} alt={release.title} className="w-full h-full object-cover" />
-                        : <Music className="w-5 h-5 text-zinc-700" />
-                      }
-                    </div>
+          {/* Empty State / No Results */}
+          {!loading && !error && filtered.length === 0 && (
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col items-center justify-center py-32 text-center glass-card-elite rounded-[3rem]"
+            >
+                <div className="w-20 h-20 bg-zinc-950 border border-white/5 rounded-[2.5rem] flex items-center justify-center mb-8 shadow-2xl">
+                    <Music className="w-8 h-8 text-zinc-800" />
+                </div>
+                <h2 className="text-2xl font-black text-white mb-2 uppercase tracking-widest">
+                    {search ? 'Track Not Found' : 'Catalogue Empty'}
+                </h2>
+                <p className="text-xs text-zinc-600 mb-10 max-w-xs font-bold uppercase tracking-widest leading-relaxed">
+                    {search ? 'Try adjusting your search filters or browse all titles.' : 'Begin your journey by uploading your first masterpiece for global distribution.'}
+                </p>
+                {!search && (
+                    <button
+                        onClick={() => navigate('/releases/new')}
+                        className="bg-red-600 text-white px-10 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all hover:bg-red-500 active:scale-95 shadow-xl shadow-red-600/20"
+                    >
+                        Start First Release
+                    </button>
+                )}
+            </motion.div>
+          )}
 
-                    {/* Info */}
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2 mb-0.5">
-                        <h3 className="font-black text-white text-sm truncate max-w-[140px] md:max-w-none">{release.title}</h3>
-                        <span className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider flex-shrink-0 ${status.cls}`}>
-                          {status.icon}
-                          <span>{status.label}</span>
-                        </span>
+          {/* Grid of Release Cards */}
+          {!loading && !error && filtered.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+              <AnimatePresence mode="popLayout">
+                {filtered.map((release, i) => {
+                  const status = getStatusStyle(release.status);
+                  const date = new Date(release.created_at).toLocaleDateString('en-GB', {
+                    day: 'numeric', month: 'short', year: 'numeric',
+                  });
+
+                  return (
+                    <motion.div
+                      key={release.id}
+                      layout
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.4, delay: i * 0.05 }}
+                      whileHover={{ y: -8, scale: 1.02 }}
+                      onClick={() => navigate('/analytics')}
+                      className="glass-card-elite flex flex-col group cursor-pointer overflow-hidden rounded-[2.5rem]"
+                    >
+                      {/* Artwork Container */}
+                      <div className="aspect-square relative overflow-hidden bg-zinc-950">
+                          {release.cover_url ? (
+                              <img 
+                                  src={release.cover_url} 
+                                  alt={release.title} 
+                                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                              />
+                          ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                  <Music className="w-12 h-12 text-zinc-900 group-hover:text-red-600/20 transition-colors duration-500" />
+                              </div>
+                          )}
+                          
+                          {/* Floating Badge */}
+                          <div className="absolute top-4 right-4 z-10">
+                              <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-2xl backdrop-blur-md ${status.cls}`}>
+                                  {status.label}
+                              </span>
+                          </div>
+
+                          {/* Hover Overlay */}
+                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-4 backdrop-blur-sm">
+                              <div className="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center shadow-xl shadow-red-600/40 transform translate-y-4 group-hover:translate-y-0 transition-transform">
+                                  <Upload className="w-6 h-6 text-white" />
+                              </div>
+                              <p className="text-[10px] font-black text-white uppercase tracking-[0.2em] transform translate-y-4 group-hover:translate-y-0 transition-transform delay-75">Analysis</p>
+                          </div>
                       </div>
-                      <p className="text-xs text-zinc-600 font-bold truncate uppercase tracking-wider">{release.artist} · {release.type}</p>
-                      <div className="flex items-center space-x-1 mt-0.5 text-[10px] text-zinc-700 font-bold">
-                        <Calendar className="w-2.5 h-2.5 flex-shrink-0" />
-                        <span>{date}</span>
-                      </div>
-                    </div>
-                  </div>
 
-                  {/* Stats & chevron */}
-                  <div className="flex items-center space-x-4 md:space-x-8 text-right flex-shrink-0 pl-3">
-                    <div className="hidden sm:block">
-                      <p className="text-[10px] text-zinc-700 font-black uppercase tracking-wider">Streams</p>
-                      <p className="font-black text-white text-sm">{release.streams?.toLocaleString() || '—'}</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-zinc-700 font-black uppercase tracking-wider">Revenue</p>
-                      <p className="font-black text-sm text-red-500">
-                        {release.revenue > 0 ? `₦${release.revenue.toLocaleString()}` : '—'}
-                      </p>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-zinc-800 group-hover:text-red-500 transition-colors flex-shrink-0 hidden sm:block" />
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        )}
+                      {/* Info Area */}
+                      <div className="p-6 md:p-8 flex flex-col flex-1 bg-white/[0.02]">
+                          <h3 className="text-lg md:text-xl font-black text-white truncate uppercase tracking-tight group-hover:text-red-500 transition-colors mb-1">{release.title}</h3>
+                          <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-6">{release.artist} · {release.type}</p>
+                          
+                          <div className="mt-auto space-y-4">
+                              <div className="pt-4 border-t border-white/5 flex items-center justify-between">
+                                  <div>
+                                      <p className="label-elite opacity-50 mb-0.5">Streams</p>
+                                      <p className="text-sm font-black text-white font-mono">{release.streams?.toLocaleString() || '—'}</p>
+                                  </div>
+                                  <div className="text-right">
+                                      <p className="label-elite opacity-50 mb-0.5">Revenue</p>
+                                      <p className="text-sm font-black text-red-500 font-mono">
+                                          {release.revenue > 0 ? `₦${release.revenue.toLocaleString()}` : '—'}
+                                      </p>
+                                  </div>
+                              </div>
+                              <div className="flex items-center gap-2 text-[9px] font-black text-zinc-700 uppercase tracking-widest">
+                                  <Calendar className="w-3 h-3" />
+                                  <span>Added {date}</span>
+                              </div>
+                          </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

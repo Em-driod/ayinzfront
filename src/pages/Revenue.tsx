@@ -128,128 +128,205 @@ export default function Revenue() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] p-4 md:p-8 pb-24">
+    <div className="min-h-screen">
 
-      {/* Page header */}
-      <div className="mb-8 pb-6 border-b border-zinc-900">
-        <p className="text-[10px] font-black text-zinc-700 uppercase tracking-[0.3em] mb-1.5">Financials</p>
-        <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">Revenue</h1>
-      </div>
+      <div className="relative z-10 p-5 md:p-10 space-y-10">
 
-      {/* Top Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        {/* Balance + withdraw */}
-        <div className="bg-zinc-950 border border-zinc-900 rounded-2xl p-6 flex flex-col justify-between gap-5">
-          <div>
-            <p className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-2">Available Balance</p>
-            <h2 className="text-3xl font-black text-white mb-0.5">₦{netBalance.toLocaleString()}</h2>
-            {pendingWithdrawals > 0 && (
-              <p className="text-[10px] text-amber-500/80 font-bold mt-1">₦{pendingWithdrawals.toLocaleString()} pending</p>
-            )}
-          </div>
-          <button
-            onClick={() => { setPayoutForm(f => ({ ...f, amount: netBalance })); setShowModal(true); }}
-            className="flex items-center justify-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-xl text-sm font-black transition-all active:scale-95"
+        {/* ─── Header ─── */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
           >
-            <ArrowUpRight className="w-4 h-4" />
-            <span>Withdraw</span>
-          </button>
-          <p className="text-[10px] text-zinc-700 font-bold flex items-center">
-            <Clock className="w-3 h-3 mr-1.5" />7 working days processing
-          </p>
+            <p className="label-elite mb-2">Financial Records</p>
+            <h1 className="text-4xl md:text-6xl font-display italic tracking-tight text-white uppercase leading-[0.85]">
+              Revenue<br/>
+              <span className="text-gradient-red">Management</span>
+            </h1>
+          </motion.div>
         </div>
 
-        {/* Lifetime */}
-        <div className="bg-zinc-950 border border-zinc-900 rounded-2xl p-6">
-          <div className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-4">
-            <TrendingUp className="w-4 h-4 text-red-500" />
-          </div>
-          <p className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-1">Lifetime Earnings</p>
-          <h2 className="text-2xl font-black text-white">₦{totalRevenue.toLocaleString()}</h2>
-          <p className="text-xs text-red-500 font-bold flex items-center mt-1">
-            <ArrowUpRight className="w-3 h-3 mr-1" />Total earned across all releases
-          </p>
-        </div>
-
-        {/* Top earner */}
-        <div className="bg-zinc-950 border border-zinc-900 rounded-2xl p-6">
-          <div className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-4">
-            <Music className="w-4 h-4 text-red-500" />
-          </div>
-          <p className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-1">Top Earner</p>
-          <h2 className="text-lg font-black text-white truncate">{topRelease?.title || '—'}</h2>
-          <p className="text-xs text-zinc-600 font-bold mt-0.5">₦{topRelease?.revenue?.toLocaleString() || 0} earned</p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Pie Chart */}
-        <div className="bg-zinc-950 border border-zinc-900 rounded-2xl p-6">
-          <p className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-5">Revenue by Platform</p>
-          {pieData.length > 0 ? (
-            <>
-              <div className="h-52">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={pieData} cx="50%" cy="50%" innerRadius={55} outerRadius={80} paddingAngle={4} dataKey="value">
-                      {pieData.map((entry, i) => (
-                        <Cell key={i} fill={PLATFORM_COLORS[entry.name] || '#52525b'} />
-                      ))}
-                    </Pie>
-                    <Tooltip content={<CustomTooltip />} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="mt-5 space-y-2.5">
-                {pieData.map((p) => (
-                  <div key={p.name} className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 rounded-full mr-2.5" style={{ backgroundColor: PLATFORM_COLORS[p.name] || '#52525b' }} />
-                      <span className="text-xs text-zinc-500 font-bold">{p.name}</span>
+        {/* ─── Top Cards: Elite Balance & Highlights ─── */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10">
+          
+          {/* THE ELITE BALANCE CARD */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="lg:col-span-1 relative group"
+          >
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-red-600 to-amber-600 rounded-[2.5rem] blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+            <div className="relative glass-card-elite rounded-[2.5rem] p-8 md:p-10 h-full overflow-hidden flex flex-col justify-between min-h-[300px]">
+                {/* Background Decor */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-red-600/10 blur-[80px] -mr-32 -mt-32 rounded-full pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-amber-500/5 blur-[50px] -ml-16 -mb-16 rounded-full pointer-events-none" />
+                
+                <div className="relative">
+                    <div className="flex items-center justify-between mb-8">
+                        <div className="w-14 h-9 bg-zinc-900/50 border border-white/5 rounded-lg flex items-center justify-center overflow-hidden">
+                            <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-amber-700 blur-[2px] opacity-50" />
+                        </div>
+                        <CreditCard className="w-6 h-6 text-zinc-600" />
                     </div>
-                    <span className="text-xs text-white font-mono font-black">₦{Math.round(p.value).toLocaleString()}</span>
-                  </div>
-                ))}
-              </div>
-            </>
-          ) : (
-            <div className="flex flex-col items-center justify-center h-52 text-center">
-              <Globe className="w-10 h-10 text-zinc-900 mb-3" />
-              <p className="text-sm text-zinc-700 font-bold">No platform data yet</p>
-            </div>
-          )}
-        </div>
+                    <p className="label-elite opacity-50 mb-2">Available Balance</p>
+                    <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter leading-none">
+                        ₦{netBalance.toLocaleString()}
+                    </h2>
+                    {pendingWithdrawals > 0 && (
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full mt-4">
+                            <Clock className="w-3 h-3 text-amber-500" />
+                            <span className="text-[10px] text-amber-500 font-black uppercase tracking-widest">₦{pendingWithdrawals.toLocaleString()} Processing</span>
+                        </div>
+                    )}
+                </div>
 
-        {/* Payout History */}
-        <div className="lg:col-span-2 bg-zinc-950 border border-zinc-900 rounded-2xl p-6">
-          <p className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-5">Payout History</p>
-          <div className="space-y-2.5 max-h-[400px] overflow-y-auto pr-1">
-            {payouts.length === 0 ? (
-              <div className="text-center py-16 flex flex-col items-center">
-                <CreditCard className="w-10 h-10 text-zinc-900 mb-3" />
-                <p className="text-sm text-zinc-700 font-bold">No payouts yet</p>
-              </div>
-            ) : payouts.map((payout) => (
-              <div key={payout._id} className="flex items-center justify-between p-4 bg-black border border-zinc-900 rounded-xl hover:border-zinc-800 transition-all">
-                <div className="flex items-center space-x-3">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${payout.status === 'Completed' ? 'bg-red-600/10' : 'bg-amber-500/10'}`}>
-                    {payout.status === 'Completed'
-                      ? <ArrowDownLeft className="w-4 h-4 text-red-500" />
-                      : <Clock className="w-4 h-4 text-amber-400" />
-                    }
+                <div className="relative pt-10">
+                    <button
+                        onClick={() => { setPayoutForm(f => ({ ...f, amount: netBalance })); setShowModal(true); }}
+                        className="w-full bg-white text-black hover:bg-red-600 hover:text-white px-8 py-5 rounded-3xl font-black text-sm uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-3 shadow-2xl"
+                    >
+                        Request Payout
+                        <ArrowUpRight className="w-5 h-5" />
+                    </button>
+                </div>
+            </div>
+          </motion.div>
+
+          <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+              {/* Lifetime Earnings */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="glass-card-elite p-8 md:p-10 rounded-[2.5rem] flex flex-col justify-between group"
+              >
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center mb-10 shadow-2xl group-hover:scale-110 transition-transform duration-500">
+                    <TrendingUp className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="text-white font-black text-sm">₦{payout.amount.toLocaleString()}</p>
-                    <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-wider">
-                      {new Date(payout.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} · {payout.bankName}
+                    <p className="label-elite mb-2 opacity-60">Lifetime Earnings</p>
+                    <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-2">₦{totalRevenue.toLocaleString()}</h2>
+                    <p className="text-[11px] text-zinc-500 font-bold uppercase tracking-widest flex items-center">
+                        <ArrowUpRight className="w-3.5 h-3.5 mr-1.5 text-red-500" /> All-time project performance
                     </p>
                   </div>
+              </motion.div>
+
+              {/* Top Earner */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="glass-card-elite p-8 md:p-10 rounded-[2.5rem] flex flex-col justify-between group"
+              >
+                  <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center mb-10 shadow-2xl group-hover:bg-zinc-800 transition-colors duration-500">
+                    <Music className="w-6 h-6 text-zinc-400 group-hover:text-red-500 transition-colors" />
+                  </div>
+                  <div>
+                    <p className="label-elite mb-2 opacity-60">Top Earner</p>
+                    <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight truncate leading-none mb-3">
+                        {topRelease?.title.toUpperCase() || '—'}
+                    </h2>
+                    <p className="text-[11px] text-zinc-500 font-black uppercase tracking-widest">
+                        ₦{topRelease?.revenue?.toLocaleString() || 0} Generated
+                    </p>
+                  </div>
+              </motion.div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10">
+          {/* Revenue Distribution */}
+          <div className="glass-card-elite rounded-[2.5rem] p-8 md:p-10">
+            <p className="label-elite mb-8">Revenue Distribution</p>
+            {pieData.length > 0 ? (
+              <>
+                <div className="h-64 relative">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie data={pieData} cx="50%" cy="50%" innerRadius={65} outerRadius={90} paddingAngle={4} dataKey="value" stroke="none">
+                        {pieData.map((entry, i) => (
+                          <Cell key={i} fill={PLATFORM_COLORS[entry.name] || '#52525b'} />
+                        ))}
+                      </Pie>
+                      <Tooltip content={<CustomTooltip />} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                       <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Share</p>
+                       <p className="text-xl font-black text-white leading-none">TOTAL</p>
+                  </div>
                 </div>
-                <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md ${payoutStatusStyle(payout.status)}`}>
-                  {payout.status}
-                </span>
+                <div className="mt-8 space-y-4">
+                  {pieData.map((p) => (
+                    <div key={p.name} className="flex items-center justify-between group">
+                      <div className="flex items-center">
+                        <div className="w-2.5 h-2.5 rounded-full mr-4 shadow-lg shadow-black/50" style={{ backgroundColor: PLATFORM_COLORS[p.name] || '#52525b' }} />
+                        <span className="text-[11px] text-zinc-500 font-black uppercase tracking-widest group-hover:text-white transition-colors">{p.name}</span>
+                      </div>
+                      <span className="text-sm font-black text-white font-mono">₦{Math.round(p.value).toLocaleString()}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-64 text-center">
+                <Globe className="w-12 h-12 text-zinc-900 mb-4" />
+                <p className="text-xs text-zinc-700 font-black uppercase tracking-widest">Global revenue pending...</p>
               </div>
-            ))}
+            )}
+          </div>
+
+          {/* Payout History */}
+          <div className="lg:col-span-2 glass-card-elite rounded-[2.5rem] p-8 md:p-10 flex flex-col">
+            <div className="flex items-center justify-between mb-8">
+                <div>
+                   <h2 className="text-lg font-black text-white tracking-tight uppercase leading-none">Payout History</h2>
+                   <p className="label-elite mt-2 opacity-60">Transaction Logs</p>
+                </div>
+                <div className="w-10 h-10 rounded-xl bg-zinc-950 border border-white/5 flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-zinc-600" />
+                </div>
+            </div>
+            
+            <div className="space-y-4 max-h-[460px] overflow-y-auto pr-2 custom-scrollbar">
+              {payouts.length === 0 ? (
+                <div className="text-center py-24 flex flex-col items-center glass-card-elite rounded-[2rem] border-dashed border-white/5 bg-transparent">
+                  <CreditCard className="w-12 h-12 text-zinc-900 mb-4" />
+                  <p className="text-xs text-zinc-600 font-black uppercase tracking-widest">No transaction history found</p>
+                </div>
+              ) : payouts.map((payout, i) => (
+                <motion.div 
+                    key={payout._id}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="flex items-center justify-between p-6 bg-white/[0.02] border border-white/5 rounded-3xl hover:bg-white/[0.04] hover:border-white/10 transition-all group"
+                >
+                  <div className="flex items-center space-x-5">
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-2xl transition-transform group-hover:scale-110 ${
+                        payout.status === 'Completed' ? 'bg-red-600/10' : 
+                        payout.status === 'Rejected' ? 'bg-zinc-900' : 'bg-amber-500/10'
+                    }`}>
+                      {payout.status === 'Completed'
+                        ? <ArrowDownLeft className="w-5 h-5 text-red-500" />
+                        : payout.status === 'Rejected' ? <X className="w-5 h-5 text-zinc-600" />
+                        : <Clock className="w-5 h-5 text-amber-500" />
+                      }
+                    </div>
+                    <div>
+                      <p className="text-white font-black text-lg font-mono">₦{payout.amount.toLocaleString()}</p>
+                      <p className="text-[10px] text-zinc-500 font-black uppercase tracking-[0.15em] mt-1">
+                        {new Date(payout.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} · {payout.bankName.toUpperCase()}
+                      </p>
+                    </div>
+                  </div>
+                  <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-4 py-2 rounded-xl transition-colors ${payoutStatusStyle(payout.status)}`}>
+                    {payout.status}
+                  </span>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

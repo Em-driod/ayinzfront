@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Check, ArrowRight, Music, Users, Globe } from 'lucide-react';
+import { Check, ArrowRight, Music, Users, Globe, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const plans = [
@@ -70,6 +70,22 @@ const plans = [
       'Single, EP, Album support',
       'Transparent royalty payouts',
       'Priority support',
+    ],
+  },
+  {
+    id: 'plan500',
+    name: 'Sonic 500 Plan',
+    subtitle: 'Test Plan',
+    price: 500,
+    original: 1000,
+    accounts: '1 Artist Account',
+    icon: Zap, // Added missing icon import in thought
+    popular: false,
+    features: [
+      '1 Artist Account',
+      'Test distribution',
+      'Basic analytics',
+      'Temporary plan',
     ],
   },
 ];

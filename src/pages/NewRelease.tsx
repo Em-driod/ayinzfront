@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Music, Upload, ArrowLeft, Lock, CheckCircle, AlertCircle, Plus, X, User as UserIcon, Settings, Info, Calendar, Hash, Type } from 'lucide-react';
+import { Music, Upload, ArrowLeft, Lock, CheckCircle, AlertCircle, Plus, X, User as UserIcon, Settings, Info, Calendar, Hash, Type, ShieldAlert, ArrowUpRight, Clock, Send } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../utils/api';
 
@@ -10,9 +10,6 @@ const PLAN_TYPES: Record<string, string[]> = {
   plus: ['Single', 'EP', 'Album'],
   standard: ['Single', 'EP', 'Album'],
 };
-
-const inputClass = 'w-full bg-black border border-zinc-900 rounded-xl px-4 py-3.5 text-white placeholder-zinc-700 focus:border-red-600 focus:outline-none transition-colors font-medium text-sm';
-const labelClass = 'block text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-2';
 
 const ROLES = ['Main Artist', 'Featured Artist', 'Producer', 'Engineer', 'Remixer', 'Composer'];
 const AI_OPTIONS = ['No AI used', 'AI assisted lyrics', 'AI assisted melody', 'AI generated vocals', 'Full AI generation'];
@@ -48,6 +45,7 @@ export default function NewRelease() {
 
   const [songFile, setSongFile] = useState<File | null>(null);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -89,16 +87,12 @@ export default function NewRelease() {
     }
 
     const data = new FormData();
-    // Basic Info
     Object.entries(formData).forEach(([key, value]) => {
       data.append(key, value.toString());
     });
     
-    // Files
     data.append('song', songFile);
     if (coverImageFile) data.append('coverImage', coverImageFile);
-
-    // Complex Metadata
     data.append('contributors', JSON.stringify(contributors.filter(c => c.name.trim())));
     data.append('songwriters', JSON.stringify(songwriters.filter(s => s.trim())));
     data.append('musicians', JSON.stringify(musicians.filter(m => m.name.trim())));
@@ -117,338 +111,345 @@ export default function NewRelease() {
   const allTypes = ['Single', 'EP', 'Album'];
 
   return (
-    <div className="min-h-screen bg-[#050505] bg-mesh p-4 md:p-8 pb-32">
-      <div className="max-w-2xl mx-auto">
+    <div className="min-h-screen bg-mesh-elite">
+      <div className="relative z-10 p-5 md:p-10 max-w-7xl mx-auto space-y-12">
 
-        {/* Back */}
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center text-zinc-600 hover:text-white mb-7 transition-colors text-xs font-black uppercase tracking-widest"
-        >
-          <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Dashboard
-        </button>
-
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="glass-dark border border-white/5 rounded-3xl p-6 md:p-10 relative overflow-hidden"
-        >
-          {/* Header */}
-          <div className="mb-10 pb-8 border-b border-white/5">
-            <p className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] mb-2">Release Submission</p>
-            <h1 className="text-4xl md:text-5xl font-display italic tracking-tight text-white uppercase leading-none">Global<br/>Distribution</h1>
-            <div className="flex items-center gap-2 mt-4">
-               <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 bg-white/5 px-2.5 py-1 rounded-full border border-white/5">Tier: {plan}</span>
-            </div>
-          </div>
-
-          {/* Alerts */}
-          <AnimatePresence>
-            {success && (
-              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="mb-6 flex items-center gap-3 p-4 bg-red-600/10 border border-red-600/20 text-red-500 rounded-2xl text-sm font-bold">
-                <CheckCircle className="w-5 h-5 flex-shrink-0" />
-                {success}
-              </motion.div>
-            )}
-            {error && (
-              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="mb-6 flex items-center gap-3 p-4 bg-red-600/10 border border-red-600/20 text-red-500 rounded-2xl text-sm font-bold">
-                <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                {error}
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <form onSubmit={handleSubmit} className="space-y-12">
+        {/* ─── Back & Progress ─── */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <button
+              onClick={() => step > 1 ? setStep(s => s - 1) : navigate(-1)}
+              className="flex items-center text-zinc-600 hover:text-white transition-colors text-[10px] font-black uppercase tracking-[0.3em] group"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" /> 
+              {step > 1 ? 'Previous Phase' : 'Exit Submission'}
+            </button>
             
-            {/* Section: Basic Info */}
-            <div className="space-y-6">
-                <h3 className="text-xs font-black text-zinc-400 uppercase tracking-[0.3em] flex items-center gap-2">
-                    <Info className="w-3.5 h-3.5 text-red-600" /> Basic Information
-                </h3>
-                <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <label className={labelClass}>Track Title</label>
-                        <input type="text" required placeholder="Masterpiece Name" className={inputClass}
-                            value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} />
+            <div className="flex items-center gap-3">
+                {[1, 2, 3, 4].map(s => (
+                    <div key={s} className="flex items-center gap-1.5">
+                        <div className={`h-1.5 w-12 rounded-full transition-all duration-500 ${step >= s ? 'bg-red-600 shadow-glow-red' : 'bg-white/5'}`} />
                     </div>
-                    <div>
-                        <label className={labelClass}>Main Artist</label>
-                        <input type="text" required placeholder="Artist or Band" className={inputClass}
-                            value={formData.artist} onChange={e => setFormData({ ...formData, artist: e.target.value })} />
-                    </div>
-                </div>
-                <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <label className={labelClass}>Primary Genre</label>
-                        <input type="text" required placeholder="e.g. Afrobeats, Hip-Hop" className={inputClass}
-                            value={formData.genre} onChange={e => setFormData({ ...formData, genre: e.target.value })} />
-                    </div>
-                    <div>
-                        <label className={labelClass}>Target Release Date</label>
-                        <input type="date" required className={inputClass}
-                            value={formData.release_date} onChange={e => setFormData({ ...formData, release_date: e.target.value })} />
-                    </div>
-                </div>
-                <div>
-                  <label className={labelClass}>Contact Email</label>
-                  <input type="email" required placeholder="for delivery notifications" className={inputClass}
-                    value={formData.contact_email} onChange={e => setFormData({ ...formData, contact_email: e.target.value })} />
-                </div>
+                ))}
             </div>
+        </div>
 
-            {/* Section: Release Type */}
-            <div className="space-y-6">
-                <h3 className="text-xs font-black text-zinc-400 uppercase tracking-[0.3em] flex items-center gap-2">
-                    <Music className="w-3.5 h-3.5 text-red-600" /> Release Type
-                </h3>
-                <div className="grid grid-cols-3 gap-4">
-                    {allTypes.map((type) => {
-                    const isLocked = !allowedTypes.includes(type);
-                    const isSelected = formData.type === type && !isLocked;
-                    return (
-                        <button
-                        key={type}
-                        type="button"
-                        disabled={isLocked}
-                        onClick={() => !isLocked && setFormData({ ...formData, type })}
-                        className={`p-5 rounded-2xl border transition-all text-center relative group min-h-[100px] flex flex-col items-center justify-center ${
-                            isSelected
-                            ? 'border-red-600 bg-red-600/10 text-white shadow-lg shadow-red-600/10'
-                            : isLocked
-                            ? 'border-zinc-950 bg-black/40 text-zinc-800 cursor-not-allowed'
-                            : 'border-white/5 bg-black/40 text-zinc-500 hover:border-white/10 hover:text-zinc-300'
-                        }`}
-                        >
-                        {isLocked && <Lock className="w-3 h-3 absolute top-3 right-3 text-zinc-800" />}
-                        <Music className={`w-5 h-5 mb-2 transition-transform group-hover:scale-110 ${isLocked ? 'text-zinc-800' : isSelected ? 'text-red-500' : 'text-zinc-700'}`} />
-                        <span className="text-[10px] font-black uppercase tracking-widest">{type}</span>
-                        </button>
-                    );
-                    })}
-                </div>
-            </div>
-
-            {/* Section: Contributions & Credits */}
-            <div className="space-y-8 p-6 md:p-8 rounded-3xl bg-white/[0.02] border border-white/5">
-                <h3 className="text-xs font-black text-zinc-400 uppercase tracking-[0.3em] flex items-center gap-2 -mt-2">
-                    <UserIcon className="w-3.5 h-3.5 text-red-600" /> Credits & Contributions
-                </h3>
-
-                {/* Contributors */}
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <label className={labelClass}>Artists, Producers & Engineers</label>
-                        <button type="button" onClick={addContributor} className="flex items-center gap-1.5 text-[9px] font-black uppercase text-red-600 hover:text-red-500 transition-colors">
-                            <Plus className="w-3 h-3" /> Add Contributor
-                        </button>
-                    </div>
-                    <div className="space-y-3">
-                        <AnimatePresence>
-                        {contributors.map((c, i) => (
-                            <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} key={i} className="flex gap-3 items-center">
-                                <input type="text" placeholder="Name" className={inputClass} value={c.name} onChange={e => updateContributor(i, 'name', e.target.value)} />
-                                <select className={inputClass} value={c.role} onChange={e => updateContributor(i, 'role', e.target.value)}>
-                                    {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
-                                </select>
-                                <button type="button" onClick={() => removeContributor(i)} className="p-3 text-zinc-700 hover:text-red-600 transition-colors">
-                                    <X className="w-4 h-4" />
-                                </button>
-                            </motion.div>
-                        ))}
-                        </AnimatePresence>
-                    </div>
-                </div>
-
-                {/* Songwriters */}
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <label className={labelClass}>Songwriters</label>
-                        <button type="button" onClick={addSongwriter} className="flex items-center gap-1.5 text-[9px] font-black uppercase text-red-600 hover:text-red-500 transition-colors">
-                            <Plus className="w-3 h-3" /> Add songwriter
-                        </button>
-                    </div>
-                    <div className="space-y-3">
-                        <AnimatePresence>
-                        {songwriters.map((s, i) => (
-                            <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} key={i} className="flex gap-3 items-center">
-                                <input type="text" placeholder="Songwriter legal name" className={inputClass} value={s} onChange={e => updateSongwriter(i, e.target.value)} />
-                                <button type="button" onClick={() => removeSongwriter(i)} className="p-3 text-zinc-700 hover:text-red-600 transition-colors">
-                                    <X className="w-4 h-4" />
-                                </button>
-                            </motion.div>
-                        ))}
-                        </AnimatePresence>
-                    </div>
-                </div>
-
-                {/* Musicians */}
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <label className={labelClass}>Studio Musicians</label>
-                        <button type="button" onClick={addMusician} className="flex items-center gap-1.5 text-[9px] font-black uppercase text-red-600 hover:text-red-500 transition-colors">
-                            <Plus className="w-3 h-3" /> Add Musician
-                        </button>
-                    </div>
-                    <div className="space-y-3">
-                        <AnimatePresence>
-                        {musicians.map((m, i) => (
-                            <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} key={i} className="flex gap-3 items-center">
-                                <input type="text" placeholder="Name" className={inputClass} value={m.name} onChange={e => updateMusician(i, 'name', e.target.value)} />
-                                <input type="text" placeholder="Instrument (e.g. Bass Guitar)" className={inputClass} value={m.instrument} onChange={e => updateMusician(i, 'instrument', e.target.value)} />
-                                <button type="button" onClick={() => removeMusician(i)} className="p-3 text-zinc-700 hover:text-red-600 transition-colors">
-                                    <X className="w-4 h-4" />
-                                </button>
-                            </motion.div>
-                        ))}
-                        </AnimatePresence>
-                    </div>
-                </div>
-            </div>
-
-            {/* Section: Technical Details */}
-            <div className="space-y-8">
-                <h3 className="text-xs font-black text-zinc-400 uppercase tracking-[0.3em] flex items-center gap-2">
-                    <Settings className="w-3.5 h-3.5 text-red-600" /> Technical Details
-                </h3>
-
-                <div className="grid md:grid-cols-2 gap-8">
-                    <div className="space-y-6">
-                        <div>
-                            <label className={labelClass}>AI Assisted Material</label>
-                            <select className={inputClass} value={formData.ai_assisted} onChange={e => setFormData({...formData, ai_assisted: e.target.value})}>
-                                {AI_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                            </select>
-                        </div>
-                        <div>
-                            <label className={labelClass}>Track Language</label>
-                            <select className={inputClass} value={formData.language} onChange={e => setFormData({...formData, language: e.target.value})}>
-                                {LANGUAGES.map(l => <option key={l} value={l}>{l}</option>)}
-                            </select>
-                        </div>
-                    </div>
-                    <div className="space-y-6">
-                        <div>
-                            <label className={labelClass}>Explicit Content</label>
-                            <div className="flex gap-4">
-                                {['No', 'Yes'].map(opt => (
-                                    <button key={opt} type="button" onClick={() => setFormData({...formData, explicit: opt})}
-                                        className={`flex-1 py-3 px-4 rounded-xl border font-black text-[10px] uppercase tracking-widest transition-all ${formData.explicit === opt ? 'bg-red-600 border-red-600 text-black' : 'bg-black/40 border-white/5 text-zinc-600'}`}>
-                                        {opt}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-3 p-4 bg-white/[0.02] border border-white/5 rounded-2xl">
-                             <input type="checkbox" id="instr" className="w-4 h-4 rounded border-white/10 bg-black text-red-600 focus:ring-red-600/20" checked={formData.is_instrumental} onChange={e => setFormData({...formData, is_instrumental: e.target.checked})} />
-                             <label htmlFor="instr" className="text-xs font-black uppercase text-zinc-400 tracking-wider cursor-pointer select-none">This is an instrumental track</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <label className={labelClass}>ISRC (Optional)</label>
-                        <input type="text" placeholder="e.g. US-ABC-21-00001" className={inputClass} value={formData.isrc} onChange={e => setFormData({...formData, isrc: e.target.value})} />
-                    </div>
-                    <div>
-                         <label className={labelClass}>Label Name</label>
-                         <input type="text" placeholder="Independent Artist" className={inputClass} value={formData.label} onChange={e => setFormData({...formData, label: e.target.value})} />
-                    </div>
-                </div>
-
-                <div>
-                    <label className={labelClass}>Lyrics (Optional)</label>
-                    <textarea placeholder="Paste your lyrics here..." className={`${inputClass} h-32 resize-none`} value={formData.lyrics} onChange={e => setFormData({...formData, lyrics: e.target.value})} />
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <label className={labelClass}>Copyright Release</label>
-                        <div className="relative">
-                            <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-800" />
-                            <input type="text" placeholder="2024 Artist Name" className={`${inputClass} pl-11`} value={formData.copyright_date_release} onChange={e => setFormData({...formData, copyright_date_release: e.target.value})} />
-                        </div>
-                    </div>
-                    <div>
-                        <label className={labelClass}>Copyright Recording</label>
-                        <div className="relative">
-                            <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-800" />
-                            <input type="text" placeholder="2024 Artist Name" className={`${inputClass} pl-11`} value={formData.copyright_date_recording} onChange={e => setFormData({...formData, copyright_date_recording: e.target.value})} />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Section: Assets */}
-            <div className="space-y-8">
-                <h3 className="text-xs font-black text-zinc-400 uppercase tracking-[0.3em] flex items-center gap-2">
-                    <Upload className="w-3.5 h-3.5 text-red-600" /> Digital Assets
-                </h3>
-                
-                <div className="grid md:grid-cols-2 gap-6">
-                    {/* Song Upload */}
-                    <div className="space-y-3">
-                        <label className={labelClass}>Master Audio <span className="text-red-600">*</span></label>
-                        <div
-                            className="flex flex-col items-center justify-center h-48 border-2 border-dashed border-white/5 hover:border-red-600/30 bg-white/[0.02] rounded-3xl cursor-pointer transition-all group overflow-hidden"
-                            onClick={() => document.getElementById('song-file-upload')?.click()}
-                        >
-                            <Music className="w-10 h-10 text-zinc-800 group-hover:text-red-500/50 mb-3 transition-colors" />
-                            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-zinc-300">
-                                {songFile ? songFile.name : 'Choose Audio File'}
-                            </p>
-                            <p className="text-[8px] font-black text-zinc-700 mt-2 uppercase tracking-widest group-hover:text-zinc-600">Lossless WAV / FLAC / MP3</p>
-                            <input id="song-file-upload" type="file" required className="sr-only" accept=".mp3,.wav"
-                                onChange={e => { if (e.target.files?.[0]) setSongFile(e.target.files[0]); }} />
-                        </div>
-                    </div>
-
-                    {/* Cover Art Upload */}
-                    <div className="space-y-3">
-                        <label className={labelClass}>Cover Artwork <span className="text-zinc-700">Optional</span></label>
-                        <div
-                            className="flex flex-col items-center justify-center h-48 border-2 border-dashed border-white/5 hover:border-red-600/30 bg-white/[0.02] rounded-3xl cursor-pointer transition-all group overflow-hidden relative"
-                            onClick={() => document.getElementById('cover-art-upload')?.click()}
-                        >
-                            {coverImageFile ? (
-                                <>
-                                    <img src={URL.createObjectURL(coverImageFile)} alt="Cover preview" className="absolute inset-0 w-full h-full object-cover opacity-40" />
-                                    <div className="relative z-10 flex flex-col items-center">
-                                         <Upload className="w-8 h-8 text-white mb-2" />
-                                         <p className="text-[10px] font-black uppercase text-white tracking-widest">Update Artwork</p>
-                                    </div>
-                                </>
-                            ) : (
-                                <>
-                                    <Upload className="w-10 h-10 text-zinc-800 group-hover:text-red-500/50 mb-3 transition-colors" />
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-zinc-300">Choose Image</p>
-                                    <p className="text-[8px] font-black text-zinc-700 mt-2 uppercase tracking-widest group-hover:text-zinc-600">High-Res PNG or JPG</p>
-                                </>
-                            )}
-                            <input id="cover-art-upload" type="file" className="sr-only" accept=".jpeg,.jpg,.png"
-                                onChange={e => { if (e.target.files?.[0]) setCoverImageFile(e.target.files[0]); }} />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Submit */}
-            <div className="pt-8">
-                <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-red-600 hover:bg-red-700 text-black py-5 rounded-2xl font-black text-xs uppercase tracking-[0.3em] transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-xl shadow-red-600/20"
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            
+            {/* ─── Left Panel: Context ─── */}
+            <div className="lg:col-span-4 space-y-8">
+                <motion.div
+                    key={step}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
                 >
-                {loading
-                    ? <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                    : <><Upload className="w-4 h-4" /> Ship to Digital Platforms</>
-                }
-                </button>
-                <p className="text-[9px] font-black text-zinc-700 uppercase tracking-widest text-center mt-6">By clicking ship, you agree to our distribution terms & copyright policies.</p>
+                    <p className="label-elite text-red-500 mb-2">Phase 0{step} of 04</p>
+                    <h1 className="text-4xl md:text-5xl font-display italic tracking-tight text-white uppercase leading-[0.85] mb-6">
+                        {step === 1 && <>Release<br/><span className="text-gradient-red italic">Identity</span></>}
+                        {step === 2 && <>Technical<br/><span className="text-gradient-red italic">Metadata</span></>}
+                        {step === 3 && <>Elite<br/><span className="text-gradient-red italic">Credits</span></>}
+                        {step === 4 && <>Digital<br/><span className="text-gradient-red italic">Assets</span></>}
+                    </h1>
+                    <p className="text-xs text-zinc-500 font-bold leading-relaxed">
+                        {step === 1 && "Establish the foundation of your release. Define the title, primary artist, and distribution tier."}
+                        {step === 2 && "Configure the underlying DNA of your audio. Languages, explicit status, and legal copyright records."}
+                        {step === 3 && "Credit your collaborators. Producers, session musicians, and the architects of your sound."}
+                        {step === 4 && "Finalize the submission. Upload your master recording and high-fidelity artwork."}
+                    </p>
+                </motion.div>
+
+                <div className="glass-card-elite p-6 rounded-3xl space-y-4">
+                    <div className="flex items-center justify-between">
+                         <p className="label-elite opacity-40">Active Tier</p>
+                         <span className="text-[10px] font-black uppercase text-red-500 bg-red-600/10 px-3 py-1 rounded-full border border-red-600/20">{plan}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                         <p className="label-elite opacity-40">Verification</p>
+                         <ShieldAlert className="w-4 h-4 text-zinc-800" />
+                    </div>
+                </div>
             </div>
-          </form>
-        </motion.div>
+
+            {/* ─── Right Panel: Form ─── */}
+            <div className="lg:col-span-8">
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={step}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="glass-card-elite rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden"
+                    >
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-red-600/5 blur-[100px] pointer-events-none" />
+                        
+                        {/* Status Messages */}
+                        {error && (
+                          <div className="mb-8 flex items-center gap-4 p-5 bg-red-600/10 border border-red-600/20 text-red-500 rounded-2xl text-[11px] font-black uppercase tracking-widest">
+                            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                            {error}
+                          </div>
+                        )}
+                        {success && (
+                          <div className="mb-8 flex items-center gap-4 p-5 bg-red-600/10 border border-red-600/20 text-red-500 rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-2xl">
+                            <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                            {success}
+                          </div>
+                        )}
+
+                        <form onSubmit={handleSubmit}>
+                            {step === 1 && (
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-10">
+                                    <div className="grid md:grid-cols-2 gap-8">
+                                        <div className="space-y-2">
+                                            <label className="label-elite opacity-50">Track Title</label>
+                                            <input type="text" required placeholder="Masterpiece Name" className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold text-sm"
+                                                value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="label-elite opacity-50">Main Artist</label>
+                                            <input type="text" required placeholder="Artist or Band" className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold text-sm"
+                                                value={formData.artist} onChange={e => setFormData({ ...formData, artist: e.target.value })} />
+                                        </div>
+                                    </div>
+                                    <div className="grid md:grid-cols-2 gap-8">
+                                        <div className="space-y-2">
+                                            <label className="label-elite opacity-50">Primary Genre</label>
+                                            <input type="text" required placeholder="e.g. Afrobeats, Hip-Hop" className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold text-sm"
+                                                value={formData.genre} onChange={e => setFormData({ ...formData, genre: e.target.value })} />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="label-elite opacity-50">Launch Date</label>
+                                            <input type="date" required className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold text-sm [color-scheme:dark]"
+                                                value={formData.release_date} onChange={e => setFormData({ ...formData, release_date: e.target.value })} />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-6">
+                                        <label className="label-elite opacity-50">Release Configuration</label>
+                                        <div className="grid grid-cols-3 gap-4">
+                                            {allTypes.map((type) => {
+                                            const isLocked = !allowedTypes.includes(type);
+                                            const isSelected = formData.type === type && !isLocked;
+                                            return (
+                                                <button
+                                                key={type}
+                                                type="button"
+                                                disabled={isLocked}
+                                                onClick={() => !isLocked && setFormData({ ...formData, type })}
+                                                className={`p-6 rounded-3xl border transition-all text-center relative group flex flex-col items-center justify-center gap-3 ${
+                                                    isSelected
+                                                    ? 'border-red-600 bg-red-600/10 text-white shadow-[0_0_20px_rgba(220,38,38,0.1)]'
+                                                    : isLocked
+                                                    ? 'border-zinc-900 bg-black/40 text-zinc-800 cursor-not-allowed opacity-50'
+                                                    : 'border-white/5 bg-white/[0.02] text-zinc-500 hover:border-white/10 hover:text-zinc-300'
+                                                }`}
+                                                >
+                                                {isLocked && <Lock className="w-3 h-3 absolute top-4 right-4 text-zinc-800" />}
+                                                <Music className={`w-5 h-5 transition-transform group-hover:scale-110 ${isSelected ? 'text-red-500' : 'text-zinc-700'}`} />
+                                                <span className="text-[10px] font-black uppercase tracking-widest">{type}</span>
+                                                </button>
+                                            );
+                                            })}
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-6">
+                                        <button type="button" onClick={() => setStep(2)} className="w-full bg-white text-black hover:bg-red-600 hover:text-white py-5 rounded-2xl font-black text-sm uppercase tracking-widest transition-all shadow-2xl flex items-center justify-center gap-3 group active:scale-95">
+                                            Proceed to Metadata <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {step === 2 && (
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-10">
+                                    <div className="grid md:grid-cols-2 gap-8">
+                                        <div className="space-y-2">
+                                            <label className="label-elite opacity-50">Track Language</label>
+                                            <select className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold text-sm" value={formData.language} onChange={e => setFormData({...formData, language: e.target.value})}>
+                                                {LANGUAGES.map(l => <option key={l} value={l}>{l}</option>)}
+                                            </select>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="label-elite opacity-50">Label Designation</label>
+                                            <input type="text" placeholder="Independent Artist" className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold text-sm" value={formData.label} onChange={e => setFormData({...formData, label: e.target.value})} />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-8">
+                                        <div className="space-y-4">
+                                            <label className="label-elite opacity-50">Content Advisory</label>
+                                            <div className="flex gap-4">
+                                                {['No', 'Yes'].map(opt => (
+                                                    <button key={opt} type="button" onClick={() => setFormData({...formData, explicit: opt})}
+                                                        className={`flex-1 py-4 px-4 rounded-xl border font-black text-[10px] uppercase tracking-widest transition-all ${formData.explicit === opt ? 'bg-red-600 border-red-600 text-black shadow-glow-red' : 'bg-white/[0.02] border-white/5 text-zinc-600 hover:border-white/10'}`}>
+                                                        {opt === 'Yes' ? 'Explicit' : 'Clean'}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <div className="space-y-4">
+                                            <label className="label-elite opacity-50">ISRC Identifier</label>
+                                            <input type="text" placeholder="e.g. US-ABC-21-00001" className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold text-sm" value={formData.isrc} onChange={e => setFormData({...formData, isrc: e.target.value})} />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                         <label className="label-elite opacity-50">AI Utilization</label>
+                                         <select className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold text-sm" value={formData.ai_assisted} onChange={e => setFormData({...formData, ai_assisted: e.target.value})}>
+                                            {AI_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                                        </select>
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-8">
+                                        <div className="space-y-2">
+                                            <label className="label-elite opacity-50">Copyright Release (P)</label>
+                                            <input type="text" placeholder="2024 Artist Name" className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold text-sm" value={formData.copyright_date_release} onChange={e => setFormData({...formData, copyright_date_release: e.target.value})} />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="label-elite opacity-50">Copyright Recording (C)</label>
+                                            <input type="text" placeholder="2024 Artist Name" className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold text-sm" value={formData.copyright_date_recording} onChange={e => setFormData({...formData, copyright_date_recording: e.target.value})} />
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-6">
+                                        <button type="button" onClick={() => setStep(3)} className="w-full bg-white text-black hover:bg-red-600 hover:text-white py-5 rounded-2xl font-black text-sm uppercase tracking-widest transition-all shadow-2xl flex items-center justify-center gap-3 group active:scale-95">
+                                            Configure Credits <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {step === 3 && (
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-10">
+                                    <div className="space-y-8">
+                                        <div className="flex items-center justify-between">
+                                            <label className="label-elite opacity-50">Authorized Contributors</label>
+                                            <button type="button" onClick={addContributor} className="flex items-center gap-2 text-[10px] font-black uppercase text-red-500 hover:text-white transition-colors group">
+                                                <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" /> Add Artist
+                                            </button>
+                                        </div>
+                                        <div className="space-y-4">
+                                            <AnimatePresence>
+                                            {contributors.map((c, i) => (
+                                                <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} key={i} className="flex gap-4 items-center group/item">
+                                                    <input type="text" placeholder="Legal Name" className="flex-1 bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold text-sm" value={c.name} onChange={e => updateContributor(i, 'name', e.target.value)} />
+                                                    <select className="w-48 bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold text-sm" value={c.role} onChange={e => updateContributor(i, 'role', e.target.value)}>
+                                                        {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
+                                                    </select>
+                                                    <button type="button" onClick={() => removeContributor(i)} className="w-12 h-12 rounded-xl border border-white/5 flex items-center justify-center text-zinc-700 hover:bg-red-600/10 hover:text-red-500 transition-all">
+                                                        <X className="w-5 h-5" />
+                                                    </button>
+                                                </motion.div>
+                                            ))}
+                                            </AnimatePresence>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-8">
+                                        <div className="flex items-center justify-between">
+                                            <label className="label-elite opacity-50">Lyricists & Songwriters</label>
+                                            <button type="button" onClick={addSongwriter} className="flex items-center gap-2 text-[10px] font-black uppercase text-red-500 hover:text-white transition-colors group">
+                                                <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" /> Add Writer
+                                            </button>
+                                        </div>
+                                        <div className="space-y-4">
+                                            <AnimatePresence>
+                                            {songwriters.map((s, i) => (
+                                                <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} key={i} className="flex gap-4 items-center">
+                                                    <input type="text" placeholder="Full Legal Name" className="flex-1 bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold text-sm" value={s} onChange={e => updateSongwriter(i, e.target.value)} />
+                                                    <button type="button" onClick={() => removeSongwriter(i)} className="w-12 h-12 rounded-xl border border-white/5 flex items-center justify-center text-zinc-700 hover:bg-red-600/10 hover:text-red-500 transition-all">
+                                                        <X className="w-5 h-5" />
+                                                    </button>
+                                                </motion.div>
+                                            ))}
+                                            </AnimatePresence>
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-6">
+                                        <button type="button" onClick={() => setStep(4)} className="w-full bg-white text-black hover:bg-red-600 hover:text-white py-5 rounded-2xl font-black text-sm uppercase tracking-widest transition-all shadow-2xl flex items-center justify-center gap-3 group active:scale-95">
+                                            Sync Digital Assets <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {step === 4 && (
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-12">
+                                    <div className="grid md:grid-cols-2 gap-8">
+                                        <div className="space-y-4">
+                                            <label className="label-elite opacity-50">Master Audio (WAV/FLAC)</label>
+                                            <div
+                                                onClick={() => document.getElementById('song-file-upload')?.click()}
+                                                className="h-64 rounded-[2rem] border-2 border-dashed border-white/5 bg-white/[0.02] hover:bg-red-600/5 hover:border-red-600/30 transition-all cursor-pointer group flex flex-col items-center justify-center text-center p-8 relative overflow-hidden"
+                                            >
+                                                <div className="p-5 rounded-2xl bg-zinc-900 border border-white/5 mb-6 group-hover:scale-110 transition-transform shadow-2xl">
+                                                    <Music className={`w-8 h-8 ${songFile ? 'text-red-500' : 'text-zinc-700'}`} />
+                                                </div>
+                                                <p className="text-xs font-black uppercase tracking-widest text-zinc-400 group-hover:text-white transition-colors">
+                                                    {songFile ? songFile.name : 'Choose Master Audio'}
+                                                </p>
+                                                <p className="text-[10px] font-bold text-zinc-600 mt-2 italic">Lossless high-fidelity expected</p>
+                                                <input id="song-file-upload" type="file" required className="sr-only" accept=".mp3,.wav"
+                                                    onChange={e => { if (e.target.files?.[0]) setSongFile(e.target.files[0]); }} />
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-4">
+                                            <label className="label-elite opacity-50">Visual Identity (Cover Art)</label>
+                                            <div
+                                                onClick={() => document.getElementById('cover-art-upload')?.click()}
+                                                className="h-64 rounded-[2rem] border-2 border-dashed border-white/5 bg-white/[0.02] hover:bg-red-600/5 hover:border-red-600/30 transition-all cursor-pointer group relative overflow-hidden flex items-center justify-center"
+                                            >
+                                                {coverImageFile ? (
+                                                    <>
+                                                        <img src={URL.createObjectURL(coverImageFile)} alt="Cover preview" className="absolute inset-0 w-full h-full object-cover opacity-30" />
+                                                        <div className="relative z-10 flex flex-col items-center gap-3">
+                                                             <div className="w-12 h-12 rounded-xl bg-black/50 backdrop-blur-md flex items-center justify-center">
+                                                                <Upload className="w-6 h-6 text-white" />
+                                                             </div>
+                                                             <p className="text-[10px] font-black uppercase text-white tracking-widest">Update Artwork</p>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <div className="flex flex-col items-center">
+                                                        <div className="p-5 rounded-2xl bg-zinc-900 border border-white/5 mb-6 group-hover:scale-110 transition-transform shadow-2xl">
+                                                            <Upload className="w-8 h-8 text-zinc-700 group-hover:text-red-500 transition-colors" />
+                                                        </div>
+                                                        <p className="text-xs font-black uppercase text-zinc-400 group-hover:text-white tracking-widest">Choose Image</p>
+                                                        <p className="text-[10px] font-bold text-zinc-600 mt-2 italic">3000x3000px Recommended</p>
+                                                    </div>
+                                                )}
+                                                <input id="cover-art-upload" type="file" className="sr-only" accept=".jpeg,.jpg,.png"
+                                                    onChange={e => { if (e.target.files?.[0]) setCoverImageFile(e.target.files[0]); }} />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-8 border-t border-white/5">
+                                        <button
+                                            type="submit"
+                                            disabled={loading || !songFile}
+                                            className="w-full bg-red-600 hover:bg-red-500 text-black py-6 rounded-2xl font-black text-sm uppercase tracking-[0.4em] transition-all shadow-[0_0_50px_rgba(220,38,38,0.2)] flex items-center justify-center gap-4 group disabled:opacity-50 active:scale-[0.98]"
+                                        >
+                                            {loading ? (
+                                                <div className="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                                            ) : (
+                                                <>Ship to Digital Platforms <Upload className="w-6 h-6 group-hover:-translate-y-1 transition-transform" /></>
+                                            )}
+                                        </button>
+                                        <p className="text-[10px] font-black text-zinc-700 uppercase tracking-widest text-center mt-8 px-10 leading-relaxed">
+                                            By facilitating this transmission, you authorize Sonic Distro Elite to distribute your intellectual property to global stores.
+                                        </p>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </form>
+                    </motion.div>
+                </AnimatePresence>
+            </div>
+        </div>
       </div>
     </div>
   );
