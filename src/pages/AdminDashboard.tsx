@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Users, Music, DollarSign, CheckCircle, Clock, TrendingUp, BarChart3, X, Filter, Search, ChevronRight, LayoutDashboard, Wallet, MessageCircle, Send, UserCheck, UserPlus, Eye, Settings } from 'lucide-react';
+import { Users, Music, DollarSign, CheckCircle, Clock, TrendingUp, BarChart3, X, Filter, Search, ChevronRight, LayoutDashboard, Wallet, MessageCircle, Send, UserCheck, UserPlus, Eye, Settings, Pencil } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../utils/api';
@@ -109,6 +109,16 @@ export default function AdminDashboard() {
     const [showCreateUser, setShowCreateUser] = useState(false);
     const [creatingUser, setCreatingUser] = useState(false);
     const [createUserForm, setCreateUserForm] = useState({
+        name: '',
+        email: '',
+        password: '',
+        subscription: 'basic'
+    });
+
+    // For editing user modal
+    const [editingUser, setEditingUser] = useState<User | null>(null);
+    const [updatingUser, setUpdatingUser] = useState(false);
+    const [editUserForm, setEditUserForm] = useState({
         name: '',
         email: '',
         password: '',
@@ -265,6 +275,26 @@ export default function AdminDashboard() {
             alert(err.response?.data?.error || 'Failed to create user');
         } finally {
             setCreatingUser(false);
+        }
+    };
+
+    const openEditUser = (u: User) => {
+        setEditingUser(u);
+        setEditUserForm({ name: u.name, email: u.email, password: '', subscription: u.subscription });
+    };
+
+    const handleUpdateUser = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!editingUser) return;
+        setUpdatingUser(true);
+        try {
+            const res = await api.patch(`/admin/users/${editingUser._id}`, editUserForm);
+            setUsers(users.map(u => u._id === editingUser._id ? res.data.user : u));
+            setEditingUser(null);
+        } catch (err: any) {
+            alert(err.response?.data?.error || 'Failed to update user');
+        } finally {
+            setUpdatingUser(false);
         }
     };
 
@@ -473,13 +503,22 @@ export default function AdminDashboard() {
                                                     {new Date(u.created_at).toLocaleDateString()}
                                                 </td>
                                                 <td className="px-8 py-5 text-right">
-                                                    <button 
-                                                        onClick={() => handleDeleteUser(u._id, u.name)}
-                                                        className="p-2 hover:bg-rose-500/10 text-white hover:text-rose-500 rounded-xl transition-all"
-                                                        title="Delete User"
-                                                    >
-                                                        <X className="w-4 h-4" />
-                                                    </button>
+                                                    <div className="flex items-center justify-end gap-2">
+                                                        <button 
+                                                            onClick={() => openEditUser(u)}
+                                                            className="p-2 hover:bg-blue-500/10 text-white hover:text-blue-400 rounded-xl transition-all"
+                                                            title="Edit User"
+                                                        >
+                                                            <Pencil className="w-4 h-4" />
+                                                        </button>
+                                                        <button 
+                                                            onClick={() => handleDeleteUser(u._id, u.name)}
+                                                            className="p-2 hover:bg-rose-500/10 text-white hover:text-rose-500 rounded-xl transition-all"
+                                                            title="Delete User"
+                                                        >
+                                                            <X className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))}
@@ -1086,6 +1125,201 @@ export default function AdminDashboard() {
                                     Dismiss Details
                                 </button>
                             </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* ─── Create Artist Modal ─── */}
+            <AnimatePresence>
+                {showCreateUser && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/90 backdrop-blur-xl flex items-center justify-center z-50 p-4"
+                        onClick={() => setShowCreateUser(false)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, y: 20 }}
+                            animate={{ scale: 1, y: 0 }}
+                            exit={{ scale: 0.9, y: 20 }}
+                            className="glass rounded-[2rem] p-8 w-full max-w-md border border-white/10"
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <div className="flex items-center justify-between mb-6">
+                                <div>
+                                    <p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.4em] mb-1">Admin Action</p>
+                                    <h3 className="text-2xl font-display uppercase italic">Create Artist</h3>
+                                </div>
+                                <button
+                                    onClick={() => setShowCreateUser(false)}
+                                    className="p-3 text-white hover:bg-white/5 rounded-2xl transition-all"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
+
+                            <form onSubmit={handleCreateUser} className="space-y-5">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-white uppercase tracking-widest ml-1">Full Name</label>
+                                    <input
+                                        type="text" required placeholder="Artist or Band Name"
+                                        className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-3.5 text-sm focus:border-blue-500 focus:ring-0 outline-none transition-colors font-bold"
+                                        value={createUserForm.name}
+                                        onChange={e => setCreateUserForm({ ...createUserForm, name: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-white uppercase tracking-widest ml-1">Email Address</label>
+                                    <input
+                                        type="email" required placeholder="artist@example.com"
+                                        className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-3.5 text-sm focus:border-blue-500 focus:ring-0 outline-none transition-colors font-bold"
+                                        value={createUserForm.email}
+                                        onChange={e => setCreateUserForm({ ...createUserForm, email: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-white uppercase tracking-widest ml-1">Password</label>
+                                    <input
+                                        type="password" required placeholder="Minimum 8 characters"
+                                        className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-3.5 text-sm focus:border-blue-500 focus:ring-0 outline-none transition-colors font-bold"
+                                        value={createUserForm.password}
+                                        onChange={e => setCreateUserForm({ ...createUserForm, password: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-white uppercase tracking-widest ml-1">Subscription Tier</label>
+                                    <select
+                                        className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-3.5 text-sm focus:border-blue-500 focus:ring-0 outline-none transition-colors font-bold"
+                                        value={createUserForm.subscription}
+                                        onChange={e => setCreateUserForm({ ...createUserForm, subscription: e.target.value })}
+                                    >
+                                        <option value="basic">Basic</option>
+                                        <option value="plus">Plus</option>
+                                        <option value="premium">Premium</option>
+                                    </select>
+                                </div>
+                                <div className="flex gap-3 pt-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowCreateUser(false)}
+                                        className="flex-1 py-4 text-xs font-black uppercase text-white hover:text-white transition-colors border border-white/5 rounded-2xl hover:bg-white/5"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={creatingUser}
+                                        className="flex-1 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-blue-600/30 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                                    >
+                                        {creatingUser ? (
+                                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                        ) : (
+                                            <><UserPlus className="w-4 h-4" /> Create Artist</>
+                                        )}
+                                    </button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* ─── Edit User Modal ─── */}
+            <AnimatePresence>
+                {editingUser && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/90 backdrop-blur-xl flex items-center justify-center z-50 p-4"
+                        onClick={() => setEditingUser(null)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, y: 20 }}
+                            animate={{ scale: 1, y: 0 }}
+                            exit={{ scale: 0.9, y: 20 }}
+                            className="glass rounded-[2rem] p-8 w-full max-w-md border border-white/10"
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <div className="flex items-center justify-between mb-6">
+                                <div>
+                                    <p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.4em] mb-1">Admin Action</p>
+                                    <h3 className="text-2xl font-display uppercase italic">Edit Artist</h3>
+                                    <p className="text-xs text-white mt-1">{editingUser.email}</p>
+                                </div>
+                                <button
+                                    onClick={() => setEditingUser(null)}
+                                    className="p-3 text-white hover:bg-white/5 rounded-2xl transition-all"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
+
+                            <form onSubmit={handleUpdateUser} className="space-y-5">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-white uppercase tracking-widest ml-1">Full Name</label>
+                                    <input
+                                        type="text" required placeholder="Artist or Band Name"
+                                        className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-3.5 text-sm focus:border-blue-500 focus:ring-0 outline-none transition-colors font-bold"
+                                        value={editUserForm.name}
+                                        onChange={e => setEditUserForm({ ...editUserForm, name: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-white uppercase tracking-widest ml-1">Email Address</label>
+                                    <input
+                                        type="email" required placeholder="artist@example.com"
+                                        className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-3.5 text-sm focus:border-blue-500 focus:ring-0 outline-none transition-colors font-bold"
+                                        value={editUserForm.email}
+                                        onChange={e => setEditUserForm({ ...editUserForm, email: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-white uppercase tracking-widest ml-1">
+                                        New Password <span className="text-white/30 normal-case font-bold">(leave blank to keep current)</span>
+                                    </label>
+                                    <input
+                                        type="password" placeholder="Enter new password to change"
+                                        className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-3.5 text-sm focus:border-blue-500 focus:ring-0 outline-none transition-colors font-bold"
+                                        value={editUserForm.password}
+                                        onChange={e => setEditUserForm({ ...editUserForm, password: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-white uppercase tracking-widest ml-1">Subscription Tier</label>
+                                    <select
+                                        className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-3.5 text-sm focus:border-blue-500 focus:ring-0 outline-none transition-colors font-bold"
+                                        value={editUserForm.subscription}
+                                        onChange={e => setEditUserForm({ ...editUserForm, subscription: e.target.value })}
+                                    >
+                                        <option value="basic">Basic</option>
+                                        <option value="plus">Plus</option>
+                                        <option value="premium">Premium</option>
+                                    </select>
+                                </div>
+                                <div className="flex gap-3 pt-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => setEditingUser(null)}
+                                        className="flex-1 py-4 text-xs font-black uppercase text-white transition-colors border border-white/5 rounded-2xl hover:bg-white/5"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={updatingUser}
+                                        className="flex-1 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-blue-600/30 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                                    >
+                                        {updatingUser ? (
+                                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                        ) : (
+                                            <><Pencil className="w-4 h-4" /> Save Changes</>
+                                        )}
+                                    </button>
+                                </div>
+                            </form>
                         </motion.div>
                     </motion.div>
                 )}
