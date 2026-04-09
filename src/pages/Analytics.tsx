@@ -113,9 +113,9 @@ export default function Analytics() {
             animate={{ opacity: 1, x: 0 }}
           >
             <p className="label-caps mb-2">Performance Metrics</p>
-            <h1 className="text-4xl md:text-6xl font-display italic tracking-tight text-white uppercase leading-[0.85]">
+            <h1 className="text-4xl md:text-6xl font-display italic tracking-tight text-white uppercase leading-[1.1] pb-2">
               Project<br/>
-              <span className="text-gradient-red">Analytics</span>
+              <span className="text-gradient-red px-1">Analytics</span>
             </h1>
           </motion.div>
         </div>

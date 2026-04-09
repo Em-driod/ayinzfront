@@ -68,15 +68,14 @@ export default function Layout({ children }: LayoutProps) {
         />
       )}
 
-      {/* Sidebar */}
       <div className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-[#0a0a0a] shadow-2xl shadow-black/60 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 border-r border-zinc-900
+        fixed inset-y-0 left-0 z-50 w-64 bg-[#0a0a0a] shadow-2xl shadow-black/60 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:fixed lg:inset-y-0 border-r border-zinc-900 overflow-y-auto custom-scrollbar
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="flex items-center justify-between h-16 px-5 border-b border-zinc-900">
           <div className="flex items-center space-x-3">
-            <img src="/ayinz.jpeg" alt="Sonic Distro Logo" className="w-9 h-9 text-orange-500 rounded-xl object-cover shadow-lg border border-gray-800" />
-            <span className="text-2xl font-black text-white tracking-tighter">Sonic Distro</span>
+            <img src="/ayinz.jpeg" alt="Ayinz Logo" className="w-9 h-9 text-orange-500 rounded-xl object-cover shadow-lg border border-gray-800" />
+            <span className="text-2xl font-black text-white tracking-tighter">Ayinz</span>
           </div>
           <button
             onClick={() => setSidebarOpen(false)}
@@ -149,7 +148,7 @@ export default function Layout({ children }: LayoutProps) {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 lg:ml-0">
+      <div className="flex-1 lg:ml-64">
         {/* Top bar */}
         <div className="lg:hidden sticky top-0 z-30 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-zinc-900">
           <div className="flex items-center justify-between h-16 px-5">
@@ -160,8 +159,8 @@ export default function Layout({ children }: LayoutProps) {
               <Menu className="w-6 h-6" />
             </button>
             <div className="flex items-center space-x-3">
-              <img src="/ayinz.jpeg" alt="Sonic Distro Logo" className="w-8 h-8 text-orange-600 rounded-lg object-cover shadow-md" />
-              <span className="text-xl font-black text-white tracking-tighter">Sonic Distro</span>
+              <img src="/ayinz.jpeg" alt="Ayinz Logo" className="w-8 h-8 text-orange-600 rounded-lg object-cover shadow-md" />
+              <span className="text-xl font-black text-white tracking-tighter">Ayinz</span>
             </div>
             <div className="w-10"></div> {/* Spacer for perfect optical centering */}
           </div>

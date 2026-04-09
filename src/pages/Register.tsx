@@ -12,7 +12,7 @@ const plans = [
   { id: 'premium', name: 'Record Label', price: '₦50,000/yr', icon: Zap, amount: 50000 },
   { id: 'plus', name: 'Label Plus', price: '₦85,000/yr', icon: Star, amount: 85000 },
   { id: 'standard', name: 'Enterprise', price: '₦350,000/yr', icon: Globe, amount: 350000 },
-  { id: 'plan500', name: 'Sonic 500', price: '₦500/yr', icon: Zap, amount: 500 },
+  { id: 'plan500', name: 'Ayinz 500', price: '₦500/yr', icon: Zap, amount: 500 },
 ];
 
 declare const PaystackPop: any;
@@ -116,9 +116,9 @@ export default function Register() {
           {/* Logo */}
           <div className="flex items-center justify-center space-x-2.5 mb-10">
             <div className="w-8 h-8 rounded-xl overflow-hidden border border-zinc-800">
-              <img src="/ayinz.jpeg" alt="Sonic Distro" className="w-full h-full object-cover" />
+              <img src="/ayinz.jpeg" alt="Ayinz" className="w-full h-full object-cover" />
             </div>
-            <span className="text-xl font-black text-white tracking-tight">Sonic Distro</span>
+            <span className="text-xl font-black text-white tracking-tight">Ayinz</span>
           </div>
 
           {/* Card */}

@@ -139,9 +139,9 @@ export default function Revenue() {
             animate={{ opacity: 1, x: 0 }}
           >
             <p className="label-caps mb-2">Financial Records</p>
-            <h1 className="text-4xl md:text-6xl font-display italic tracking-tight text-white uppercase leading-[0.85]">
+            <h1 className="text-4xl md:text-6xl font-display italic tracking-tight text-white uppercase leading-[1.1] pb-2">
               Revenue<br/>
-              <span className="text-gradient-red">Management</span>
+              <span className="text-gradient-red px-1">Management</span>
             </h1>
           </motion.div>
         </div>
@@ -156,7 +156,7 @@ export default function Revenue() {
             className="lg:col-span-1 relative group"
           >
             <div className="absolute -inset-0.5 bg-gradient-to-r from-red-600 to-amber-600 rounded-[2.5rem] blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-            <div className="relative glass-card-premium rounded-[2.5rem] p-8 md:p-10 h-full overflow-hidden flex flex-col justify-between min-h-[300px]">
+            <div className="relative glass-card-premium rounded-[2.5rem] p-6 md:p-10 h-full overflow-hidden flex flex-col justify-between min-h-[300px]">
                 {/* Background Decor */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-red-600/10 blur-[80px] -mr-32 -mt-32 rounded-full pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-32 h-32 bg-amber-500/5 blur-[50px] -ml-16 -mb-16 rounded-full pointer-events-none" />
@@ -192,13 +192,13 @@ export default function Revenue() {
             </div>
           </motion.div>
 
-          <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+          <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-10">
               {/* Lifetime Earnings */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="glass-card-premium p-8 md:p-10 rounded-[2.5rem] flex flex-col justify-between group"
+                className="glass-card-premium p-6 md:p-10 rounded-[2.5rem] flex flex-col justify-between group"
               >
                   <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center mb-10 shadow-2xl group-hover:scale-110 transition-transform duration-500">
                     <TrendingUp className="w-6 h-6 text-white" />
@@ -217,7 +217,7 @@ export default function Revenue() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="glass-card-premium p-8 md:p-10 rounded-[2.5rem] flex flex-col justify-between group"
+                className="glass-card-premium p-6 md:p-10 rounded-[2.5rem] flex flex-col justify-between group"
               >
                   <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center mb-10 shadow-2xl group-hover:bg-zinc-800 transition-colors duration-500">
                     <Music className="w-6 h-6 text-white group-hover:text-red-500 transition-colors" />
@@ -237,7 +237,7 @@ export default function Revenue() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10">
           {/* Revenue Distribution */}
-          <div className="glass-card-premium rounded-[2.5rem] p-8 md:p-10">
+          <div className="glass-card-premium rounded-[2.5rem] p-6 md:p-10">
             <p className="label-caps mb-8">Revenue Distribution</p>
             {pieData.length > 0 ? (
               <>
@@ -278,7 +278,7 @@ export default function Revenue() {
           </div>
 
           {/* Payout History */}
-          <div className="lg:col-span-2 glass-card-premium rounded-[2.5rem] p-8 md:p-10 flex flex-col">
+          <div className="lg:col-span-2 glass-card-premium rounded-[2.5rem] p-6 md:p-10 flex flex-col">
             <div className="flex items-center justify-between mb-8">
                 <div>
                    <h2 className="text-lg font-black text-white tracking-tight uppercase leading-none">Payout History</h2>

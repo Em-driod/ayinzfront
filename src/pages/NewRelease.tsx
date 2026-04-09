@@ -143,11 +143,11 @@ export default function NewRelease() {
                     animate={{ opacity: 1, x: 0 }}
                 >
                     <p className="label-caps text-red-500 mb-2">Phase 0{step} of 04</p>
-                    <h1 className="text-4xl md:text-5xl font-display italic tracking-tight text-white uppercase leading-[0.85] mb-6">
-                        {step === 1 && <>Release<br/><span className="text-gradient-red italic">Identity</span></>}
-                        {step === 2 && <>Technical<br/><span className="text-gradient-red italic">Metadata</span></>}
-                        {step === 3 && <>Production<br/><span className="text-gradient-red italic">Credits</span></>}
-                        {step === 4 && <>Digital<br/><span className="text-gradient-red italic">Assets</span></>}
+                    <h1 className="text-4xl md:text-5xl font-display italic tracking-tight text-white uppercase leading-[1.1] mb-6 pb-2">
+                        {step === 1 && <>Release<br/><span className="text-gradient-red px-1">Identity</span></>}
+                        {step === 2 && <>Technical<br/><span className="text-gradient-red px-1">Metadata</span></>}
+                        {step === 3 && <>Production<br/><span className="text-gradient-red px-1">Credits</span></>}
+                        {step === 4 && <>Digital<br/><span className="text-gradient-red px-1">Assets</span></>}
                     </h1>
                     <p className="text-xs text-white font-bold leading-relaxed">
                         {step === 1 && "Establish the foundation of your release. Define the title, primary artist, and distribution tier."}
@@ -440,7 +440,7 @@ export default function NewRelease() {
                                             )}
                                         </button>
                                         <p className="text-[10px] font-black text-white uppercase tracking-widest text-center mt-8 px-10 leading-relaxed">
-                                            By facilitating this transmission, you authorize Sonic Distro to distribute your intellectual property to global stores.
+                                            By facilitating this transmission, you authorize Ayinz to distribute your intellectual property to global stores.
                                         </p>
                                     </div>
                                 </motion.div>

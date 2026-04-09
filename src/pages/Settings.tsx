@@ -117,9 +117,9 @@ export default function Settings() {
             animate={{ opacity: 1, x: 0 }}
           >
             <p className="label-caps mb-2">Management Center</p>
-            <h1 className="text-4xl md:text-6xl font-display italic tracking-tight text-white uppercase leading-[0.85]">
+            <h1 className="text-4xl md:text-6xl font-display italic tracking-tight text-white uppercase leading-[1.1] pb-2">
               Account<br/>
-              <span className="text-gradient-red">Settings</span>
+              <span className="text-gradient-red px-1">Settings</span>
             </h1>
           </motion.div>
         </div>
@@ -174,7 +174,7 @@ export default function Settings() {
 
               {/* ── Profile Tab ── */}
               {activeTab === 'profile' && (
-                <div className="glass-card-premium p-8 md:p-12 rounded-[2.5rem]">
+                <div className="glass-card-premium p-6 md:p-12 rounded-[2.5rem]">
                   <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 mb-12">
                     <div className="relative group">
                        <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-amber-600 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
@@ -212,7 +212,7 @@ export default function Settings() {
                     </div>
                     <div className="space-y-2">
                       <label className="label-caps opacity-50">Custom Avatar Endpoint</label>
-                      <input type="text" placeholder="https://cdn.sonic.io/avatar/v1" className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold"
+                      <input type="text" placeholder="https://cdn.ayinz.io/avatar/v1" className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold"
                         value={profile.avatar_url} onChange={e => setProfile({ ...profile, avatar_url: e.target.value })} />
                     </div>
                     <div className="pt-4">
@@ -231,7 +231,7 @@ export default function Settings() {
 
               {/* ── Security Tab ── */}
               {activeTab === 'security' && (
-                <div className="glass-card-premium p-8 md:p-12 rounded-[2.5rem]">
+                <div className="glass-card-premium p-6 md:p-12 rounded-[2.5rem]">
                   <div className="mb-10">
                     <h3 className="text-2xl font-black text-white tracking-tight uppercase">Security Vault</h3>
                     <p className="label-caps mt-2 opacity-60">Manage authentication protocols</p>
@@ -274,7 +274,7 @@ export default function Settings() {
 
               {/* ── Plan Tab ── */}
               {activeTab === 'subscription' && (
-                <div className="glass-card-premium p-8 md:p-12 rounded-[2.5rem]">
+                <div className="glass-card-premium p-6 md:p-12 rounded-[2.5rem]">
                   <div className="mb-10">
                     <h3 className="text-2xl font-black text-white tracking-tight uppercase">Tier Status</h3>
                     <p className="label-caps mt-2 opacity-60">Manage your distribution capacity</p>

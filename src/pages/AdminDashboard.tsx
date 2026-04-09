@@ -313,8 +313,8 @@ export default function AdminDashboard() {
             <div className="p-6 md:p-8 pt-12 md:pt-16 max-w-7xl mx-auto">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                     <div>
-                        <p className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] mb-2">Master Control</p>
-                        <h1 className="text-5xl md:text-7xl font-display tracking-tight leading-tight uppercase italic">Admin<br/>Dashboard</h1>
+                        <p className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] mb-2 pr-[0.4em]">Master Control</p>
+                        <h1 className="text-5xl md:text-7xl font-display tracking-tight leading-[1.1] uppercase italic pb-4">Admin<br/>Dashboard</h1>
                     </div>
                     <div className="flex gap-2 bg-zinc-950/50 p-1.5 rounded-2xl border border-white/5 backdrop-blur-xl shrink-0 overflow-x-auto no-scrollbar">
                         {TABS.map((tab) => (

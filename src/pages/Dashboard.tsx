@@ -99,9 +99,9 @@ export default function Dashboard() {
         >
             <div>
                 <p className="label-caps mb-2">Workspace Overview</p>
-                <h1 className="text-4xl md:text-6xl font-display italic tracking-tight text-white uppercase leading-[0.85]">
+                <h1 className="text-4xl md:text-6xl font-display italic tracking-tight text-white uppercase leading-[1.1] pb-2">
                     Welcome back,<br/>
-                    <span className="text-gradient-red">{user.name?.split(' ')[0] || 'Artist'}</span>
+                    <span className="text-gradient-red px-1">{user.name?.split(' ')[0] || 'Artist'}</span>
                 </h1>
             </div>
             <div className="flex flex-col items-start md:items-end gap-2">

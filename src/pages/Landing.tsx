@@ -16,7 +16,7 @@ export default function Landing() {
   }, [isMenuOpen]);
 
   const testimonials = [
-    { name: "SARAH JOHNSON", role: "Vocalist", content: "Complete operational control. Absolutely no compromise on fidelity. Sonic Distro handles everything." },
+    { name: "SARAH JOHNSON", role: "Vocalist", content: "Complete operational control. Absolutely no compromise on fidelity. Ayinz handles everything." },
     { name: "MARCUS CHEN", role: "Producer", content: "The analytics architecture is unforgivingly precise. Exactly what our label required." },
     { name: "ELENA DAVIS", role: "Composer", content: "A distribution matrix that respects the art form. Transparent, instantaneous royalty reports." }
   ];
@@ -39,10 +39,10 @@ export default function Landing() {
         <div className="container mx-auto px-6 lg:px-12 flex justify-between items-center">
           <Link to="/" className="flex items-center gap-3 group">
             <div className="w-8 h-8 rounded overflow-hidden">
-              <img src="/ayinz.jpeg" alt="Sonic Distro" className="w-full h-full object-cover filter grayscale contrast-125 group-hover:scale-110 group-hover:grayscale-0 transition-all duration-700" />
+              <img src="/ayinz.jpeg" alt="Ayinz" className="w-full h-full object-cover filter grayscale contrast-125 group-hover:scale-110 group-hover:grayscale-0 transition-all duration-700" />
             </div>
             <div className="flex items-baseline">
-              <span className="text-xl font-bold tracking-widest uppercase text-white">Sonic Distro</span>
+              <span className="text-xl font-bold tracking-widest uppercase text-white">Ayinz</span>
               <span className="w-1.5 h-1.5 bg-red-600 rounded-full ml-1 animate-[pulse_2s_ease-in-out_infinite] shadow-[0_0_10px_rgba(220,38,38,0.8)]" />
             </div>
           </Link>
@@ -80,7 +80,7 @@ export default function Landing() {
             className="fixed inset-0 z-[60] bg-[#020202]/95 flex flex-col p-6 lg:p-12"
           >
             <div className="flex justify-between items-center mt-2">
-              <div className="flex items-baseline"><span className="text-xl font-bold tracking-widest uppercase text-white">Sonic Distro</span><span className="w-1.5 h-1.5 bg-red-600 rounded-full ml-1 animate-[pulse_2s_ease-in-out_infinite] shadow-[0_0_10px_rgba(220,38,38,0.8)]" /></div>
+              <div className="flex items-baseline"><span className="text-xl font-bold tracking-widest uppercase text-white">Ayinz</span><span className="w-1.5 h-1.5 bg-red-600 rounded-full ml-1 animate-[pulse_2s_ease-in-out_infinite] shadow-[0_0_10px_rgba(220,38,38,0.8)]" /></div>
               <button onClick={() => setIsMenuOpen(false)} className="text-white hover:text-red-500 transition-colors"><X className="w-8 h-8" /></button>
             </div>
 
@@ -404,8 +404,8 @@ export default function Landing() {
             transition={{ duration: 1 }}
             className="flex flex-col items-center text-center max-w-4xl mx-auto mb-32"
           >
-            <h2 className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-10 leading-[1.1]">
-              <span className="font-light italic font-serif text-red-600 drop-shadow-[0_0_20px_rgba(220,38,38,0.4)]">Sonic</span> Distro your catalog. 
+            <h2 className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-10 leading-[1.2] pb-2">
+              <span className="font-light italic font-serif text-red-600 drop-shadow-[0_0_20px_rgba(220,38,38,0.4)] px-1">Ayinz</span> your catalog. 
             </h2>
              <Link to="/register" className="rounded-full bg-red-600 text-white px-12 py-5 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-red-700 hover:shadow-[0_0_30px_rgba(220,38,38,0.3)] transition-all">
               Begin Distribution
@@ -416,9 +416,9 @@ export default function Landing() {
             <div className="col-span-2 md:col-span-1">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-8 h-8 rounded bg-white overflow-hidden">
-                  <img src="/ayinz.jpeg" alt="Sonic Distro" className="w-full h-full object-cover filter grayscale contrast-125" />
+                  <img src="/ayinz.jpeg" alt="Ayinz" className="w-full h-full object-cover filter grayscale contrast-125" />
                 </div>
-                <span className="text-xl font-bold tracking-widest uppercase text-white">Sonic Distro</span>
+                <span className="text-xl font-bold tracking-widest uppercase text-white">Ayinz</span>
               </div>
               <p className="text-[10px] font-medium tracking-[0.2em] uppercase text-white leading-relaxed md:max-w-[200px]">A boutique approach to global music delivery.</p>
             </div>
@@ -452,7 +452,7 @@ export default function Landing() {
           </div>
 
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-white/5">
-            <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-white">© {new Date().getFullYear()} Sonic Distro Matrices.</p>
+            <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-white">© {new Date().getFullYear()} Ayinz Matrices.</p>
             <div className="flex gap-8">
               <a href="#" className="text-[9px] font-bold uppercase tracking-[0.2em] text-white hover:text-white transition-colors">Privacy</a>
               <a href="#" className="text-[9px] font-bold uppercase tracking-[0.2em] text-white hover:text-white transition-colors">Terms</a>

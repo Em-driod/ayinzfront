@@ -48,9 +48,9 @@ export default function Login() {
           {/* Logo */}
           <div className="flex items-center justify-center space-x-2.5 mb-10">
             <div className="w-8 h-8 rounded-xl overflow-hidden border border-zinc-800">
-              <img src="/ayinz.jpeg" alt="Sonic Distro" className="w-full h-full object-cover" />
+              <img src="/ayinz.jpeg" alt="Ayinz" className="w-full h-full object-cover" />
             </div>
-            <span className="text-xl font-black text-white tracking-tight">Sonic Distro</span>
+            <span className="text-xl font-black text-white tracking-tight">Ayinz</span>
           </div>
 
           {/* Card */}
@@ -107,7 +107,7 @@ export default function Login() {
             </form>
 
             <p className="text-center text-xs text-white font-bold mt-6">
-              New to Sonic Distro?{' '}
+              New to Ayinz?{' '}
               <Link to="/register" className="text-zinc-400 hover:text-white transition-colors font-black">
                 Create an account
               </Link>

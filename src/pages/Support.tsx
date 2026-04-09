@@ -129,106 +129,8 @@ export default function Support() {
     <div className="min-h-screen">
       <div className="relative z-10 p-5 md:p-10 max-w-6xl mx-auto space-y-12 md:space-y-20">
 
-        {/* Hero Section */}
-        <div className="relative group overflow-hidden rounded-[3rem] p-10 md:p-20 text-center">
-            <div className="absolute inset-0 bg-gradient-to-b from-red-600/10 to-transparent opacity-50" />
-            <div className="absolute top-0 right-0 w-96 h-96 bg-red-600/10 blur-[120px] -mr-48 -mt-48 pointer-events-none" />
-            
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="relative z-10 max-w-3xl mx-auto"
-            >
-                <p className="label-caps text-red-500 mb-6 tracking-[0.5em]">Global Support Hub</p>
-                <h1 className="text-5xl md:text-8xl font-display italic tracking-tight text-white uppercase leading-[0.8] mb-10">
-                    How can we<br/>
-                    <span className="text-gradient-red italic">assist you?</span>
-                </h1>
-                
-                <div className="relative max-w-2xl mx-auto group/search">
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-red-600/20 to-amber-600/20 rounded-3xl blur opacity-0 group-focus-within/search:opacity-100 transition duration-500" />
-                    <div className="relative flex items-center bg-white/[0.03] border border-white/10 rounded-3xl overflow-hidden backdrop-blur-xl transition-all group-focus-within/search:border-red-600/50">
-                        <div className="pl-6">
-                          <Search className="w-5 h-5 text-white" />
-                        </div>
-                        <input 
-                            type="text" 
-                            placeholder="Query documentation, guides, or system status..." 
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-transparent py-6 px-4 text-white placeholder-zinc-600 focus:outline-none font-bold text-sm tracking-wide"
-                        />
-                    </div>
-                </div>
-            </motion.div>
-        </div>
-
-        {/* Help Categories */}
-        <div className="space-y-8">
-            <div className="flex items-center gap-4">
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/5" />
-                <h3 className="label-caps opacity-50">Knowledge Clusters</h3>
-                <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/5" />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {CATEGORIES.map(category => (
-                    <motion.div 
-                        key={category.id}
-                        whileHover={{ y: -5 }}
-                        className="glass-card-premium p-8 rounded-[2rem] border-white/5 hover:border-red-600/30 transition-all cursor-pointer group"
-                    >
-                        <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-2xl">
-                            <category.icon className="w-6 h-6 text-white group-hover:text-red-500 transition-colors" />
-                        </div>
-                        <h4 className="text-[11px] font-black text-white uppercase tracking-[0.2em] mb-2 group-hover:text-red-500 transition-colors">
-                            {category.title}
-                        </h4>
-                        <p className="text-[11px] font-bold text-white leading-relaxed group-hover:text-white transition-colors">
-                            {category.description}
-                        </p>
-                    </motion.div>
-                ))}
-            </div>
-        </div>
 
         <div className="grid lg:grid-cols-2 gap-10 md:gap-20">
-            {/* FAQs */}
-            <div className="space-y-10">
-                <div>
-                   <h3 className="label-caps text-red-500 mb-2">Verified Answers</h3>
-                   <h2 className="text-3xl font-black text-white tracking-tight uppercase leading-none">Frequently Asked</h2>
-                </div>
-                <div className="space-y-4">
-                    {FAQS.map((faq, idx) => (
-                        <div key={idx} className="glass-card-premium border-white/5 rounded-[2rem] overflow-hidden hover:border-white/10 transition-all">
-                            <button 
-                                onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                                className="w-full p-8 text-left flex justify-between items-center bg-transparent group"
-                            >
-                                <span className="text-sm font-black text-white group-hover:text-white transition-colors pr-6 leading-relaxed uppercase tracking-tight">{faq.question}</span>
-                                <div className={`w-10 h-10 rounded-xl bg-zinc-900 border border-white/5 flex items-center justify-center transition-transform ${openFaq === idx ? 'rotate-180 bg-red-600/10 border-red-600/20' : ''}`}>
-                                    <ChevronDown className={`w-5 h-5 ${openFaq === idx ? 'text-red-500' : 'text-white'}`} />
-                                </div>
-                            </button>
-                            <AnimatePresence>
-                                {openFaq === idx && (
-                                    <motion.div 
-                                        initial={{ height: 0, opacity: 0 }} 
-                                        animate={{ height: 'auto', opacity: 1 }} 
-                                        exit={{ height: 0, opacity: 0 }}
-                                        className="overflow-hidden"
-                                    >
-                                        <div className="px-8 pb-8 text-[13px] font-bold text-white leading-relaxed border-t border-white/5 pt-6 italic">
-                                            {faq.answer}
-                                        </div>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
             {/* Ticket Creation Form */}
             <div className="space-y-10">
                 <div>
@@ -290,6 +192,71 @@ export default function Support() {
                         </div>
                     </form>
                 </div>
+            </div>
+
+            {/* FAQs */}
+            <div className="space-y-10">
+                <div>
+                   <h3 className="label-caps text-red-500 mb-2">Verified Answers</h3>
+                   <h2 className="text-3xl font-black text-white tracking-tight uppercase leading-none">Frequently Asked</h2>
+                </div>
+                <div className="space-y-4">
+                    {FAQS.map((faq, idx) => (
+                        <div key={idx} className="glass-card-premium border-white/5 rounded-[2rem] overflow-hidden hover:border-white/10 transition-all">
+                            <button 
+                                onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                                className="w-full p-8 text-left flex justify-between items-center bg-transparent group"
+                            >
+                                <span className="text-sm font-black text-white group-hover:text-white transition-colors pr-6 leading-relaxed uppercase tracking-tight">{faq.question}</span>
+                                <div className={`w-10 h-10 rounded-xl bg-zinc-900 border border-white/5 flex items-center justify-center transition-transform ${openFaq === idx ? 'rotate-180 bg-red-600/10 border-red-600/20' : ''}`}>
+                                    <ChevronDown className={`w-5 h-5 ${openFaq === idx ? 'text-red-500' : 'text-white'}`} />
+                                </div>
+                            </button>
+                            <AnimatePresence>
+                                {openFaq === idx && (
+                                    <motion.div 
+                                        initial={{ height: 0, opacity: 0 }} 
+                                        animate={{ height: 'auto', opacity: 1 }} 
+                                        exit={{ height: 0, opacity: 0 }}
+                                        className="overflow-hidden"
+                                    >
+                                        <div className="px-8 pb-8 text-[13px] font-bold text-white leading-relaxed border-t border-white/5 pt-6 italic">
+                                            {faq.answer}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+
+        {/* Help Categories */}
+        <div className="space-y-8">
+            <div className="flex items-center gap-4">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/5" />
+                <h3 className="label-caps opacity-50">Knowledge Clusters</h3>
+                <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/5" />
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                {CATEGORIES.map(category => (
+                    <motion.div 
+                        key={category.id}
+                        whileHover={{ y: -5 }}
+                        className="glass-card-premium p-6 md:p-8 rounded-[2rem] border-white/5 hover:border-red-600/30 transition-all cursor-pointer group"
+                    >
+                        <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-2xl">
+                            <category.icon className="w-6 h-6 text-white group-hover:text-red-500 transition-colors" />
+                        </div>
+                        <h4 className="text-[11px] font-black text-white uppercase tracking-[0.2em] mb-2 group-hover:text-red-500 transition-colors">
+                            {category.title}
+                        </h4>
+                        <p className="text-[11px] font-bold text-white leading-relaxed group-hover:text-white transition-colors">
+                            {category.description}
+                        </p>
+                    </motion.div>
+                ))}
             </div>
         </div>
 
@@ -464,6 +431,39 @@ export default function Support() {
             )}
         </AnimatePresence>
 
+        {/* Hero Section (Search & Help) moved to bottom */}
+        <div className="relative group overflow-hidden rounded-[3rem] p-10 md:p-20 text-center opacity-40 hover:opacity-100 transition-opacity">
+            <div className="absolute inset-0 bg-gradient-to-b from-red-600/10 to-transparent opacity-50" />
+            <div className="absolute top-0 right-0 w-96 h-96 bg-red-600/10 blur-[120px] -mr-48 -mt-48 pointer-events-none" />
+            
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="relative z-10 max-w-3xl mx-auto"
+            >
+                <p className="label-caps text-red-500 mb-6 tracking-[0.5em]">Global Support Hub</p>
+                <h1 className="text-5xl md:text-8xl font-display italic tracking-tight text-white uppercase leading-[1.1] mb-10 pb-4 text-center mx-auto">
+                    How can we<br/>
+                    <span className="text-gradient-red px-1">assist you?</span>
+                </h1>
+                
+                <div className="relative max-w-2xl mx-auto group/search">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-red-600/20 to-amber-600/20 rounded-3xl blur opacity-0 group-focus-within/search:opacity-100 transition duration-500" />
+                    <div className="relative flex items-center bg-white/[0.03] border border-white/10 rounded-3xl overflow-hidden backdrop-blur-xl transition-all group-focus-within/search:border-red-600/50">
+                        <div className="pl-6">
+                          <Search className="w-5 h-5 text-white" />
+                        </div>
+                        <input 
+                            type="text" 
+                            placeholder="Query documentation, guides, or system status..." 
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full bg-transparent py-6 px-4 text-white placeholder-zinc-600 focus:outline-none font-bold text-sm tracking-wide"
+                        />
+                    </div>
+                </div>
+            </motion.div>
+        </div>
       </div>
     </div>
   );

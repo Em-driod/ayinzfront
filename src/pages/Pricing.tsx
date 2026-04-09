@@ -74,7 +74,7 @@ const plans = [
   },
   {
     id: 'plan500',
-    name: 'Sonic 500 Plan',
+    name: 'Ayinz 500 Plan',
     subtitle: 'Test Plan',
     price: 500,
     original: 1000,
@@ -103,9 +103,9 @@ export default function Pricing() {
       <nav className="relative z-10 flex items-center justify-between px-6 md:px-12 py-5 border-b border-zinc-900">
         <Link to="/" className="flex items-center space-x-2.5">
           <div className="w-8 h-8 rounded-xl overflow-hidden border border-zinc-800">
-            <img src="/ayinz.jpeg" alt="Sonic Distro" className="w-full h-full object-cover" />
+            <img src="/ayinz.jpeg" alt="Ayinz" className="w-full h-full object-cover" />
           </div>
-          <span className="text-lg font-black text-white tracking-tight">Sonic Distro</span>
+          <span className="text-lg font-black text-white tracking-tight">Ayinz</span>
         </Link>
         <div className="flex items-center space-x-4">
           <Link to="/login" className="text-xs font-black text-white hover:text-white transition-colors uppercase tracking-[0.15em]">Sign In</Link>
@@ -117,7 +117,7 @@ export default function Pricing() {
       <div className="relative z-10 text-center pt-16 pb-14 px-6">
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
           <p className="text-[10px] font-black text-white uppercase tracking-[0.4em] mb-4">Distribution Plans</p>
-          <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">
+          <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4 leading-[1.1] pb-2">
             Simple, Transparent<br />Pricing
           </h1>
           <p className="text-white text-sm md:text-base font-bold max-w-lg mx-auto">
@@ -210,7 +210,7 @@ export default function Pricing() {
 
         {/* Footer note */}
         <p className="text-center text-xs text-white font-bold mt-10">
-          Join thousands of artists distributing their music worldwide with Sonic Distro.
+          Join thousands of artists distributing their music worldwide with Ayinz.
           <br />All plans include 100% royalty retention and no lock-in contracts.
         </p>
       </div>
