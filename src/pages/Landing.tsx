@@ -308,12 +308,13 @@ export default function Landing() {
             <p className="text-sm text-white tracking-wide font-light">Scalable ecosystems for independent creators to establishing labels.</p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
             {[
-              { name: 'Basic', subtitle: 'Artiste Plan', price: '₦35k', accounts: '01 Account', featured: false },
-              { name: 'Premium', subtitle: 'Record Label Plan', price: '₦50k', accounts: '10–15 Accounts', featured: true },
-              { name: 'Plus', subtitle: 'Record Label Plus', price: '₦85k', accounts: '20+ Accounts', featured: false },
-              { name: 'Standard', subtitle: 'Enterprise Edition', price: '₦350k', accounts: 'Unlimited', featured: false }
+              { id: 'basic_temp', name: 'Basic (Temp)', subtitle: 'Artiste Plan', price: '₦1.5k', period: '3 Month', accounts: '01 Account', featured: false, temp: true },
+              { id: 'basic', name: 'Basic', subtitle: 'Artiste Plan', price: '₦35k', period: 'Annually', accounts: '01 Account', featured: false, temp: false },
+              { id: 'premium', name: 'Premium', subtitle: 'Record Label Plan', price: '₦50k', period: 'Annually', accounts: '10–15 Accounts', featured: true, temp: false },
+              { id: 'plus', name: 'Plus', subtitle: 'Record Label Plus', price: '₦85k', period: 'Annually', accounts: '20+ Accounts', featured: false, temp: false },
+              { id: 'standard', name: 'Standard', subtitle: 'Enterprise Edition', price: '₦350k', period: 'Annually', accounts: 'Unlimited', featured: false, temp: false }
             ].map((plan, i) => (
               <motion.div 
                 key={i}
@@ -323,18 +324,19 @@ export default function Landing() {
                 transition={{ duration: 0.6, delay: i * 0.1 }}
                 whileHover={{ y: -10, scale: plan.featured ? 1.05 : 1.02 }}
                 className={`relative p-8 rounded-2xl flex flex-col justify-between border transition-all duration-500 overflow-hidden group
-                  ${plan.featured ? 'bg-zinc-900 border-red-600/50 shadow-[0_0_40px_rgba(220,38,38,0.2)] scale-105 z-10' : 'bg-[#050505] border-white/5 hover:border-red-600/30 hover:shadow-[0_0_30px_rgba(220,38,38,0.1)]'}
+                  ${plan.temp ? 'bg-zinc-950 border-amber-500/40 opacity-90' : plan.featured ? 'bg-zinc-900 border-red-600/50 shadow-[0_0_40px_rgba(220,38,38,0.2)] scale-105 z-10' : 'bg-[#050505] border-white/5 hover:border-red-600/30 hover:shadow-[0_0_30px_rgba(220,38,38,0.1)]'}
                 `}
               >
                 {plan.featured && <div className="absolute top-0 right-8 -translate-y-1/2 bg-red-600 text-white px-3 py-1 text-[8px] font-bold uppercase tracking-[0.2em] rounded-full">Recommended</div>}
+                {plan.temp && <div className="absolute top-0 right-4 -translate-y-1/2 bg-amber-500 text-black px-3 py-1 text-[8px] font-bold uppercase tracking-[0.2em] rounded-full">Temporary</div>}
 
                 <div>
-                  <h3 className={`text-xl font-bold tracking-tight ${plan.featured ? 'text-white' : 'text-zinc-200'}`}>{plan.name}</h3>
-                  <p className={`text-[9px] uppercase tracking-[0.2em] font-medium mt-1 ${plan.featured ? 'text-red-400' : 'text-white'}`}>{plan.subtitle}</p>
+                  <h3 className={`text-xl font-bold tracking-tight ${plan.featured ? 'text-white' : plan.temp ? 'text-amber-400' : 'text-zinc-200'}`}>{plan.name}</h3>
+                  <p className={`text-[9px] uppercase tracking-[0.2em] font-medium mt-1 ${plan.featured ? 'text-red-400' : plan.temp ? 'text-amber-400/80' : 'text-white'}`}>{plan.subtitle}</p>
 
-                  <div className="my-8 flex items-baseline">
-                    <span className={`text-4xl font-bold tracking-tighter ${plan.featured ? 'text-white' : 'text-white'}`}>{plan.price}</span>
-                    <span className={`text-[9px] uppercase tracking-widest ml-2 ${plan.featured ? 'text-white' : 'text-white'}`}>/ Annually</span>
+                  <div className="my-8 flex items-baseline flex-wrap">
+                    <span className={`text-3xl font-bold tracking-tighter ${plan.featured ? 'text-white' : plan.temp ? 'text-amber-400' : 'text-white'}`}>{plan.price}</span>
+                    <span className={`text-[9px] uppercase tracking-widest ml-2 ${plan.featured ? 'text-white' : 'text-white'}`}>/ {plan.period}</span>
                   </div>
 
                   <div className={`text-xs font-light leading-relaxed ${plan.featured ? 'text-white' : 'text-white'}`}>
@@ -343,8 +345,8 @@ export default function Landing() {
                   </div>
                 </div>
 
-                <Link to={`/register?plan=${plan.name.toLowerCase()}`} className={`mt-10 w-full py-3 text-center text-[10px] font-bold uppercase tracking-[0.2em] rounded-full transition-all
-                  ${plan.featured ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-white/5 text-white hover:bg-white hover:text-black'}
+                <Link to={`/register?plan=${plan.id}`} className={`mt-10 w-full py-3 text-center text-[10px] font-bold uppercase tracking-[0.2em] rounded-full transition-all
+                  ${plan.temp ? 'bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-black border border-amber-500/20' : plan.featured ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-white/5 text-white hover:bg-white hover:text-black'}
                 `}>
                   Select Plan
                 </Link>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Eye, EyeOff, ArrowRight, Music, Zap, Star, Globe, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, Music, Zap, Star, Globe, AlertCircle, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '../utils/api';
 
@@ -8,11 +8,11 @@ const inputClass = 'w-full bg-black/60 border border-zinc-800 rounded-xl px-4 py
 const labelClass = 'block text-[10px] font-black text-white uppercase tracking-[0.2em] mb-2';
 
 const plans = [
-  { id: 'basic', name: 'Artiste', price: '₦35,000/yr', icon: Music, amount: 35000 },
-  { id: 'premium', name: 'Record Label', price: '₦50,000/yr', icon: Zap, amount: 50000 },
-  { id: 'plus', name: 'Label Plus', price: '₦85,000/yr', icon: Star, amount: 85000 },
-  { id: 'standard', name: 'Enterprise', price: '₦350,000/yr', icon: Globe, amount: 350000 },
-  { id: 'plan500', name: 'Ayinz 500', price: '₦500/yr', icon: Zap, amount: 500 },
+  { id: 'basic_temp', name: 'Artiste', price: '₦1,500 / 3mo', icon: Zap, amount: 1500, temporary: true },
+  { id: 'basic', name: 'Artiste', price: '₦35,000/yr', icon: Music, amount: 35000, temporary: false },
+  { id: 'premium', name: 'Record Label', price: '₦50,000/yr', icon: Zap, amount: 50000, temporary: false },
+  { id: 'plus', name: 'Label Plus', price: '₦85,000/yr', icon: Star, amount: 85000, temporary: false },
+  { id: 'standard', name: 'Enterprise', price: '₦350,000/yr', icon: Globe, amount: 350000, temporary: false },
 ];
 
 declare const PaystackPop: any;
@@ -171,18 +171,37 @@ export default function Register() {
                       <button key={plan.id} type="button"
                         onClick={() => setFormData({ ...formData, subscription: plan.id })}
                         className={`p-3 rounded-xl border transition-all text-center ${
-                          isSelected
+                          isSelected && plan.temporary
+                            ? 'border-amber-500 bg-amber-500/10 text-white'
+                            : isSelected
                             ? 'border-red-600 bg-red-600/10 text-white'
                             : 'border-zinc-900 text-white hover:border-zinc-700 hover:text-zinc-400'
                         }`}
                       >
-                        <plan.icon className={`w-4 h-4 mx-auto mb-1 ${isSelected ? 'text-red-500' : 'text-white'}`} />
-                        <div className="text-[11px] font-black">{plan.name}</div>
+                        <plan.icon className={`w-4 h-4 mx-auto mb-1 ${
+                          isSelected && plan.temporary ? 'text-amber-400'
+                          : isSelected ? 'text-red-500' : 'text-white'
+                        }`} />
+                        <div className="text-[11px] font-black">
+                          {plan.name}{plan.temporary && <span className="text-amber-400 ml-1">(Temp)</span>}
+                        </div>
                         <div className="text-[9px] text-white font-bold mt-0.5">{plan.price}</div>
                       </button>
                     );
                   })}
                 </div>
+                {/* Temporary plan warning */}
+                {(() => {
+                  const selected = plans.find(p => p.id === formData.subscription);
+                  return selected?.temporary ? (
+                    <div className="mt-2 flex items-start gap-2 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                      <AlertTriangle className="w-3.5 h-3.5 text-amber-400 flex-shrink-0 mt-0.5" />
+                      <p className="text-[10px] font-black text-amber-400 uppercase tracking-wide leading-tight">
+                        Temporary — upgrade to a full plan before 3 months to avoid takedown
+                      </p>
+                    </div>
+                  ) : null;
+                })()}
               </div>
 
               {/* Terms */}
