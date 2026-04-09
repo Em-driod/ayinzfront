@@ -83,9 +83,9 @@ const plans = [
     popular: false,
     features: [
       '1 Artist Account',
+      'Single, EP, Album support',
       'Test distribution',
       'Basic analytics',
-      'Temporary plan',
     ],
   },
 ];

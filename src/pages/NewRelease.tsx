@@ -7,10 +7,7 @@ import api from '../utils/api';
 const PLAN_TYPES: Record<string, string[]> = {
   basic: ['Single', 'EP', 'Album'],
   premium: ['Single', 'EP', 'Album'],
-  plus: ['Single', 'EP', 'Album'],
-  standard: ['Single', 'EP', 'Album'],
 };
-
 const ROLES = ['Main Artist', 'Featured Artist', 'Producer', 'Engineer', 'Remixer', 'Composer'];
 const AI_OPTIONS = ['No AI used', 'AI assisted lyrics', 'AI assisted melody', 'AI generated vocals', 'Full AI generation'];
 const LANGUAGES = ['English', 'Spanish', 'French', 'German', 'Yoruba', 'Igbo', 'Hausa', 'Swahili', 'Portuguese', 'Japanese', 'Chinese'];
@@ -19,7 +16,7 @@ export default function NewRelease() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const plan: string = user.subscription || 'basic';
-  const allowedTypes = PLAN_TYPES[plan] || ['Single'];
+  const allowedTypes = ['Single', 'EP', 'Album'];
 
   const [formData, setFormData] = useState({
     title: '',

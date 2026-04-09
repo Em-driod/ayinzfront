@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, HelpCircle, Mail, MessageSquare, Play, FileText, ChevronDown, CheckCircle, AlertCircle, ArrowUpRight, Clock, User, ShieldAlert, X, Send } from 'lucide-react';
+import { Search, HelpCircle, Mail, MessageSquare, Play, FileText, ChevronDown, CheckCircle, AlertCircle, ArrowUpRight, Clock, User, ShieldAlert, X, Send, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../utils/api';
 
@@ -129,7 +129,6 @@ export default function Support() {
     <div className="min-h-screen">
       <div className="relative z-10 p-5 md:p-10 max-w-6xl mx-auto space-y-12 md:space-y-20">
 
-
         <div className="grid lg:grid-cols-2 gap-10 md:gap-20">
             {/* Ticket Creation Form */}
             <div className="space-y-10">
@@ -232,50 +231,25 @@ export default function Support() {
             </div>
         </div>
 
-        {/* Help Categories */}
-        <div className="space-y-8">
-            <div className="flex items-center gap-4">
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/5" />
-                <h3 className="label-caps opacity-50">Knowledge Clusters</h3>
-                <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/5" />
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                {CATEGORIES.map(category => (
-                    <motion.div 
-                        key={category.id}
-                        whileHover={{ y: -5 }}
-                        className="glass-card-premium p-6 md:p-8 rounded-[2rem] border-white/5 hover:border-red-600/30 transition-all cursor-pointer group"
-                    >
-                        <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-2xl">
-                            <category.icon className="w-6 h-6 text-white group-hover:text-red-500 transition-colors" />
-                        </div>
-                        <h4 className="text-[11px] font-black text-white uppercase tracking-[0.2em] mb-2 group-hover:text-red-500 transition-colors">
-                            {category.title}
-                        </h4>
-                        <p className="text-[11px] font-bold text-white leading-relaxed group-hover:text-white transition-colors">
-                            {category.description}
-                        </p>
-                    </motion.div>
-                ))}
-            </div>
-        </div>
-
-        {/* My Tickets List */}
-        <div className="pt-20 border-t border-white/5 space-y-10">
+        {/* My Tickets List (Active Communications) moved up after ticket form */}
+        <div className="space-y-10">
             <div className="flex items-center justify-between">
                 <div>
                     <h3 className="label-caps text-red-500 mb-2">Active Communications</h3>
                     <h2 className="text-3xl font-black text-white tracking-tight uppercase leading-none">Your Tickets</h2>
                 </div>
-                <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center">
-                    <FileText className="w-6 h-6 text-white" />
-                </div>
+                <button 
+                    onClick={fetchTickets}
+                    className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center text-white hover:bg-red-600 group transition-all"
+                >
+                    <RefreshCw className={`w-6 h-6 ${loading ? 'animate-spin' : 'group-hover:rotate-180 transition-transform duration-500'}`} />
+                </button>
             </div>
 
             {tickets.length === 0 ? (
                 <div className="text-center py-20 glass-card-premium rounded-[3rem] border-dashed border-white/5 bg-transparent">
-                    <MessageSquare className="w-16 h-16 text-white mx-auto mb-6" />
-                    <p className="text-white font-black uppercase tracking-widest text-[11px]">No active support threads detected</p>
+                    <MessageSquare className="w-16 h-16 text-white mx-auto mb-6 opacity-20" />
+                    <p className="text-white/40 font-black uppercase tracking-widest text-[11px]">No active support threads detected</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -322,114 +296,33 @@ export default function Support() {
             )}
         </div>
 
-        {/* Chat Modal */}
-        <AnimatePresence>
-            {activeTicket && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-md"
-                >
+        {/* Help Categories */}
+        <div className="space-y-8 pt-10">
+            <div className="flex items-center gap-4">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/5" />
+                <h3 className="label-caps opacity-50">Knowledge Clusters</h3>
+                <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/5" />
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                {CATEGORIES.map(category => (
                     <motion.div 
-                        initial={{ scale: 0.9, y: 40 }}
-                        animate={{ scale: 1, y: 0 }}
-                        exit={{ scale: 0.9, y: 40 }}
-                        className="bg-zinc-950 border border-white/10 w-full max-w-4xl rounded-[2.5rem] overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.8)] flex flex-col h-[85vh] relative"
+                        key={category.id}
+                        whileHover={{ y: -5 }}
+                        className="glass-card-premium p-6 md:p-8 rounded-[2rem] border-white/5 hover:border-red-600/30 transition-all cursor-pointer group"
                     >
-                        {/* Background Decor */}
-                        <div className="absolute top-0 right-0 w-96 h-96 bg-red-600/5 blur-[120px] pointer-events-none" />
-
-                        {/* Chat Header */}
-                        <div className="p-8 border-b border-white/5 flex justify-between items-center relative z-10">
-                            <div>
-                                <div className="flex items-center gap-4 mb-2">
-                                    <h3 className="text-2xl font-black uppercase tracking-tight text-white">{activeTicket.subject}</h3>
-                                    <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border shadow-2xl ${
-                                        activeTicket.status === 'Resolved' ? 'bg-zinc-900 text-white border-zinc-800' : 'bg-red-600/10 border-red-600/20 text-red-500'
-                                    }`}>
-                                        {activeTicket.status}
-                                    </span>
-                                </div>
-                                <p className="label-caps opacity-50 flex items-center gap-3">
-                                    Ticket ID: <span className="font-mono text-white/40">{activeTicket._id.toUpperCase()}</span>
-                                    <span className="w-1 h-1 rounded-full bg-zinc-800" />
-                                    Updated {new Date(activeTicket.updatedAt).toLocaleString()}
-                                </p>
-                            </div>
-                            <button onClick={() => setActiveTicket(null)} className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center text-white hover:text-white hover:bg-red-600 hover:border-red-600 transition-all active:scale-90 group">
-                                <X className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
-                            </button>
+                        <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-2xl">
+                            <category.icon className="w-6 h-6 text-white group-hover:text-red-500 transition-colors" />
                         </div>
-
-                        {/* Chat History */}
-                        <div ref={chatScrollRef} className="flex-1 overflow-y-auto p-8 md:p-12 space-y-10 custom-scrollbar relative z-10">
-                            {activeTicket.messages.map((msg, idx) => {
-                                const isUser = msg.sender === 'user';
-                                return (
-                                    <motion.div 
-                                        key={idx} 
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}
-                                    >
-                                        <div className={`flex items-center gap-4 mb-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
-                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-2xl ${
-                                                isUser ? 'bg-red-600/20 border-red-600/30 text-red-500' : 'bg-zinc-900 border-white/10 text-white'
-                                            }`}>
-                                                {isUser ? <User className="w-5 h-5" /> : <ShieldAlert className="w-5 h-5" />}
-                                            </div>
-                                            <span className="label-caps opacity-40">
-                                                {isUser ? 'Authorized Artiste' : 'System Administrator'}
-                                            </span>
-                                        </div>
-                                        <div className={`max-w-[75%] p-6 rounded-3xl text-sm font-bold shadow-2xl leading-relaxed whitespace-pre-wrap ${
-                                            isUser 
-                                                ? 'bg-red-600 text-white rounded-tr-none border border-red-500 shadow-red-900/20' 
-                                                : 'glass-card-premium border-white/10 text-zinc-200 rounded-tl-none'
-                                        }`}>
-                                            {msg.content}
-                                        </div>
-                                        <span className="text-[9px] text-white font-black uppercase tracking-widest mt-3 px-2">
-                                            {new Date(msg.timestamp).toLocaleString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' })}
-                                        </span>
-                                    </motion.div>
-                                );
-                            })}
-                        </div>
-
-                        {/* Chat Input */}
-                        <div className="p-8 border-t border-white/5 relative z-10">
-                             {activeTicket.status === 'Open' ? (
-                                <form onSubmit={handleReplySubmit} className="flex gap-4">
-                                    <input 
-                                        type="text" 
-                                        value={replyMessage}
-                                        onChange={(e) => setReplyMessage(e.target.value)}
-                                        placeholder="Formulate your response..."
-                                        className="flex-1 bg-white/[0.03] border border-white/5 rounded-2xl px-8 py-5 text-white placeholder-zinc-600 focus:border-red-600/50 outline-none transition-all font-bold text-sm shadow-inner"
-                                    />
-                                    <button 
-                                        type="submit" 
-                                        disabled={!replyMessage.trim() || replying}
-                                        className="w-20 bg-white text-black hover:bg-red-600 hover:text-white rounded-2xl transition-all shadow-2xl flex items-center justify-center disabled:opacity-50 active:scale-95 group"
-                                    >
-                                        {replying 
-                                          ? <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" /> 
-                                          : <Send className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                                        }
-                                    </button>
-                                </form>
-                            ) : (
-                                <div className="p-6 bg-zinc-900/50 border border-white/5 rounded-[2rem] text-center text-[10px] font-black uppercase tracking-[0.3em] text-white italic">
-                                    Transmission terminated · Ticket marked as resolved
-                                </div>
-                            )}
-                        </div>
+                        <h4 className="text-[11px] font-black text-white uppercase tracking-[0.2em] mb-2 group-hover:text-red-500 transition-colors">
+                            {category.title}
+                        </h4>
+                        <p className="text-[11px] font-bold text-white leading-relaxed group-hover:text-white transition-colors">
+                            {category.description}
+                        </p>
                     </motion.div>
-                </motion.div>
-            )}
-        </AnimatePresence>
+                ))}
+            </div>
+        </div>
 
         {/* Hero Section (Search & Help) moved to bottom */}
         <div className="relative group overflow-hidden rounded-[3rem] p-10 md:p-20 text-center opacity-40 hover:opacity-100 transition-opacity">
@@ -442,7 +335,7 @@ export default function Support() {
                 className="relative z-10 max-w-3xl mx-auto"
             >
                 <p className="label-caps text-red-500 mb-6 tracking-[0.5em]">Global Support Hub</p>
-                <h1 className="text-5xl md:text-8xl font-display italic tracking-tight text-white uppercase leading-[1.1] mb-10 pb-4 text-center mx-auto">
+                <h1 className="text-5xl md:text-6xl lg:text-8xl font-display italic tracking-tight text-white uppercase leading-[1.1] mb-10 pb-4 text-center mx-auto">
                     How can we<br/>
                     <span className="text-gradient-red px-1">assist you?</span>
                 </h1>
@@ -465,6 +358,115 @@ export default function Support() {
             </motion.div>
         </div>
       </div>
+
+      {/* Chat Modal */}
+      <AnimatePresence>
+          {activeTicket && (
+              <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-md"
+              >
+                  <motion.div 
+                      initial={{ scale: 0.9, y: 40 }}
+                      animate={{ scale: 1, y: 0 }}
+                      exit={{ scale: 0.9, y: 40 }}
+                      className="bg-zinc-950 border border-white/10 w-full max-w-4xl rounded-[2.5rem] overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.8)] flex flex-col h-[85vh] relative"
+                  >
+                      {/* Background Decor */}
+                      <div className="absolute top-0 right-0 w-96 h-96 bg-red-600/5 blur-[120px] pointer-events-none" />
+
+                      {/* Chat Header */}
+                      <div className="p-8 border-b border-white/5 flex justify-between items-center relative z-10">
+                          <div>
+                              <div className="flex items-center gap-4 mb-2">
+                                  <h3 className="text-2xl font-black uppercase tracking-tight text-white">{activeTicket.subject}</h3>
+                                  <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border shadow-2xl ${
+                                      activeTicket.status === 'Resolved' ? 'bg-zinc-900 text-white border-zinc-800' : 'bg-red-600/10 border-red-600/20 text-red-500'
+                                  }`}>
+                                      {activeTicket.status}
+                                  </span>
+                              </div>
+                              <p className="label-caps opacity-50 flex items-center gap-3 text-[10px]">
+                                  Ticket ID: <span className="font-mono text-white/40">{activeTicket._id.toUpperCase()}</span>
+                                  <span className="w-1 h-1 rounded-full bg-zinc-800" />
+                                  Updated {new Date(activeTicket.updatedAt).toLocaleString()}
+                              </p>
+                          </div>
+                          <button onClick={() => setActiveTicket(null)} className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center text-white hover:text-white hover:bg-red-600 hover:border-red-600 transition-all active:scale-90 group">
+                              <X className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
+                          </button>
+                      </div>
+
+                      {/* Chat History */}
+                      <div ref={chatScrollRef} className="flex-1 overflow-y-auto p-8 md:p-12 space-y-10 custom-scrollbar relative z-10">
+                          {activeTicket.messages.map((msg, idx) => {
+                              const isUser = msg.sender === 'user';
+                              return (
+                                  <motion.div 
+                                      key={idx} 
+                                      initial={{ opacity: 0, y: 10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}
+                                  >
+                                      <div className={`flex items-center gap-4 mb-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+                                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-2xl ${
+                                              isUser ? 'bg-red-600/20 border-red-600/30 text-red-500' : 'bg-zinc-900 border-white/10 text-white'
+                                          }`}>
+                                              {isUser ? <User className="w-5 h-5" /> : <ShieldAlert className="w-5 h-5" />}
+                                          </div>
+                                          <span className="label-caps opacity-40 text-[9px]">
+                                              {isUser ? 'Authorized Artiste' : 'System Administrator'}
+                                          </span>
+                                      </div>
+                                      <div className={`max-w-[75%] p-6 rounded-3xl text-sm font-bold shadow-2xl leading-relaxed whitespace-pre-wrap ${
+                                          isUser 
+                                              ? 'bg-red-600 text-white rounded-tr-none border border-red-500 shadow-red-900/20' 
+                                              : 'glass-card-premium border-white/10 text-zinc-200 rounded-tl-none'
+                                      }`}>
+                                          {msg.content}
+                                      </div>
+                                      <span className="text-[9px] text-white font-black uppercase tracking-widest mt-3 px-2 opacity-40">
+                                          {new Date(msg.timestamp).toLocaleString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' })}
+                                      </span>
+                                  </motion.div>
+                              );
+                          })}
+                      </div>
+
+                      {/* Chat Input */}
+                      <div className="p-8 border-t border-white/5 relative z-10">
+                           {activeTicket.status === 'Open' ? (
+                              <form onSubmit={handleReplySubmit} className="flex gap-4">
+                                  <input 
+                                      type="text" 
+                                      value={replyMessage}
+                                      onChange={(e) => setReplyMessage(e.target.value)}
+                                      placeholder="Formulate your response..."
+                                      className="flex-1 bg-white/[0.03] border border-white/5 rounded-2xl px-8 py-5 text-white placeholder-zinc-600 focus:border-red-600/50 outline-none transition-all font-bold text-sm shadow-inner"
+                                  />
+                                  <button 
+                                      type="submit" 
+                                      disabled={!replyMessage.trim() || replying}
+                                      className="w-20 bg-white text-black hover:bg-red-600 hover:text-white rounded-2xl transition-all shadow-2xl flex items-center justify-center disabled:opacity-50 active:scale-95 group"
+                                  >
+                                      {replying 
+                                        ? <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" /> 
+                                        : <Send className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                                      }
+                                  </button>
+                              </form>
+                          ) : (
+                              <div className="p-6 bg-zinc-900/50 border border-white/5 rounded-[2rem] text-center text-[10px] font-black uppercase tracking-[0.3em] text-white italic">
+                                  Transmission terminated · Ticket marked as resolved
+                              </div>
+                          )}
+                      </div>
+                  </motion.div>
+              </motion.div>
+          )}
+      </AnimatePresence>
     </div>
   );
 }
