@@ -14,6 +14,7 @@ interface Release {
   revenue: number;
   created_at: string;
   cover_url?: string;
+  tracks?: any[];
 }
 
 const getStatusStyle = (status: string) => {
@@ -199,7 +200,10 @@ export default function Releases() {
                       {/* Info Area */}
                       <div className="p-6 md:p-8 flex flex-col flex-1 bg-white/[0.02]">
                           <h3 className="text-lg md:text-xl font-black text-white truncate uppercase tracking-tight group-hover:text-red-500 transition-colors mb-1">{release.title}</h3>
-                          <p className="text-[10px] font-black text-white uppercase tracking-widest mb-6">{release.artist} · {release.type}</p>
+                          <p className="text-[10px] font-black text-white uppercase tracking-widest mb-6">
+                            {release.artist} · {release.type}
+                            {release.tracks && release.tracks.length > 1 && ` · ${release.tracks.length} Tracks`}
+                          </p>
                           
                           <div className="mt-auto space-y-4">
                               <div className="pt-4 border-t border-white/5 flex items-center justify-between">

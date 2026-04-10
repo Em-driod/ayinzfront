@@ -44,6 +44,14 @@ interface Release {
     label?: string;
     copyright_date_release?: string;
     copyright_date_recording?: string;
+    tracks?: {
+        title: string;
+        artist: string;
+        genre: string;
+        song_url: string;
+        isrc?: string;
+        explicit?: string;
+    }[];
 }
 
 interface Ticket {
@@ -307,7 +315,7 @@ export default function AdminDashboard() {
 
     if (error) return (
         <div className="min-h-screen bg-[#050505] flex items-center justify-center p-6 text-center">
-            <div className="glass-dark p-8 rounded-3xl max-w-sm">
+            <div className="glass-card-premium rounded-[2.5rem] max-w-sm">
                 <X className="w-12 h-12 text-rose-500 mx-auto mb-4" />
                 <h2 className="text-xl font-bold mb-2">Access Denied</h2>
                 <p className="text-white text-sm mb-6">{error}</p>
@@ -317,7 +325,7 @@ export default function AdminDashboard() {
     );
 
     const StatCard = ({ title, value, icon: Icon, color }: any) => (
-        <div className="glass-dark p-6 rounded-3xl relative overflow-hidden group shadow-2xl shadow-black/20">
+        <div className="glass-card-premium p-8 rounded-[2.5rem] relative overflow-hidden group">
             <div className={`absolute top-0 right-0 w-32 h-32 bg-${color}-500/10 blur-[100px] -mr-16 -mt-16 group-hover:bg-${color}-500/20 transition-all duration-500`} />
             <div className="relative z-10">
                 <div className={`w-12 h-12 rounded-2xl bg-${color}-500/20 flex items-center justify-center mb-4 ring-1 ring-${color}-500/30 shadow-lg shadow-${color}-500/20`}>
@@ -338,15 +346,17 @@ export default function AdminDashboard() {
     ];
 
     return (
-        <div className="min-h-screen bg-[#050505] bg-mesh text-white pb-24">
+        <div className="min-h-screen bg-mesh-main text-white pb-24">
             
             {/* Header */}
-            <div className="p-6 md:p-8 pt-12 md:pt-16 max-w-7xl mx-auto">
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-                    <div>
-                        <p className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] mb-2 pr-[0.4em]">Master Control</p>
-                        <h1 className="text-5xl md:text-7xl font-display tracking-tight leading-[1.1] uppercase italic pb-4">Admin<br/>Dashboard</h1>
-                    </div>
+            <div className="p-5 md:p-10 pt-12 md:pt-16 max-w-7xl mx-auto">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
+                    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+                        <p className="label-caps text-red-500 mb-2">System Management</p>
+                        <h1 className="text-4xl md:text-6xl font-display tracking-tight leading-[1.1] uppercase pb-2">
+                            Admin<br/><span className="text-gradient-red px-1">Dashboard</span>
+                        </h1>
+                    </motion.div>
                     <div className="flex gap-2 bg-zinc-950/50 p-1.5 rounded-2xl border border-white/5 backdrop-blur-xl shrink-0 overflow-x-auto no-scrollbar">
                         {TABS.map((tab) => (
                             <button
@@ -387,8 +397,8 @@ export default function AdminDashboard() {
                             </div>
 
                             <div className="grid lg:grid-cols-2 gap-8">
-                                <div className="glass-dark rounded-3xl p-8 border border-white/5">
-                                    <h3 className="text-xl font-display uppercase italic tracking-tight mb-6">Recent Users</h3>
+                                <div className="glass-card-premium rounded-[2.5rem] p-8 border border-white/5">
+                                    <h3 className="text-xl font-display uppercase tracking-tight mb-6">Recent Users</h3>
                                     <div className="space-y-4">
                                         {users.slice(0, 5).map(u => (
                                             <div key={u._id} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors group">
@@ -410,8 +420,8 @@ export default function AdminDashboard() {
                                     </button>
                                 </div>
 
-                                <div className="glass-dark rounded-3xl p-8 border border-white/5">
-                                    <h3 className="text-xl font-display uppercase italic tracking-tight mb-6">Pending Releases</h3>
+                                <div className="glass-card-premium rounded-[2.5rem] p-8 border border-white/5">
+                                    <h3 className="text-xl font-display uppercase tracking-tight mb-6">Pending Releases</h3>
                                     <div className="space-y-4">
                                         {releases.filter(r => r.status === 'pending').slice(0, 5).map(r => (
                                             <div key={r.id} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors">
@@ -453,10 +463,10 @@ export default function AdminDashboard() {
                             initial={{ opacity: 0, scale: 0.98 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.98 }}
-                            className="glass-dark rounded-3xl overflow-hidden border border-white/5"
+                            className="glass-card-premium rounded-[2.5rem] overflow-hidden border border-white/5"
                         >
                             <div className="p-6 border-b border-white/5 flex items-center justify-between">
-                                <h2 className="text-xl font-display uppercase italic text-white flex items-center gap-3">
+                                <h2 className="text-xl font-display uppercase tracking-tight flex items-center gap-3">
                                     <Users className="w-6 h-6 text-blue-500" /> All Artists
                                 </h2>
                                 <div className="flex items-center gap-3">
@@ -472,71 +482,67 @@ export default function AdminDashboard() {
                                     </button>
                                 </div>
                             </div>
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-left">
-                                    <thead className="bg-white/5 text-[10px] font-black uppercase tracking-[0.2em] text-white">
-                                        <tr>
-                                            <th className="px-8 py-5">Artist</th>
-                                            <th className="px-8 py-5">Subscription</th>
-                                            <th className="px-8 py-5 text-right">Joined</th>
-                                            <th className="px-8 py-5 text-right">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-white/5">
-                                        {users.map(u => (
-                                            <tr key={u._id} className="hover:bg-white/[0.02] transition-colors group">
-                                                <td className="px-8 py-5">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="w-10 h-10 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center font-bold text-white group-hover:border-blue-500/50 transition-colors">
-                                                            {u.name[0]}
-                                                        </div>
-                                                        <div>
-                                                            <p className="font-bold text-sm">{u.name}</p>
-                                                            <p className="text-xs text-white">{u.email}</p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="px-8 py-5">
-                                                    <span className={`text-[10px] font-black uppercase px-3 py-1.5 rounded-full border ${
-                                                        u.subscription === 'plus' ? 'bg-red-600/10 border-red-600/20 text-red-600' :
-                                                        u.subscription === 'premium' ? 'bg-blue-500/10 border-blue-500/20 text-blue-500' :
-                                                        'bg-zinc-900 border-white/5 text-white'
-                                                    }`}>
-                                                        {u.subscription.replace('_', ' ')}
-                                                    </span>
-                                                </td>
-                                                <td className="px-8 py-5 text-right text-xs font-bold text-white">
-                                                    {new Date(u.created_at).toLocaleDateString()}
-                                                </td>
-                                                <td className="px-8 py-5 text-right">
-                                                    <div className="flex items-center justify-end gap-2">
-                                                        <button 
-                                                            onClick={() => { setSelectedUserFilter(u); setActiveTab('releases'); }}
-                                                            className="p-2 hover:bg-purple-500/10 text-white hover:text-purple-400 rounded-xl transition-all"
-                                                            title="View Releases"
-                                                        >
-                                                            <Music className="w-4 h-4" />
-                                                        </button>
-                                                        <button 
-                                                            onClick={() => openEditUser(u)}
-                                                            className="p-2 hover:bg-blue-500/10 text-white hover:text-blue-400 rounded-xl transition-all"
-                                                            title="Edit User"
-                                                        >
-                                                            <Pencil className="w-4 h-4" />
-                                                        </button>
-                                                        <button 
-                                                            onClick={() => handleDeleteUser(u._id, u.name)}
-                                                            className="p-2 hover:bg-rose-500/10 text-white hover:text-rose-500 rounded-xl transition-all"
-                                                            title="Delete User"
-                                                        >
-                                                            <X className="w-4 h-4" />
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                            <div className="divide-y divide-white/5">
+                                {users.map(u => (
+                                    <div key={u._id} className="p-6 md:p-8 flex items-center justify-between hover:bg-white/[0.02] transition-colors group">
+                                        <div className="flex items-center gap-6">
+                                            <div className="w-14 h-14 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center font-bold text-white group-hover:border-blue-500/50 shadow-2xl transition-colors shrink-0">
+                                                {u.name[0]}
+                                            </div>
+                                            <div>
+                                                <p className="font-black text-lg text-white mb-1 tracking-tight">{u.name}</p>
+                                                <p className="text-xs text-white uppercase tracking-widest font-bold">{u.email}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="flex items-center gap-12">
+                                            <div className="hidden lg:flex flex-col items-center">
+                                                <span className={`text-[10px] font-black uppercase px-4 py-2 rounded-2xl border ${
+                                                    u.subscription === 'plus' ? 'bg-red-600/10 border-red-600/20 text-red-600' :
+                                                    u.subscription === 'premium' ? 'bg-blue-500/10 border-blue-500/20 text-blue-500' :
+                                                    'bg-zinc-900 border-white/5 text-white'
+                                                }`}>
+                                                    {u.subscription.replace('_', ' ')}
+                                                </span>
+                                            </div>
+                                            
+                                            <div className="hidden lg:flex flex-col justify-end text-right">
+                                                <p className="label-caps opacity-50 mb-1">Joined</p>
+                                                <p className="text-xs font-black text-white">{new Date(u.created_at).toLocaleDateString()}</p>
+                                            </div>
+                                            
+                                            <div className="flex items-center gap-3">
+                                                <button 
+                                                    onClick={() => { setSelectedUserFilter(u); setActiveTab('releases'); }}
+                                                    className="w-12 h-12 flex items-center justify-center bg-zinc-900 hover:bg-purple-500 text-white hover:text-black rounded-2xl border border-white/5 hover:border-purple-500 transition-all shadow-xl"
+                                                    title="View Releases"
+                                                >
+                                                    <Music className="w-5 h-5" />
+                                                </button>
+                                                <button 
+                                                    onClick={() => openEditUser(u)}
+                                                    className="w-12 h-12 flex items-center justify-center bg-zinc-900 hover:bg-blue-500 text-white hover:text-black rounded-2xl border border-white/5 hover:border-blue-500 transition-all shadow-xl"
+                                                    title="Edit User"
+                                                >
+                                                    <Pencil className="w-5 h-5" />
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleDeleteUser(u._id, u.name)}
+                                                    className="w-12 h-12 flex items-center justify-center bg-zinc-900 hover:bg-rose-500 text-white hover:text-black rounded-2xl border border-white/5 hover:border-rose-500 transition-all shadow-xl"
+                                                    title="Delete User"
+                                                >
+                                                    <X className="w-5 h-5" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                                {users.length === 0 && (
+                                    <div className="py-24 text-center text-white">
+                                        <Users className="w-16 h-16 mx-auto mb-6 opacity-5" />
+                                        <p className="text-[10px] font-black uppercase tracking-[0.3em]">No artists registered yet</p>
+                                    </div>
+                                )}
                             </div>
                         </motion.div>
                     )}
@@ -572,7 +578,7 @@ export default function AdminDashboard() {
                                         <h3 className="text-sm font-black uppercase tracking-[0.3em]">{selectedUserFilter ? 'No releases by this artist' : 'No releases found'}</h3>
                                     </div>
                                 ) : displayReleases.map(r => (
-                                    <div key={r.id} className="glass-dark rounded-3xl p-6 border border-white/10 hover:border-red-600/50 transition-all group overflow-hidden relative shadow-2xl shadow-red-600/5">
+                                    <div key={r.id} className="glass-card-premium rounded-[2.5rem] p-6 border border-white/10 hover:border-red-600/50 transition-all group overflow-hidden relative shadow-2xl shadow-red-600/5">
                                         {/* Status Glow */}
                                         <div className={`absolute top-0 right-0 w-32 h-32 blur-[100px] -mr-16 -mt-16 transition-all duration-700 ${
                                             r.status === 'approved' ? 'bg-red-600/30' : 
@@ -617,7 +623,25 @@ export default function AdminDashboard() {
                                                 </select>
                                             </div>
 
-                                            {r.song_file && (
+                                            {r.tracks && r.tracks.length > 0 ? (
+                                                <div className="mb-6 space-y-3">
+                                                    <p className="text-[10px] font-black uppercase text-white/40 tracking-[0.2em] px-2">Tracklist & Masters</p>
+                                                    <div className="space-y-1 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                                                        {r.tracks.map((track, idx) => (
+                                                            <div key={idx} className="p-3 bg-black/40 rounded-2xl border border-white/5 group/track hover:border-red-600/30 transition-all">
+                                                                <div className="flex justify-between items-center mb-2">
+                                                                    <div className="min-w-0 flex-1">
+                                                                        <p className="text-xs font-black text-white truncate">{idx + 1}. {track.title}</p>
+                                                                        <p className="text-[9px] font-bold text-white/40 uppercase tracking-widest">{track.artist} • {track.genre}</p>
+                                                                    </div>
+                                                                    {track.isrc && <span className="text-[8px] font-mono text-white/30 bg-white/5 px-2 py-0.5 rounded border border-white/5 uppercase">{track.isrc}</span>}
+                                                                </div>
+                                                                <audio controls src={track.song_url} className="w-full h-8 invert opacity-40 hover:opacity-100 transition-opacity" />
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            ) : r.song_file && (
                                                 <div className="mb-6 p-1 bg-black/40 rounded-2xl border border-white/5">
                                                     <audio controls src={r.song_file} className="w-full h-10 invert opacity-60 hover:opacity-100 transition-opacity" />
                                                 </div>
@@ -687,9 +711,9 @@ export default function AdminDashboard() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
                         >
-                            <div className="glass-dark rounded-3xl overflow-hidden border border-white/5">
+                            <div className="glass-card-premium rounded-[2.5rem] overflow-hidden border border-white/5">
                                 <div className="p-6 border-b border-white/5 bg-white/5">
-                                    <h2 className="text-xl font-display uppercase italic text-white flex items-center gap-3">
+                                    <h2 className="text-xl font-display uppercase tracking-tight flex items-center gap-3">
                                         <Wallet className="w-6 h-6 text-rose-500" /> Withdrawal Requests
                                     </h2>
                                 </div>
@@ -759,9 +783,9 @@ export default function AdminDashboard() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
                         >
-                            <div className="glass-dark rounded-3xl overflow-hidden border border-white/5">
+                            <div className="glass-card-premium rounded-[2.5rem] overflow-hidden border border-white/5">
                                 <div className="p-6 border-b border-white/5 bg-white/5">
-                                    <h2 className="text-xl font-display uppercase italic text-white flex items-center gap-3">
+                                    <h2 className="text-xl font-display uppercase tracking-tight flex items-center gap-3">
                                         <MessageCircle className="w-6 h-6 text-red-600" /> Support Tickets
                                     </h2>
                                 </div>
@@ -884,7 +908,7 @@ export default function AdminDashboard() {
 
                             <div className="mb-8">
                                 <p className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] mb-1">Performance Graph</p>
-                                <h3 className="text-3xl font-display uppercase italic text-white leading-none">{viewingRelease.title}</h3>
+                                <h3 className="text-3xl font-display uppercase tracking-tight leading-none">{viewingRelease.title}</h3>
                                 <p className="text-xs font-bold text-white mt-2 uppercase tracking-widest">by {viewingRelease.artist}</p>
                             </div>
 

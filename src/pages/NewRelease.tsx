@@ -39,8 +39,9 @@ export default function NewRelease() {
   const [contributors, setContributors] = useState<{name: string, role: string}[]>([]);
   const [songwriters, setSongwriters] = useState<string[]>([]);
   const [musicians, setMusicians] = useState<{name: string, instrument: string}[]>([]);
-
-  const [songFile, setSongFile] = useState<File | null>(null);
+  const [tracks, setTracks] = useState<{title: string, artist: string, genre: string, file: File | null}[]>([
+    { title: '', artist: user.name || '', genre: '', file: null }
+  ]);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -71,14 +72,23 @@ export default function NewRelease() {
     setMusicians(next);
   };
 
+  const addTrack = () => setTracks([...tracks, { title: '', artist: formData.artist, genre: formData.genre, file: null }]);
+  const removeTrack = (index: number) => setTracks(tracks.filter((_, i) => i !== index));
+  const updateTrack = (index: number, field: keyof typeof tracks[0], value: any) => {
+    const next = [...tracks];
+    (next[index] as any)[field] = value;
+    setTracks(next);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess('');
     setLoading(true);
 
-    if (!songFile) {
-      setError('Please select a song file to upload.');
+    const incompleteTracks = tracks.filter(t => !t.file || !t.title.trim());
+    if (incompleteTracks.length > 0) {
+      setError('Each track must have a title and an audio file.');
       setLoading(false);
       return;
     }
@@ -88,7 +98,20 @@ export default function NewRelease() {
       data.append(key, value.toString());
     });
     
-    data.append('song', songFile);
+    
+    // Append songs and metadata
+    const trackMetadata = tracks.map(t => ({
+      title: t.title,
+      artist: t.artist,
+      genre: t.genre,
+      explicit: formData.explicit
+    }));
+    data.append('trackMetadata', JSON.stringify(trackMetadata));
+    
+    tracks.forEach((t) => {
+      if (t.file) data.append('songs', t.file);
+    });
+
     if (coverImageFile) data.append('coverImage', coverImageFile);
     data.append('contributors', JSON.stringify(contributors.filter(c => c.name.trim())));
     data.append('songwriters', JSON.stringify(songwriters.filter(s => s.trim())));
@@ -232,7 +255,15 @@ export default function NewRelease() {
                                                 key={type}
                                                 type="button"
                                                 disabled={isLocked}
-                                                onClick={() => !isLocked && setFormData({ ...formData, type })}
+                                                onClick={() => {
+                                                    if (!isLocked) {
+                                                        const newType = type;
+                                                        setFormData({ ...formData, type: newType });
+                                                        if (newType === 'Single') {
+                                                            setTracks([{ title: formData.title || '', artist: formData.artist, genre: formData.genre, file: null }]);
+                                                        }
+                                                    }
+                                                }}
                                                 className={`p-6 rounded-3xl border transition-all text-center relative group flex flex-col items-center justify-center gap-3 ${
                                                     isSelected
                                                     ? 'border-red-600 bg-red-600/10 text-white shadow-[0_0_20px_rgba(220,38,38,0.1)]'
@@ -251,7 +282,15 @@ export default function NewRelease() {
                                     </div>
 
                                     <div className="pt-6">
-                                        <button type="button" onClick={() => setStep(2)} className="w-full bg-white text-black hover:bg-red-600 hover:text-white py-5 rounded-2xl font-black text-sm uppercase tracking-widest transition-all shadow-2xl flex items-center justify-center gap-3 group active:scale-95">
+                                        <button type="button" onClick={() => {
+                                            // Ensure the first track matches the release metadata if it's empty
+                                            const nextTracks = [...tracks];
+                                            if (!nextTracks[0].title) nextTracks[0].title = formData.title;
+                                            if (!nextTracks[0].artist) nextTracks[0].artist = formData.artist;
+                                            if (!nextTracks[0].genre) nextTracks[0].genre = formData.genre;
+                                            setTracks(nextTracks);
+                                            setStep(2);
+                                        }} className="w-full bg-white text-black hover:bg-red-600 hover:text-white py-5 rounded-2xl font-black text-sm uppercase tracking-widest transition-all shadow-2xl flex items-center justify-center gap-3 group active:scale-95">
                                             Proceed to Metadata <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                                         </button>
                                     </div>
@@ -374,30 +413,68 @@ export default function NewRelease() {
 
                             {step === 4 && (
                                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-12">
-                                    <div className="grid md:grid-cols-2 gap-8">
-                                        <div className="space-y-4">
-                                            <label className="label-caps opacity-50">Master Audio (WAV/FLAC)</label>
-                                            <div
-                                                onClick={() => document.getElementById('song-file-upload')?.click()}
-                                                className="h-64 rounded-[2rem] border-2 border-dashed border-white/5 bg-white/[0.02] hover:bg-red-600/5 hover:border-red-600/30 transition-all cursor-pointer group flex flex-col items-center justify-center text-center p-8 relative overflow-hidden"
-                                            >
-                                                <div className="p-5 rounded-2xl bg-zinc-900 border border-white/5 mb-6 group-hover:scale-110 transition-transform shadow-2xl">
-                                                    <Music className={`w-8 h-8 ${songFile ? 'text-red-500' : 'text-white'}`} />
-                                                </div>
-                                                <p className="text-xs font-black uppercase tracking-widest text-white group-hover:text-white transition-colors">
-                                                    {songFile ? songFile.name : 'Choose Master Audio'}
-                                                </p>
-                                                <p className="text-[10px] font-bold text-white mt-2 italic">Lossless high-fidelity expected</p>
-                                                <input id="song-file-upload" type="file" required className="sr-only" accept=".mp3,.wav"
-                                                    onChange={e => { if (e.target.files?.[0]) setSongFile(e.target.files[0]); }} />
-                                            </div>
+                                    <div className="space-y-8">
+                                        <div className="flex items-center justify-between">
+                                            <label className="label-caps opacity-50">Tracklist & Audio Masters</label>
+                                            {formData.type !== 'Single' && (
+                                                <button type="button" onClick={addTrack} className="flex items-center gap-2 text-[10px] font-black uppercase text-red-500 hover:text-white transition-colors group">
+                                                    <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" /> Add Track
+                                                </button>
+                                            )}
                                         </div>
+                                        
+                                        <div className="space-y-6">
+                                            {tracks.map((t, i) => (
+                                                <div key={i} className="p-6 rounded-3xl bg-white/[0.02] border border-white/5 space-y-6 relative group/track">
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-[10px] font-black text-red-500 uppercase tracking-widest">Track #{i + 1}</span>
+                                                        {tracks.length > 1 && (
+                                                            <button type="button" onClick={() => removeTrack(i)} className="p-2 text-white/20 hover:text-red-500 transition-colors">
+                                                                <X className="w-4 h-4" />
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                    
+                                                    <div className="grid md:grid-cols-3 gap-6">
+                                                        <div className="space-y-2">
+                                                            <label className="text-[9px] font-black uppercase text-white/40 tracking-widest">Title</label>
+                                                            <input type="text" placeholder="Song Title" className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 text-white text-xs font-bold outline-none focus:border-red-500/50" 
+                                                                value={t.title} onChange={e => updateTrack(i, 'title', e.target.value)} />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <label className="text-[9px] font-black uppercase text-white/40 tracking-widest">Artist</label>
+                                                            <input type="text" placeholder="Artist Name" className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 text-white text-xs font-bold outline-none focus:border-red-500/50" 
+                                                                value={t.artist} onChange={e => updateTrack(i, 'artist', e.target.value)} />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <label className="text-[9px] font-black uppercase text-white/40 tracking-widest">Genre</label>
+                                                            <input type="text" placeholder="Genre" className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 text-white text-xs font-bold outline-none focus:border-red-500/50" 
+                                                                value={t.genre} onChange={e => updateTrack(i, 'genre', e.target.value)} />
+                                                        </div>
+                                                    </div>
 
+                                                    <div 
+                                                        onClick={() => document.getElementById(`track-upload-${i}`)?.click()}
+                                                        className={`w-full py-8 border-2 border-dashed rounded-2xl transition-all cursor-pointer flex flex-col items-center justify-center gap-3 ${t.file ? 'border-red-600/30 bg-red-600/5' : 'border-white/5 bg-black/20 hover:border-white/20'}`}
+                                                    >
+                                                        <Music className={`w-5 h-5 ${t.file ? 'text-red-500' : 'text-white/20'}`} />
+                                                        <p className="text-[10px] font-black uppercase tracking-widest text-white">
+                                                            {t.file ? t.file.name : 'Choose Audio File'}
+                                                        </p>
+                                                        <input id={`track-upload-${i}`} type="file" required className="sr-only" accept=".mp3,.wav"
+                                                            onChange={e => { if (e.target.files?.[0]) updateTrack(i, 'file', e.target.files[0]); }} />
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="grid md:grid-cols-1 gap-8 pt-8 border-t border-white/5">
                                         <div className="space-y-4">
-                                            <label className="label-caps opacity-50">Visual Identity (Cover Art)</label>
+                                            <label className="label-caps opacity-50 text-center block">Visual Identity (Cover Art)</label>
                                             <div
                                                 onClick={() => document.getElementById('cover-art-upload')?.click()}
-                                                className="h-64 rounded-[2rem] border-2 border-dashed border-white/5 bg-white/[0.02] hover:bg-red-600/5 hover:border-red-600/30 transition-all cursor-pointer group relative overflow-hidden flex items-center justify-center"
+                                                className="h-64 rounded-[2rem] border-2 border-dashed border-white/5 bg-white/[0.02] hover:bg-red-600/5 hover:border-red-600/30 transition-all cursor-pointer group relative overflow-hidden flex items-center justify-center max-w-lg mx-auto w-full"
                                             >
                                                 {coverImageFile ? (
                                                     <>
@@ -427,7 +504,7 @@ export default function NewRelease() {
                                     <div className="pt-8 border-t border-white/5">
                                         <button
                                             type="submit"
-                                            disabled={loading || !songFile}
+                                            disabled={loading || tracks.some(t => !t.file)}
                                             className="w-full bg-red-600 hover:bg-red-500 text-black py-6 rounded-2xl font-black text-sm uppercase tracking-[0.4em] transition-all shadow-[0_0_50px_rgba(220,38,38,0.2)] flex items-center justify-center gap-4 group disabled:opacity-50 active:scale-[0.98]"
                                         >
                                             {loading ? (
