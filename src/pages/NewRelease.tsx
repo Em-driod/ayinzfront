@@ -415,7 +415,7 @@ export default function NewRelease() {
                                                             <Upload className="w-8 h-8 text-white group-hover:text-red-500 transition-colors" />
                                                         </div>
                                                         <p className="text-xs font-black uppercase text-white group-hover:text-white tracking-widest">Choose Image</p>
-                                                        <p className="text-[10px] font-bold text-white mt-2 italic">3000x3000px Recommended</p>
+                                                        <p className="text-[10px] font-bold text-white mt-2 italic">300x300px Recommended</p>
                                                     </div>
                                                 )}
                                                 <input id="cover-art-upload" type="file" className="sr-only" accept=".jpeg,.jpg,.png"

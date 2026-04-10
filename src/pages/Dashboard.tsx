@@ -158,7 +158,7 @@ export default function Dashboard() {
               </button>
             </div>
 
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar max-h-[400px]">
               {userReleases.length === 0 ? (
                 <div className="py-24 text-center px-10">
                   <div className="w-16 h-16 rounded-[2rem] bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto mb-6 shadow-2xl">
@@ -177,7 +177,7 @@ export default function Dashboard() {
                 </div>
               ) : (
                 <div className="divide-y divide-white/5">
-                  {userReleases.slice(0, 5).map((release: any, i) => (
+                  {userReleases.map((release: any, i) => (
                     <motion.div
                       key={release._id}
                       initial={{ opacity: 0, x: -10 }}

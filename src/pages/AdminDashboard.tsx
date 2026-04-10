@@ -89,6 +89,7 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'releases' | 'payouts' | 'support'>('overview');
+    const [selectedUserFilter, setSelectedUserFilter] = useState<User | null>(null);
 
     // For support chat modal
     const [activeTicket, setActiveTicket] = useState<Ticket | null>(null);
@@ -505,6 +506,13 @@ export default function AdminDashboard() {
                                                 <td className="px-8 py-5 text-right">
                                                     <div className="flex items-center justify-end gap-2">
                                                         <button 
+                                                            onClick={() => { setSelectedUserFilter(u); setActiveTab('releases'); }}
+                                                            className="p-2 hover:bg-purple-500/10 text-white hover:text-purple-400 rounded-xl transition-all"
+                                                            title="View Releases"
+                                                        >
+                                                            <Music className="w-4 h-4" />
+                                                        </button>
+                                                        <button 
                                                             onClick={() => openEditUser(u)}
                                                             className="p-2 hover:bg-blue-500/10 text-white hover:text-blue-400 rounded-xl transition-all"
                                                             title="Edit User"
@@ -528,7 +536,9 @@ export default function AdminDashboard() {
                         </motion.div>
                     )}
 
-                    {activeTab === 'releases' && (
+                    {activeTab === 'releases' && (() => {
+                        const displayReleases = selectedUserFilter ? releases.filter(r => r.user?.email === selectedUserFilter.email) : releases;
+                        return (
                         <motion.div
                             key="releases"
                             initial={{ opacity: 0, x: 20 }}
@@ -536,8 +546,27 @@ export default function AdminDashboard() {
                             exit={{ opacity: 0, x: -20 }}
                             className="space-y-6"
                         >
+                            {selectedUserFilter && (
+                                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white/5 p-6 rounded-3xl border border-white/10">
+                                    <div>
+                                        <p className="text-[10px] font-black uppercase text-purple-400 tracking-widest">Filtered By Artist</p>
+                                        <p className="text-xl font-bold text-white">{selectedUserFilter.name}</p>
+                                    </div>
+                                    <button 
+                                        onClick={() => setSelectedUserFilter(null)} 
+                                        className="px-6 py-3 bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-black transition-all text-[10px] font-black uppercase tracking-widest rounded-2xl border border-red-600/20 shadow-lg"
+                                    >
+                                        Show All Releases
+                                    </button>
+                                </div>
+                            )}
                             <div className="grid lg:grid-cols-2 gap-6">
-                                {releases.map(r => (
+                                {displayReleases.length === 0 ? (
+                                    <div className="col-span-1 lg:col-span-2 text-center py-24 text-white">
+                                        <Music className="w-16 h-16 mx-auto mb-6 opacity-5" />
+                                        <h3 className="text-sm font-black uppercase tracking-[0.3em]">{selectedUserFilter ? 'No releases by this artist' : 'No releases found'}</h3>
+                                    </div>
+                                ) : displayReleases.map(r => (
                                     <div key={r.id} className="glass-dark rounded-3xl p-6 border border-white/10 hover:border-red-600/50 transition-all group overflow-hidden relative shadow-2xl shadow-red-600/5">
                                         {/* Status Glow */}
                                         <div className={`absolute top-0 right-0 w-32 h-32 blur-[100px] -mr-16 -mt-16 transition-all duration-700 ${
@@ -643,7 +672,8 @@ export default function AdminDashboard() {
                                 ))}
                             </div>
                         </motion.div>
-                    )}
+                        );
+                    })}
 
                     {activeTab === 'payouts' && (
                         <motion.div
