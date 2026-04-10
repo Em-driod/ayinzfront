@@ -351,7 +351,12 @@ export default function AdminDashboard() {
                         {TABS.map((tab) => (
                             <button
                                 key={tab.id}
-                                onClick={() => setActiveTab(tab.id as any)}
+                                onClick={() => {
+                                    setActiveTab(tab.id as any);
+                                    if (tab.id === 'releases') {
+                                        setSelectedUserFilter(null);
+                                    }
+                                }}
                                 className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap ${
                                     activeTab === tab.id 
                                     ? 'bg-red-600 text-black' 
@@ -419,7 +424,7 @@ export default function AdminDashboard() {
                                                         <p className="text-xs text-white">{r.artist}</p>
                                                     </div>
                                                 </div>
-                                                <button onClick={() => setActiveTab('releases')} className="p-2 hover:bg-white/10 rounded-xl text-white transition-colors">
+                                                <button onClick={() => { setActiveTab('releases'); setSelectedUserFilter(null); }} className="p-2 hover:bg-white/10 rounded-xl text-white transition-colors">
                                                     <ChevronRight className="w-5 h-5" />
                                                 </button>
                                             </div>
@@ -433,7 +438,7 @@ export default function AdminDashboard() {
                                         )}
                                     </div>
                                     {releases.filter(r => r.status === 'pending').length > 5 && (
-                                        <button onClick={() => setActiveTab('releases')} className="w-full mt-6 py-4 text-xs font-black uppercase tracking-widest text-white hover:text-red-600 transition-colors flex items-center justify-center gap-2">
+                                        <button onClick={() => { setActiveTab('releases'); setSelectedUserFilter(null); }} className="w-full mt-6 py-4 text-xs font-black uppercase tracking-widest text-white hover:text-red-600 transition-colors flex items-center justify-center gap-2">
                                             Manage All Releases <ChevronRight className="w-4 h-4" />
                                         </button>
                                     )}
@@ -673,7 +678,7 @@ export default function AdminDashboard() {
                             </div>
                         </motion.div>
                         );
-                    })}
+                    })()}
 
                     {activeTab === 'payouts' && (
                         <motion.div

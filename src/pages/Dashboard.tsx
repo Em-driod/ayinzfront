@@ -179,7 +179,7 @@ export default function Dashboard() {
                 <div className="divide-y divide-white/5">
                   {userReleases.map((release: any, i) => (
                     <motion.div
-                      key={release._id}
+                      key={release.id || release._id || i}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.05 }}
