@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { User, Lock, Shield, CreditCard, Save, Camera, CheckCircle, ChevronRight, AlertCircle } from 'lucide-react';
+import { User, Lock, Shield, CreditCard, Save, Camera, CheckCircle, ChevronRight, AlertCircle, ArrowUpRight, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '../utils/api';
+import { PLANS } from '../config/plans';
+
+declare const PaystackPop: any;
 
 export default function Settings() {
   const [profile, setProfile] = useState({ name: '', email: '', avatar_url: '' });
@@ -9,8 +12,10 @@ export default function Settings() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
-  const [userPlan, setUserPlan] = useState('basic');
+  const [userPlan, setUserPlan] = useState('none');
   const [activeTab, setActiveTab] = useState('profile');
+  const [selectedPlanId, setSelectedPlanId] = useState('basic');
+  const [paymentLoading, setPaymentLoading] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -68,7 +73,56 @@ export default function Settings() {
     }
   };
 
+  const handleUpgrade = async (selectedPlan: typeof PLANS[0]) => {
+    setPaymentLoading(true);
+    setMessage({ type: '', text: '' });
+    try {
+      const pstack = (window as any).PaystackPop;
+      if (!pstack) {
+        setMessage({ type: 'error', text: 'Payment system not loaded. Please check your connection.' });
+        setPaymentLoading(false);
+        return;
+      }
+
+      const publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
+      const handler = pstack.setup({
+        key: publicKey,
+        email: profile.email,
+        amount: selectedPlan.amount * 100,
+        currency: 'NGN',
+        callback: async (response: any) => {
+          const reference = response.reference || response.trxref;
+          try {
+            const res = await api.post('/user/upgrade-subscription', {
+              subscription: selectedPlan.id,
+              paymentReference: reference
+            });
+            setUserPlan(res.data.user.subscription);
+            const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+            localStorage.setItem('user', JSON.stringify({ ...storedUser, subscription: res.data.user.subscription }));
+            setMessage({ type: 'success', text: 'Subscription upgraded successfully!' });
+          } catch (err: any) {
+            setMessage({ type: 'error', text: err.response?.data?.error || 'Upgrade failed after payment.' });
+          } finally {
+            setPaymentLoading(false);
+          }
+        },
+        onClose: () => {
+          setPaymentLoading(false);
+        }
+      });
+      handler.openIframe();
+    } catch (err: any) {
+      setMessage({ type: 'error', text: 'Payment initialization failed.' });
+      setPaymentLoading(false);
+    }
+  };
+
   const planInfo: Record<string, { label: string; desc: string; perks: string[] }> = {
+    none: {
+      label: 'No Active Plan', desc: 'Upgrade to start distributing',
+      perks: ['Global storefront distribution', '100% royalty retention', 'Analytics dashboard', 'Priority support']
+    },
     basic: {
       label: 'Artiste Plan', desc: 'Basic distribution',
       perks: ['1 Artist Account', 'Unlimited releases', 'Analytics suite', '4–7 day delivery']
@@ -280,35 +334,58 @@ export default function Settings() {
                     <p className="label-caps mt-2 opacity-60">Manage your distribution capacity</p>
                   </div>
 
-                  <div className="bg-gradient-to-br from-red-600/20 to-zinc-950 border border-red-600/20 rounded-[2rem] p-8 md:p-10 mb-8 relative overflow-hidden group">
+                  <div className={`bg-gradient-to-br from-zinc-950 border rounded-[2rem] p-8 md:p-10 mb-8 relative overflow-hidden group ${userPlan === 'none' ? 'border-amber-500/20 to-amber-900/10' : 'border-red-600/20 to-red-900/10'}`}>
                     <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/10 blur-3xl pointer-events-none" />
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
                       <div>
-                        <p className="label-caps text-red-500 mb-3">Active Distribution Tier</p>
+                        <p className={`label-caps mb-3 ${userPlan === 'none' ? 'text-amber-500' : 'text-red-500'}`}>Active Distribution Tier</p>
                         <h4 className="text-4xl md:text-5xl font-display italic text-white tracking-tight leading-none mb-2">{currentPlan.label}</h4>
                         <p className="text-xs text-white font-black uppercase tracking-widest">{currentPlan.desc}</p>
-                      </div>
-                      <div className="flex-shrink-0">
-                        <button
-                          onClick={() => window.location.href = '/pricing'}
-                          className="w-full md:w-auto bg-white text-black px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all active:scale-95 shadow-2xl"
-                        >
-                          Legacy Upgrade
-                        </button>
                       </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {currentPlan.perks.map((perk, i) => (
-                      <div key={i} className="flex items-center gap-4 bg-white/[0.03] border border-white/5 p-5 rounded-2xl group hover:bg-white/[0.05] transition-colors">
-                        <div className="w-8 h-8 rounded-lg bg-red-600/10 flex items-center justify-center">
-                            <CheckCircle className="w-4 h-4 text-red-500 group-hover:scale-110 transition-transform" />
-                        </div>
-                        <span className="text-[11px] font-black text-white uppercase tracking-widest">{perk}</span>
+                  {userPlan === 'none' ? (
+                    <div className="space-y-10">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {PLANS.map((p) => (
+                          <button key={p.id} onClick={() => setSelectedPlanId(p.id)}
+                            className={`p-6 rounded-3xl border text-left transition-all relative ${selectedPlanId === p.id ? 'border-red-600 bg-red-600/10 shadow-glow-red' : 'border-white/5 bg-white/[0.02] hover:border-white/10'}`}>
+                            <div className="flex items-center justify-between mb-2">
+                                <p className="text-[10px] font-black uppercase text-white/50">{p.subtitle}</p>
+                                {selectedPlanId === p.id && <Check className="w-4 h-4 text-red-500" />}
+                            </div>
+                            <h3 className="text-lg font-black text-white mb-1 uppercase italic">{p.name}</h3>
+                            <p className="text-xl font-black text-red-500">₦{p.price.toLocaleString()} <span className="text-[10px] text-white/40 uppercase">/ {p.period}</span></p>
+                          </button>
+                        ))}
                       </div>
-                    ))}
-                  </div>
+                      <button
+                        onClick={() => {
+                          const p = PLANS.find(x => x.id === selectedPlanId);
+                          if (p) handleUpgrade(p);
+                        }}
+                        disabled={paymentLoading}
+                        className="w-full bg-white text-black hover:bg-red-600 hover:text-white py-6 rounded-2xl font-black text-xs uppercase tracking-[0.4em] transition-all flex items-center justify-center gap-4 group disabled:opacity-50 shadow-2xl"
+                      >
+                        {paymentLoading
+                          ? <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                          : <><CreditCard className="w-5 h-5 group-hover:rotate-12 transition-transform" /> Authorize Distribution Plan</>
+                        }
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {currentPlan.perks.map((perk, i) => (
+                        <div key={i} className="flex items-center gap-4 bg-white/[0.03] border border-white/5 p-5 rounded-2xl group hover:bg-white/[0.05] transition-colors">
+                          <div className="w-8 h-8 rounded-lg bg-red-600/10 flex items-center justify-center">
+                              <CheckCircle className="w-4 h-4 text-red-500 group-hover:scale-110 transition-transform" />
+                          </div>
+                          <span className="text-[11px] font-black text-white uppercase tracking-widest">{perk}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </motion.div>

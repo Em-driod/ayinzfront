@@ -41,20 +41,21 @@ export default function Dashboard() {
 
   const getPlanLabel = (plan: string) => {
     const labels: Record<string, { name: string; desc: string }> = {
+      none: { name: 'Subscription Required', desc: 'Upgrade to start distributing' },
       basic: { name: 'Artiste Plan', desc: 'Basic distribution' },
       premium: { name: 'Record Label Plan', desc: 'Professional distribution' },
       plus: { name: 'Record Label Plus', desc: 'Advanced distribution' },
       standard: { name: 'Enterprise Edition', desc: 'Premium distribution' }
     };
-    return labels[plan] || labels.basic;
+    return labels[plan] || labels.none;
   };
 
   const getPlanLimits = (plan: string) => {
     // All plans have unlimited releases now
-    const analytics = { basic: true, premium: true, plus: true, standard: true };
-    const revenue = { basic: true, premium: true, plus: true, standard: true };
+    const analytics = { none: false, basic: true, premium: true, plus: true, standard: true };
+    const revenue = { none: false, basic: true, premium: true, plus: true, standard: true };
     return {
-      maxReleases: -1,
+      maxReleases: plan === 'none' ? 0 : -1,
       analytics: analytics[plan as keyof typeof analytics] ?? true,
       revenue: revenue[plan as keyof typeof revenue] ?? true
     };
@@ -105,9 +106,9 @@ export default function Dashboard() {
                 </h1>
             </div>
             <div className="flex flex-col items-start md:items-end gap-2">
-                <div className="px-5 py-2 glass-dark rounded-2xl border border-white/10 flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-red-600 animate-pulse shadow-[0_0_12px_rgba(220,38,38,0.8)]" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-white">{planLabel.name} ACTIVE</span>
+                <div className={`px-5 py-2 glass-dark rounded-2xl border flex items-center gap-3 ${plan === 'none' ? 'border-amber-500/50' : 'border-white/10'}`}>
+                    <div className={`w-2 h-2 rounded-full animate-pulse shadow-lg ${plan === 'none' ? 'bg-amber-500 shadow-amber-500/50' : 'bg-red-600 shadow-red-600/80'}`} />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-white">{planLabel.name} {plan !== 'none' && 'ACTIVE'}</span>
                 </div>
                 <p className="text-[10px] font-black text-white uppercase tracking-widest">{planLabel.desc}</p>
             </div>

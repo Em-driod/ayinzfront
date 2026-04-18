@@ -7,15 +7,7 @@ import api from '../utils/api';
 const inputClass = 'w-full bg-black/60 border border-zinc-800 rounded-xl px-4 py-3.5 text-white placeholder-white focus:border-white focus:outline-none transition-colors font-medium text-sm';
 const labelClass = 'block text-[10px] font-black text-white uppercase tracking-[0.2em] mb-2';
 
-const plans = [
-  { id: 'basic_temp', name: 'Artiste', price: '₦1,500 / 3mo', icon: Zap, amount: 1500, temporary: true },
-  { id: 'basic', name: 'Artiste', price: '₦35,000/yr', icon: Music, amount: 35000, temporary: false },
-  { id: 'premium', name: 'Record Label', price: '₦50,000/yr', icon: Zap, amount: 50000, temporary: false },
-  { id: 'plus', name: 'Label Plus', price: '₦85,000/yr', icon: Star, amount: 85000, temporary: false },
-  { id: 'standard', name: 'Enterprise', price: '₦350,000/yr', icon: Globe, amount: 350000, temporary: false },
-];
-
-declare const PaystackPop: any;
+// Removed plans and PaystackPop
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,7 +17,7 @@ export default function Register() {
 
   const [formData, setFormData] = useState({
     name: '', email: '', password: '',
-    subscription: planFromUrl, agreeToTerms: false
+    agreeToTerms: false
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -35,65 +27,20 @@ export default function Register() {
     if (!formData.agreeToTerms) { setError('Please agree to the Terms of Service.'); return; }
     setError('');
     
-    const selectedPlan = plans.find(p => p.id === formData.subscription);
-    if (!selectedPlan) return;
-
     setLoading(true);
 
     try {
-      const pstack = (window as any).PaystackPop;
-      if (!pstack) {
-        setError('Payment system (Paystack) not loaded. Please refresh or check your internet.');
-        setLoading(false);
-        return;
-      }
-
-      const publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
-      if (!publicKey) {
-        setError('Payment system error: Public key missing. Please contact support.');
-        setLoading(false);
-        return;
-      }
-
-      const handler = pstack.setup({
-        key: publicKey,
+      const res = await api.post('/auth/register', {
+        name: formData.name,
         email: formData.email,
-        amount: selectedPlan.amount * 100, // kobo
-        currency: 'NGN',
-        callback: (response: any) => {
-          console.log('Paystack payment complete. Response:', response);
-          // Payment successful! Now register.
-          const reference = response.reference || response.trxref || (typeof response === 'string' ? response : null);
-          
-          const registerUser = async () => {
-            try {
-              const res = await api.post('/auth/register', {
-                name: formData.name,
-                email: formData.email,
-                password: formData.password,
-                subscription: formData.subscription,
-                paymentReference: reference
-              });
-              localStorage.setItem('token', res.data.token);
-              localStorage.setItem('user', JSON.stringify(res.data.user));
-              navigate('/dashboard');
-            } catch (err: any) {
-              console.error('Registration API error:', err.response?.data || err.message);
-              setError(err.response?.data?.error || 'Registration failed after payment. Please contact support.');
-              setLoading(false);
-            }
-          };
-          registerUser();
-        },
-        onClose: () => {
-          setLoading(false);
-          setError('Payment cancelled. You must pay to create an account.');
-        }
+        password: formData.password
       });
-      handler.openIframe();
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('user', JSON.stringify(res.data.user));
+      navigate('/dashboard');
     } catch (err: any) {
-      console.error('Paystack initialization error:', err);
-      setError('Payment initialization failed. Please ensure you have a stable internet connection.');
+      console.error('Registration API error:', err.response?.data || err.message);
+      setError(err.response?.data?.error || 'Registration failed. Please try again.');
       setLoading(false);
     }
   };
@@ -161,48 +108,7 @@ export default function Register() {
                 </div>
               </div>
 
-              {/* Plan Select */}
-              <div>
-                <label className={labelClass}>Choose Plan</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {plans.map((plan) => {
-                    const isSelected = formData.subscription === plan.id;
-                    return (
-                      <button key={plan.id} type="button"
-                        onClick={() => setFormData({ ...formData, subscription: plan.id })}
-                        className={`p-3 rounded-xl border transition-all text-center ${
-                          isSelected && plan.temporary
-                            ? 'border-amber-500 bg-amber-500/10 text-white'
-                            : isSelected
-                            ? 'border-red-600 bg-red-600/10 text-white'
-                            : 'border-zinc-900 text-white hover:border-zinc-700 hover:text-zinc-400'
-                        }`}
-                      >
-                        <plan.icon className={`w-4 h-4 mx-auto mb-1 ${
-                          isSelected && plan.temporary ? 'text-amber-400'
-                          : isSelected ? 'text-red-500' : 'text-white'
-                        }`} />
-                        <div className="text-[11px] font-black">
-                          {plan.name}{plan.temporary && <span className="text-amber-400 ml-1">(Temp)</span>}
-                        </div>
-                        <div className="text-[9px] text-white font-bold mt-0.5">{plan.price}</div>
-                      </button>
-                    );
-                  })}
-                </div>
-                {/* Temporary plan warning */}
-                {(() => {
-                  const selected = plans.find(p => p.id === formData.subscription);
-                  return selected?.temporary ? (
-                    <div className="mt-2 flex items-start gap-2 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20">
-                      <AlertTriangle className="w-3.5 h-3.5 text-amber-400 flex-shrink-0 mt-0.5" />
-                      <p className="text-[10px] font-black text-amber-400 uppercase tracking-wide leading-tight">
-                        Temporary — upgrade to a full plan before 3 months to avoid takedown
-                      </p>
-                    </div>
-                  ) : null;
-                })()}
-              </div>
+              {/* Removed Plan Selection UI */}
 
               {/* Terms */}
               <div className="flex items-start gap-2.5 pt-1">
