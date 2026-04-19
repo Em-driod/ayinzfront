@@ -11,7 +11,7 @@ const PLAN_TYPES: Record<string, string[]> = {
     basic: ['Single', 'EP', 'Album'],
     premium: ['Single', 'EP', 'Album'],
 };
-const ROLES = ['Main Artist', 'Featured Artist', 'Producer', 'Engineer', 'Remixer', 'Composer'];
+const ROLES = ['Main Artist', 'Producer', 'Engineer', 'Remixer', 'Composer'];
 const AI_OPTIONS = ['No AI used', 'AI assisted lyrics', 'AI assisted melody', 'AI generated vocals', 'Full AI generation'];
 const LANGUAGES = ['English', 'Spanish', 'French', 'German', 'Yoruba', 'Igbo', 'Hausa', 'Swahili', 'Portuguese', 'Japanese', 'Chinese'];
 
@@ -539,8 +539,12 @@ export default function NewRelease() {
                                                                 {contributors.map((c, i) => (
                                                                     <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} key={i} className="flex gap-4 items-center group/item">
                                                                         <input type="text" placeholder="Legal Name" className="flex-1 bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold text-sm" value={c.name} onChange={e => updateContributor(i, 'name', e.target.value)} />
-                                                                        <select className="w-48 bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold text-sm" value={c.role} onChange={e => updateContributor(i, 'role', e.target.value)}>
-                                                                            {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
+                                                                        <select 
+                                                                            className="w-48 bg-black border border-red-600/30 rounded-2xl px-6 py-4 text-red-500 focus:border-red-600 outline-none transition-all font-black text-[10px] uppercase tracking-widest appearance-none cursor-pointer hover:bg-red-600/5" 
+                                                                            value={c.role} 
+                                                                            onChange={e => updateContributor(i, 'role', e.target.value)}
+                                                                        >
+                                                                            {ROLES.map(r => <option key={r} value={r} className="bg-black text-white">{r}</option>)}
                                                                         </select>
                                                                         <button type="button" onClick={() => removeContributor(i)} className="w-12 h-12 rounded-xl border border-white/5 flex items-center justify-center text-white hover:bg-red-600/10 hover:text-red-500 transition-all">
                                                                             <X className="w-5 h-5" />
