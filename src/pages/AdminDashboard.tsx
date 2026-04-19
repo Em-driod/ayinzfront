@@ -17,6 +17,7 @@ interface Release {
     id: string;
     title: string;
     artist: string;
+    featured_artists?: string[];
     type: string;
     genre: string;
     release_date: string;
@@ -29,7 +30,7 @@ interface Release {
     cover_url: string;
     created_at: string;
     user: { name: string; email: string };
-    
+
     // Detailed Metadata
     contributors?: any[];
     songwriters?: string[];
@@ -185,7 +186,7 @@ export default function AdminDashboard() {
                 await api.patch(`/support/${ticket._id}/read`);
                 setTickets(tickets.map(t => t._id === ticket._id ? { ...t, unreadAdmin: false } : t));
                 setActiveTicket({ ...ticket, unreadAdmin: false });
-            } catch (err) {}
+            } catch (err) { }
         }
     };
 
@@ -347,14 +348,14 @@ export default function AdminDashboard() {
 
     return (
         <div className="min-h-screen bg-mesh-main text-white pb-24">
-            
+
             {/* Header */}
             <div className="p-5 md:p-10 pt-12 md:pt-16 max-w-7xl mx-auto">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
                     <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
                         <p className="label-caps text-red-500 mb-2">System Management</p>
                         <h1 className="text-4xl md:text-6xl font-display tracking-tight leading-[1.1] uppercase pb-2">
-                            Admin<br/><span className="text-gradient-red px-1">Dashboard</span>
+                            Admin<br /><span className="text-gradient-red px-1">Dashboard</span>
                         </h1>
                     </motion.div>
                     <div className="flex gap-2 bg-zinc-950/50 p-1.5 rounded-2xl border border-white/5 backdrop-blur-xl shrink-0 overflow-x-auto no-scrollbar">
@@ -367,11 +368,10 @@ export default function AdminDashboard() {
                                         setSelectedUserFilter(null);
                                     }
                                 }}
-                                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap ${
-                                    activeTab === tab.id 
-                                    ? 'bg-red-600 text-black' 
-                                    : 'text-white hover:text-white hover:bg-white/5'
-                                }`}
+                                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap ${activeTab === tab.id
+                                        ? 'bg-red-600 text-black'
+                                        : 'text-white hover:text-white hover:bg-white/5'
+                                    }`}
                             >
                                 <tab.icon className="w-3.5 h-3.5" />
                                 {tab.name}
@@ -474,7 +474,7 @@ export default function AdminDashboard() {
                                         <Search className="w-4 h-4 text-white" />
                                         <input type="text" placeholder="Search artists..." className="bg-transparent border-none text-xs focus:ring-0 w-48 font-bold" />
                                     </div>
-                                    <button 
+                                    <button
                                         onClick={() => setShowCreateUser(true)}
                                         className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-blue-600/20"
                                     >
@@ -494,39 +494,38 @@ export default function AdminDashboard() {
                                                 <p className="text-xs text-white uppercase tracking-widest font-bold">{u.email}</p>
                                             </div>
                                         </div>
-                                        
+
                                         <div className="flex items-center gap-12">
                                             <div className="hidden lg:flex flex-col items-center">
-                                                <span className={`text-[10px] font-black uppercase px-4 py-2 rounded-2xl border ${
-                                                    u.subscription === 'plus' ? 'bg-red-600/10 border-red-600/20 text-red-600' :
-                                                    u.subscription === 'premium' ? 'bg-blue-500/10 border-blue-500/20 text-blue-500' :
-                                                    'bg-zinc-900 border-white/5 text-white'
-                                                }`}>
+                                                <span className={`text-[10px] font-black uppercase px-4 py-2 rounded-2xl border ${u.subscription === 'plus' ? 'bg-red-600/10 border-red-600/20 text-red-600' :
+                                                        u.subscription === 'premium' ? 'bg-blue-500/10 border-blue-500/20 text-blue-500' :
+                                                            'bg-zinc-900 border-white/5 text-white'
+                                                    }`}>
                                                     {u.subscription.replace('_', ' ')}
                                                 </span>
                                             </div>
-                                            
+
                                             <div className="hidden lg:flex flex-col justify-end text-right">
                                                 <p className="label-caps opacity-50 mb-1">Joined</p>
                                                 <p className="text-xs font-black text-white">{new Date(u.created_at).toLocaleDateString()}</p>
                                             </div>
-                                            
+
                                             <div className="flex items-center gap-3">
-                                                <button 
+                                                <button
                                                     onClick={() => { setSelectedUserFilter(u); setActiveTab('releases'); }}
                                                     className="w-12 h-12 flex items-center justify-center bg-zinc-900 hover:bg-purple-500 text-white hover:text-black rounded-2xl border border-white/5 hover:border-purple-500 transition-all shadow-xl"
                                                     title="View Releases"
                                                 >
                                                     <Music className="w-5 h-5" />
                                                 </button>
-                                                <button 
+                                                <button
                                                     onClick={() => openEditUser(u)}
                                                     className="w-12 h-12 flex items-center justify-center bg-zinc-900 hover:bg-blue-500 text-white hover:text-black rounded-2xl border border-white/5 hover:border-blue-500 transition-all shadow-xl"
                                                     title="Edit User"
                                                 >
                                                     <Pencil className="w-5 h-5" />
                                                 </button>
-                                                <button 
+                                                <button
                                                     onClick={() => handleDeleteUser(u._id, u.name)}
                                                     className="w-12 h-12 flex items-center justify-center bg-zinc-900 hover:bg-rose-500 text-white hover:text-black rounded-2xl border border-white/5 hover:border-rose-500 transition-all shadow-xl"
                                                     title="Delete User"
@@ -550,157 +549,158 @@ export default function AdminDashboard() {
                     {activeTab === 'releases' && (() => {
                         const displayReleases = selectedUserFilter ? releases.filter(r => r.user?.email === selectedUserFilter.email) : releases;
                         return (
-                        <motion.div
-                            key="releases"
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -20 }}
-                            className="space-y-6"
-                        >
-                            {selectedUserFilter && (
-                                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white/5 p-6 rounded-3xl border border-white/10">
-                                    <div>
-                                        <p className="text-[10px] font-black uppercase text-purple-400 tracking-widest">Filtered By Artist</p>
-                                        <p className="text-xl font-bold text-white">{selectedUserFilter.name}</p>
+                            <motion.div
+                                key="releases"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                className="space-y-6"
+                            >
+                                {selectedUserFilter && (
+                                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white/5 p-6 rounded-3xl border border-white/10">
+                                        <div>
+                                            <p className="text-[10px] font-black uppercase text-purple-400 tracking-widest">Filtered By Artist</p>
+                                            <p className="text-xl font-bold text-white">{selectedUserFilter.name}</p>
+                                        </div>
+                                        <button
+                                            onClick={() => setSelectedUserFilter(null)}
+                                            className="px-6 py-3 bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-black transition-all text-[10px] font-black uppercase tracking-widest rounded-2xl border border-red-600/20 shadow-lg"
+                                        >
+                                            Show All Releases
+                                        </button>
                                     </div>
-                                    <button 
-                                        onClick={() => setSelectedUserFilter(null)} 
-                                        className="px-6 py-3 bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-black transition-all text-[10px] font-black uppercase tracking-widest rounded-2xl border border-red-600/20 shadow-lg"
-                                    >
-                                        Show All Releases
-                                    </button>
-                                </div>
-                            )}
-                            <div className="grid lg:grid-cols-2 gap-6">
-                                {displayReleases.length === 0 ? (
-                                    <div className="col-span-1 lg:col-span-2 text-center py-24 text-white">
-                                        <Music className="w-16 h-16 mx-auto mb-6 opacity-5" />
-                                        <h3 className="text-sm font-black uppercase tracking-[0.3em]">{selectedUserFilter ? 'No releases by this artist' : 'No releases found'}</h3>
-                                    </div>
-                                ) : displayReleases.map(r => (
-                                    <div key={r.id} className="glass-card-premium rounded-[2.5rem] p-6 border border-white/10 hover:border-red-600/50 transition-all group overflow-hidden relative shadow-2xl shadow-red-600/5">
-                                        {/* Status Glow */}
-                                        <div className={`absolute top-0 right-0 w-32 h-32 blur-[100px] -mr-16 -mt-16 transition-all duration-700 ${
-                                            r.status === 'approved' ? 'bg-red-600/30' : 
-                                            r.status === 'rejected' ? 'bg-rose-500/30' : 
-                                            'bg-blue-500/30'
-                                        }`} />
+                                )}
+                                <div className="grid lg:grid-cols-2 gap-6">
+                                    {displayReleases.length === 0 ? (
+                                        <div className="col-span-1 lg:col-span-2 text-center py-24 text-white">
+                                            <Music className="w-16 h-16 mx-auto mb-6 opacity-5" />
+                                            <h3 className="text-sm font-black uppercase tracking-[0.3em]">{selectedUserFilter ? 'No releases by this artist' : 'No releases found'}</h3>
+                                        </div>
+                                    ) : displayReleases.map(r => (
+                                        <div key={r.id} className="glass-card-premium rounded-[2.5rem] p-6 border border-white/10 hover:border-red-600/50 transition-all group overflow-hidden relative shadow-2xl shadow-red-600/5">
+                                            {/* Status Glow */}
+                                            <div className={`absolute top-0 right-0 w-32 h-32 blur-[100px] -mr-16 -mt-16 transition-all duration-700 ${r.status === 'approved' ? 'bg-red-600/30' :
+                                                    r.status === 'rejected' ? 'bg-rose-500/30' :
+                                                        'bg-blue-500/30'
+                                                }`} />
 
-                                        <div className="relative z-10">
-                                            <div className="flex justify-between items-start gap-4 mb-6">
-                                                <div className="flex gap-4">
-                                                    <div className="w-16 h-16 rounded-2xl overflow-hidden bg-zinc-900 border border-white/20 shadow-inner shrink-0 group-hover:scale-105 transition-transform">
-                                                        {r.cover_url ? (
-                                                            <img src={r.cover_url} alt={r.title} className="w-full h-full object-cover" />
-                                                        ) : (
-                                                            <div className="w-full h-full flex items-center justify-center text-white">
-                                                                <Music className="w-8 h-8" />
+                                            <div className="relative z-10">
+                                                <div className="flex justify-between items-start gap-4 mb-6">
+                                                    <div className="flex gap-4">
+                                                        <div className="w-16 h-16 rounded-2xl overflow-hidden bg-zinc-900 border border-white/20 shadow-inner shrink-0 group-hover:scale-105 transition-transform">
+                                                            {r.cover_url ? (
+                                                                <img src={r.cover_url} alt={r.title} className="w-full h-full object-cover" />
+                                                            ) : (
+                                                                <div className="w-full h-full flex items-center justify-center text-white">
+                                                                    <Music className="w-8 h-8" />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div>
+                                                            <h3 className="font-bold text-xl tracking-tighter text-white group-hover:text-red-400 transition-colors uppercase leading-tight">{r.title}</h3>
+                                                            <p className="text-xs font-black text-white uppercase tracking-widest mt-1">by {r.artist}</p>
+                                                            {r.featured_artists && r.featured_artists.length > 0 && (
+                                                                <p className="text-[10px] font-bold text-white/50 mt-0.5 italic">ft. {r.featured_artists.join(', ')}</p>
+                                                            )}
+                                                            <div className="flex items-center gap-2 mt-3">
+                                                                <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-red-600/10 rounded-md border border-red-600/20 text-red-500">{r.type}</span>
+                                                                <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-white/5 rounded-md border border-white/10 text-white">{r.genre}</span>
                                                             </div>
-                                                        )}
-                                                    </div>
-                                                    <div>
-                                                        <h3 className="font-bold text-xl tracking-tighter text-white group-hover:text-red-400 transition-colors uppercase leading-tight">{r.title}</h3>
-                                                        <p className="text-xs font-black text-white uppercase tracking-widest mt-1">by {r.artist}</p>
-                                                        <div className="flex items-center gap-2 mt-3">
-                                                            <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-red-600/10 rounded-md border border-red-600/20 text-red-500">{r.type}</span>
-                                                            <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-white/5 rounded-md border border-white/10 text-white">{r.genre}</span>
                                                         </div>
                                                     </div>
+                                                    <select
+                                                        value={r.status}
+                                                        onChange={(e) => handleStatusChange(r.id, e.target.value)}
+                                                        className={`text-[10px] font-black uppercase rounded-full px-4 py-2 border outline-none cursor-pointer transition-all self-start shadow-lg ${r.status === 'approved' || r.status === 'uploaded' ? 'bg-red-600 text-black border-red-600 hover:bg-red-500' :
+                                                                r.status === 'rejected' ? 'bg-rose-500/20 text-rose-500 border-rose-500/30 hover:bg-rose-500 hover:text-white' :
+                                                                    'bg-zinc-950 text-blue-400 border-blue-500/30 hover:border-blue-500'
+                                                            }`}
+                                                    >
+                                                        <option value="pending">Reviewing</option>
+                                                        <option value="approved">Approved</option>
+                                                        <option value="rejected">Rejected</option>
+                                                        <option value="uploaded">Uploaded</option>
+                                                    </select>
                                                 </div>
-                                                <select
-                                                    value={r.status}
-                                                    onChange={(e) => handleStatusChange(r.id, e.target.value)}
-                                                    className={`text-[10px] font-black uppercase rounded-full px-4 py-2 border outline-none cursor-pointer transition-all self-start shadow-lg ${
-                                                        r.status === 'approved' || r.status === 'uploaded' ? 'bg-red-600 text-black border-red-600 hover:bg-red-500' :
-                                                        r.status === 'rejected' ? 'bg-rose-500/20 text-rose-500 border-rose-500/30 hover:bg-rose-500 hover:text-white' :
-                                                        'bg-zinc-950 text-blue-400 border-blue-500/30 hover:border-blue-500'
-                                                    }`}
-                                                >
-                                                    <option value="pending">Reviewing</option>
-                                                    <option value="approved">Approved</option>
-                                                    <option value="rejected">Rejected</option>
-                                                    <option value="uploaded">Uploaded</option>
-                                                </select>
-                                            </div>
 
-                                            {r.tracks && r.tracks.length > 0 ? (
-                                                <div className="mb-6 space-y-3">
-                                                    <p className="text-[10px] font-black uppercase text-white/40 tracking-[0.2em] px-2">Tracklist & Masters</p>
-                                                    <div className="space-y-1 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
-                                                        {r.tracks.map((track, idx) => (
-                                                            <div key={idx} className="p-3 bg-black/40 rounded-2xl border border-white/5 group/track hover:border-red-600/30 transition-all">
-                                                                <div className="flex justify-between items-center mb-2">
-                                                                    <div className="min-w-0 flex-1">
-                                                                        <p className="text-xs font-black text-white truncate">{idx + 1}. {track.title}</p>
-                                                                        <p className="text-[9px] font-bold text-white/40 uppercase tracking-widest">{track.artist} • {track.genre}</p>
+                                                {r.tracks && r.tracks.length > 0 ? (
+                                                    <div className="mb-6 space-y-3">
+                                                        <p className="text-[10px] font-black uppercase text-white/40 tracking-[0.2em] px-2">Tracklist & Masters</p>
+                                                        <div className="space-y-1 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                                                            {r.tracks.map((track, idx) => (
+                                                                <div key={idx} className="p-3 bg-black/40 rounded-2xl border border-white/5 group/track hover:border-red-600/30 transition-all">
+                                                                    <div className="flex justify-between items-center mb-2">
+                                                                        <div className="min-w-0 flex-1">
+                                                                            <p className="text-xs font-black text-white truncate">{idx + 1}. {track.title}</p>
+                                                                            <p className="text-[9px] font-bold text-white/40 uppercase tracking-widest">{track.artist} • {track.genre}</p>
+                                                                        </div>
+                                                                        {track.isrc && <span className="text-[8px] font-mono text-white/30 bg-white/5 px-2 py-0.5 rounded border border-white/5 uppercase">{track.isrc}</span>}
                                                                     </div>
-                                                                    {track.isrc && <span className="text-[8px] font-mono text-white/30 bg-white/5 px-2 py-0.5 rounded border border-white/5 uppercase">{track.isrc}</span>}
+                                                                    <audio controls src={track.song_url} className="w-full h-8 invert opacity-40 hover:opacity-100 transition-opacity" />
                                                                 </div>
-                                                                <audio controls src={track.song_url} className="w-full h-8 invert opacity-40 hover:opacity-100 transition-opacity" />
-                                                            </div>
-                                                        ))}
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                ) : r.song_file && (
+                                                    <div className="mb-6 p-1 bg-black/40 rounded-2xl border border-white/5">
+                                                        <audio controls src={r.song_file} className="w-full h-10 invert opacity-60 hover:opacity-100 transition-opacity" />
+                                                    </div>
+                                                )}
+
+                                                <div className="grid grid-cols-3 gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/5 mb-6">
+                                                    <div>
+                                                        <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">Streams</p>
+                                                        <p className="font-display text-xl text-white">{r.streams.toLocaleString()}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">Revenue</p>
+                                                        <p className="font-display text-xl text-red-500">₦{r.revenue.toLocaleString()}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">Price</p>
+                                                        <input
+                                                            type="number"
+                                                            className="w-full bg-transparent border-none p-0 font-display text-xl text-blue-500 focus:ring-0"
+                                                            defaultValue={r.price || 0}
+                                                            onBlur={(e) => handleUpdatePrice(r.id, Number(e.target.value))}
+                                                        />
+                                                    </div>
+                                                    <div className="flex flex-col items-center justify-center border-l border-white/5 pl-2">
+                                                        <button
+                                                            onClick={() => handleDeleteRelease(r.id, r.title)}
+                                                            className="p-3 bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white rounded-xl transition-all"
+                                                            title="Delete Release"
+                                                        >
+                                                            <X className="w-4 h-4" />
+                                                        </button>
                                                     </div>
                                                 </div>
-                                            ) : r.song_file && (
-                                                <div className="mb-6 p-1 bg-black/40 rounded-2xl border border-white/5">
-                                                    <audio controls src={r.song_file} className="w-full h-10 invert opacity-60 hover:opacity-100 transition-opacity" />
-                                                </div>
-                                            )}
 
-                                            <div className="grid grid-cols-3 gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/5 mb-6">
-                                                <div>
-                                                    <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">Streams</p>
-                                                    <p className="font-display text-xl text-white">{r.streams.toLocaleString()}</p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">Revenue</p>
-                                                    <p className="font-display text-xl text-red-500">₦{r.revenue.toLocaleString()}</p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">Price</p>
-                                                    <input
-                                                        type="number"
-                                                        className="w-full bg-transparent border-none p-0 font-display text-xl text-blue-500 focus:ring-0"
-                                                        defaultValue={r.price || 0}
-                                                        onBlur={(e) => handleUpdatePrice(r.id, Number(e.target.value))}
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col items-center justify-center border-l border-white/5 pl-2">
-                                                    <button 
-                                                        onClick={() => handleDeleteRelease(r.id, r.title)}
-                                                        className="p-3 bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white rounded-xl transition-all"
-                                                        title="Delete Release"
+                                                <div className="flex gap-3">
+                                                    <button
+                                                        onClick={() => handleViewStats(r)}
+                                                        className="flex-1 py-3.5 bg-white/5 hover:bg-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-white/5 transition-all flex items-center justify-center gap-2"
                                                     >
-                                                        <X className="w-4 h-4" />
+                                                        <TrendingUp className="w-3.5 h-3.5" /> Growth
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setSelectedRelease(r)}
+                                                        className="flex-1 py-3.5 bg-white/5 hover:bg-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-white/5 transition-all flex items-center justify-center gap-2"
+                                                    >
+                                                        <Eye className="w-3.5 h-3.5" /> Details
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setEditingRelease(r)}
+                                                        className="flex-1 py-3.5 bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-black rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-red-600/20 transition-all flex items-center justify-center gap-2"
+                                                    >
+                                                        + Stats
                                                     </button>
                                                 </div>
                                             </div>
-
-                                            <div className="flex gap-3">
-                                                <button
-                                                    onClick={() => handleViewStats(r)}
-                                                    className="flex-1 py-3.5 bg-white/5 hover:bg-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-white/5 transition-all flex items-center justify-center gap-2"
-                                                >
-                                                    <TrendingUp className="w-3.5 h-3.5" /> Growth
-                                                </button>
-                                                <button
-                                                    onClick={() => setSelectedRelease(r)}
-                                                    className="flex-1 py-3.5 bg-white/5 hover:bg-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-white/5 transition-all flex items-center justify-center gap-2"
-                                                >
-                                                    <Eye className="w-3.5 h-3.5" /> Details
-                                                </button>
-                                                <button
-                                                    onClick={() => setEditingRelease(r)}
-                                                    className="flex-1 py-3.5 bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-black rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-red-600/20 transition-all flex items-center justify-center gap-2"
-                                                >
-                                                    + Stats
-                                                </button>
-                                            </div>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </motion.div>
+                                    ))}
+                                </div>
+                            </motion.div>
                         );
                     })()}
 
@@ -751,11 +751,10 @@ export default function AdminDashboard() {
                                                 <select
                                                     value={p.status}
                                                     onChange={(e) => handlePayoutStatus(p._id, e.target.value)}
-                                                    className={`text-[11px] font-black uppercase rounded-2xl px-6 py-4 border outline-none cursor-pointer transition-all ${
-                                                        p.status === 'Completed' ? 'bg-red-600 text-black border-red-600' :
-                                                        p.status === 'Rejected' ? 'bg-rose-500/20 text-rose-500 border-rose-500/30 hover:bg-rose-500 hover:text-white' :
-                                                        'bg-zinc-950 text-blue-400 border-blue-500/30'
-                                                    }`}
+                                                    className={`text-[11px] font-black uppercase rounded-2xl px-6 py-4 border outline-none cursor-pointer transition-all ${p.status === 'Completed' ? 'bg-red-600 text-black border-red-600' :
+                                                            p.status === 'Rejected' ? 'bg-rose-500/20 text-rose-500 border-rose-500/30 hover:bg-rose-500 hover:text-white' :
+                                                                'bg-zinc-950 text-blue-400 border-blue-500/30'
+                                                        }`}
                                                 >
                                                     <option value="Pending">Pending</option>
                                                     <option value="Processing">Processing</option>
@@ -801,9 +800,8 @@ export default function AdminDashboard() {
                                                 <p className="text-[10px] text-white uppercase font-black uppercase mt-1">Updated: {new Date(t.updatedAt).toLocaleDateString()}</p>
                                             </div>
                                             <div className="flex items-center gap-4">
-                                                <span className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border ${
-                                                    t.status === 'Resolved' ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-red-600/10 border-red-600/20 text-red-500'
-                                                }`}>
+                                                <span className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border ${t.status === 'Resolved' ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-red-600/10 border-red-600/20 text-red-500'
+                                                    }`}>
                                                     {t.status}
                                                 </span>
                                                 <ChevronRight className="text-white group-hover:text-red-500 transition-colors" />
@@ -826,13 +824,13 @@ export default function AdminDashboard() {
             {/* MODALS (STYLING ONLY, LOGIC REMAINS) */}
             <AnimatePresence>
                 {editingRelease && (
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         className="fixed inset-0 bg-black/90 backdrop-blur-xl flex items-center justify-center z-50 p-4"
                     >
-                        <motion.div 
+                        <motion.div
                             initial={{ scale: 0.9, y: 20 }}
                             animate={{ scale: 1, y: 0 }}
                             exit={{ scale: 0.9, y: 20 }}
@@ -887,13 +885,13 @@ export default function AdminDashboard() {
                 )}
 
                 {viewingRelease && (
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         className="fixed inset-0 bg-black/90 backdrop-blur-2xl flex items-center justify-center z-50 p-4"
                     >
-                        <motion.div 
+                        <motion.div
                             initial={{ scale: 0.95, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.95, opacity: 0 }}
@@ -924,26 +922,26 @@ export default function AdminDashboard() {
                                     </div>
                                 ) : (
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <LineChart 
+                                        <LineChart
                                             data={Object.values(history.reduce((acc: any, curr: any) => {
                                                 if (!acc[curr.date]) acc[curr.date] = { date: curr.date };
                                                 acc[curr.date][curr.platform || 'Overall'] = curr.streams;
                                                 return acc;
-                                            }, {}))} 
+                                            }, {}))}
                                         >
                                             <CartesianGrid strokeDasharray="3 3" stroke="#222" vertical={false} />
-                                            <XAxis 
-                                                dataKey="date" 
-                                                tick={{ fontSize: 10, fill: '#666', fontWeight: 800 }} 
-                                                axisLine={false} 
-                                                tickLine={false} 
+                                            <XAxis
+                                                dataKey="date"
+                                                tick={{ fontSize: 10, fill: '#666', fontWeight: 800 }}
+                                                axisLine={false}
+                                                tickLine={false}
                                             />
-                                            <YAxis 
-                                                tick={{ fontSize: 10, fill: '#666', fontWeight: 800 }} 
-                                                axisLine={false} 
-                                                tickLine={false} 
+                                            <YAxis
+                                                tick={{ fontSize: 10, fill: '#666', fontWeight: 800 }}
+                                                axisLine={false}
+                                                tickLine={false}
                                             />
-                                            <Tooltip 
+                                            <Tooltip
                                                 contentStyle={{ backgroundColor: '#000', border: '1px solid #333', borderRadius: '16px', color: '#fff' }}
                                                 itemStyle={{ fontSize: '12px', fontWeight: '900', textTransform: 'uppercase' }}
                                                 cursor={{ stroke: '#10b981', strokeWidth: 1 }}
@@ -952,15 +950,15 @@ export default function AdminDashboard() {
                                             {Array.from(new Set(history.map((h: any) => h.platform || 'Overall'))).map((platform: any) => {
                                                 const color = PLATFORM_COLORS[platform as string] || '#fff';
                                                 return (
-                                                    <Line 
+                                                    <Line
                                                         key={platform}
-                                                        type="monotone" 
-                                                        dataKey={platform} 
-                                                        stroke={color} 
-                                                        strokeWidth={4} 
+                                                        type="monotone"
+                                                        dataKey={platform}
+                                                        stroke={color}
+                                                        strokeWidth={4}
                                                         dot={false}
                                                         activeDot={{ r: 8, stroke: '#000', strokeWidth: 3 }}
-                                                        name={platform} 
+                                                        name={platform}
                                                     />
                                                 );
                                             })}
@@ -973,13 +971,13 @@ export default function AdminDashboard() {
                 )}
 
                 {selectedRelease && (
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         className="fixed inset-0 bg-black/95 backdrop-blur-2xl flex items-center justify-center z-50 p-4"
                     >
-                        <motion.div 
+                        <motion.div
                             initial={{ scale: 0.95, opacity: 0, y: 20 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -1008,9 +1006,12 @@ export default function AdminDashboard() {
                                         </div>
                                         <h2 className="text-4xl font-display uppercase italic tracking-tight text-white mb-1 leading-none">{selectedRelease.title}</h2>
                                         <p className="text-sm font-black text-white uppercase tracking-widest">by {selectedRelease.artist}</p>
+                                        {selectedRelease.featured_artists && selectedRelease.featured_artists.length > 0 && (
+                                            <p className="text-xs font-bold text-white/50 uppercase tracking-widest mt-1 italic">ft. {selectedRelease.featured_artists.join(', ')}</p>
+                                        )}
                                     </div>
                                 </div>
-                                <button 
+                                <button
                                     onClick={() => setSelectedRelease(null)}
                                     className="p-4 bg-white/5 hover:bg-white/10 rounded-2xl text-white transition-all border border-white/5"
                                 >
@@ -1020,10 +1021,10 @@ export default function AdminDashboard() {
 
                             {/* Modal Content */}
                             <div className="flex-1 overflow-y-auto p-8 md:p-12 space-y-12 no-scrollbar">
-                                
+
                                 {/* Production Details Grid */}
                                 <div className="grid md:grid-cols-3 gap-12">
-                                    
+
                                     {/* Identification */}
                                     <div className="space-y-6">
                                         <h4 className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] border-b border-red-600/20 pb-3">Identification</h4>
@@ -1177,7 +1178,7 @@ export default function AdminDashboard() {
                                         <p className="text-xs font-bold text-white">{selectedRelease.user?.email}</p>
                                     </div>
                                 </div>
-                                <button 
+                                <button
                                     onClick={() => setSelectedRelease(null)}
                                     className="px-10 py-4 bg-white text-black rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-zinc-200 transition-colors shadow-xl shadow-white/10"
                                 >
@@ -1385,13 +1386,13 @@ export default function AdminDashboard() {
             </AnimatePresence>
 
             {activeTicket && (
-                <motion.div 
+                <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4"
                 >
-                    <motion.div 
+                    <motion.div
                         initial={{ scale: 0.95, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.95, opacity: 0 }}
@@ -1403,7 +1404,7 @@ export default function AdminDashboard() {
                                 <h3 className="text-white font-black uppercase tracking-widest text-sm">{activeTicket.subject}</h3>
                             </div>
                             <div className="flex items-center gap-3">
-                                <select 
+                                <select
                                     value={activeTicket.status}
                                     onChange={(e) => handleTicketStatus(activeTicket._id, e.target.value)}
                                     className="bg-zinc-900 border border-zinc-800 text-xs font-black uppercase tracking-widest rounded-lg px-3 py-1.5 focus:border-red-600 outline-none"
@@ -1423,20 +1424,18 @@ export default function AdminDashboard() {
                                 return (
                                     <div key={idx} className={`flex flex-col ${isAdmin ? 'items-end' : 'items-start'}`}>
                                         <div className={`flex items-center gap-2 mb-2 ${isAdmin ? 'flex-row-reverse' : 'flex-row'}`}>
-                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center border shadow-lg ${
-                                                isAdmin ? 'bg-red-600/20 border-red-600/30 text-red-500' : 'bg-blue-600/20 border-blue-600/30 text-blue-500'
-                                            }`}>
+                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center border shadow-lg ${isAdmin ? 'bg-red-600/20 border-red-600/30 text-red-500' : 'bg-blue-600/20 border-blue-600/30 text-blue-500'
+                                                }`}>
                                                 {isAdmin ? <LayoutDashboard className="w-4 h-4" /> : <UserCheck className="w-4 h-4" />}
                                             </div>
                                             <span className="text-[10px] font-black uppercase tracking-widest text-white">
                                                 {isAdmin ? 'Admin (You)' : activeTicket.user?.name}
                                             </span>
                                         </div>
-                                        <div className={`max-w-[85%] p-4 rounded-2xl text-sm font-bold shadow-xl leading-relaxed whitespace-pre-wrap ${
-                                            isAdmin 
-                                                ? 'bg-zinc-900 text-white rounded-tr-none border border-zinc-800' 
+                                        <div className={`max-w-[85%] p-4 rounded-2xl text-sm font-bold shadow-xl leading-relaxed whitespace-pre-wrap ${isAdmin
+                                                ? 'bg-zinc-900 text-white rounded-tr-none border border-zinc-800'
                                                 : 'glass-dark border border-white/10 text-zinc-200 rounded-tl-none'
-                                        }`}>
+                                            }`}>
                                             {msg.content}
                                         </div>
                                     </div>
@@ -1445,15 +1444,15 @@ export default function AdminDashboard() {
                         </div>
 
                         <form onSubmit={handleTicketReply} className="p-4 bg-[#050505] border-t border-zinc-900 flex gap-3">
-                            <input 
-                                type="text" 
+                            <input
+                                type="text"
                                 value={replyMessage}
                                 onChange={(e) => setReplyMessage(e.target.value)}
                                 placeholder="Type your reply here..."
                                 className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:border-red-600/50 outline-none transition-colors font-bold text-sm shadow-inner"
                             />
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 disabled={!replyMessage.trim() || replying}
                                 className="px-6 bg-red-600 text-black hover:bg-red-500 rounded-xl font-black text-sm uppercase tracking-widest transition-all shadow-xl shadow-red-600/20 flex items-center justify-center disabled:opacity-50"
                             >

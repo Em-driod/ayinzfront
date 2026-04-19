@@ -41,6 +41,7 @@ export default function NewRelease() {
         copyright_date_recording: new Date().getFullYear().toString() + ' ' + (user.name || ''),
     });
 
+    const [featuredArtists, setFeaturedArtists] = useState<string[]>([]);
     const [contributors, setContributors] = useState<{ name: string, role: string }[]>([]);
     const [songwriters, setSongwriters] = useState<string[]>([]);
     const [musicians, setMusicians] = useState<{ name: string, instrument: string }[]>([]);
@@ -52,6 +53,14 @@ export default function NewRelease() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+
+    const addFeaturedArtist = () => setFeaturedArtists([...featuredArtists, '']);
+    const removeFeaturedArtist = (index: number) => setFeaturedArtists(featuredArtists.filter((_, i) => i !== index));
+    const updateFeaturedArtist = (index: number, value: string) => {
+        const next = [...featuredArtists];
+        next[index] = value;
+        setFeaturedArtists(next);
+    };
 
     const addContributor = () => setContributors([...contributors, { name: '', role: 'Producer' }]);
     const removeContributor = (index: number) => setContributors(contributors.filter((_, i) => i !== index));
@@ -118,6 +127,7 @@ export default function NewRelease() {
         });
 
         if (coverImageFile) data.append('coverImage', coverImageFile);
+        data.append('featured_artists', JSON.stringify(featuredArtists.filter(a => a.trim())));
         data.append('contributors', JSON.stringify(contributors.filter(c => c.name.trim())));
         data.append('songwriters', JSON.stringify(songwriters.filter(s => s.trim())));
         data.append('musicians', JSON.stringify(musicians.filter(m => m.name.trim())));
@@ -349,6 +359,48 @@ export default function NewRelease() {
                                                                 value={formData.artist} onChange={e => setFormData({ ...formData, artist: e.target.value })} />
                                                         </div>
                                                     </div>
+
+                                                    {/* ─── Featured Artists ─── */}
+                                                    <div className="space-y-4">
+                                                        <div className="flex items-center justify-between">
+                                                            <div>
+                                                                <label className="label-caps opacity-50">Featured Artists</label>
+                                                                <p className="text-[10px] text-white/30 font-bold mt-0.5">Optional — add one or more featured artists (ft.)</p>
+                                                            </div>
+                                                            <button type="button" onClick={addFeaturedArtist} className="flex items-center gap-2 text-[10px] font-black uppercase text-red-500 hover:text-white transition-colors group">
+                                                                <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" /> Add Feature
+                                                            </button>
+                                                        </div>
+                                                        <AnimatePresence>
+                                                            {featuredArtists.map((fa, i) => (
+                                                                <motion.div
+                                                                    key={i}
+                                                                    initial={{ opacity: 0, y: -8 }}
+                                                                    animate={{ opacity: 1, y: 0 }}
+                                                                    exit={{ opacity: 0, y: -8 }}
+                                                                    className="flex gap-3 items-center"
+                                                                >
+                                                                    <div className="w-8 h-8 rounded-full bg-red-600/10 border border-red-600/20 flex items-center justify-center shrink-0">
+                                                                        <span className="text-[10px] font-black text-red-500">ft.</span>
+                                                                    </div>
+                                                                    <input
+                                                                        type="text"
+                                                                        placeholder={`Featured Artist ${i + 1} name`}
+                                                                        className="flex-1 bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-white focus:border-red-600/50 outline-none transition-all font-bold text-sm"
+                                                                        value={fa}
+                                                                        onChange={e => updateFeaturedArtist(i, e.target.value)}
+                                                                    />
+                                                                    <button type="button" onClick={() => removeFeaturedArtist(i)} className="w-12 h-12 rounded-xl border border-white/5 flex items-center justify-center text-white hover:bg-red-600/10 hover:text-red-500 transition-all">
+                                                                        <X className="w-4 h-4" />
+                                                                    </button>
+                                                                </motion.div>
+                                                            ))}
+                                                        </AnimatePresence>
+                                                        {featuredArtists.length === 0 && (
+                                                            <p className="text-[10px] text-white/20 font-bold italic px-1">No featured artists added — click "Add Feature" to include one</p>
+                                                        )}
+                                                    </div>
+
                                                     <div className="grid md:grid-cols-2 gap-8">
                                                         <div className="space-y-2">
                                                             <label className="label-caps opacity-50">Primary Genre</label>

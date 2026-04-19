@@ -17,6 +17,7 @@ interface Release {
   id: string;
   title: string;
   artist: string;
+  featured_artists?: string[];
   type: string;
   status: string;
   streams: number;
@@ -28,7 +29,7 @@ interface Release {
 
 const getStatusStyle = (status: string) => {
   if (status === 'approved') return { cls: 'bg-red-600/10 text-red-500 border border-red-600/20', label: 'Approved' };
-  if (status === 'pending')  return { cls: 'bg-amber-500/10 text-amber-400 border border-amber-500/20', label: 'Pending' };
+  if (status === 'pending') return { cls: 'bg-amber-500/10 text-amber-400 border border-amber-500/20', label: 'Pending' };
   if (status === 'rejected') return { cls: 'bg-red-500/10 text-red-400 border border-red-500/20', label: 'Rejected' };
   return { cls: 'bg-zinc-800 text-white', label: status };
 };
@@ -36,9 +37,9 @@ const getStatusStyle = (status: string) => {
 export default function Releases() {
   const navigate = useNavigate();
   const [releases, setReleases] = useState<Release[]>([]);
-  const [loading, setLoading]   = useState(true);
-  const [error, setError]       = useState('');
-  const [search, setSearch]     = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [search, setSearch] = useState('');
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -71,7 +72,7 @@ export default function Releases() {
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
             <p className="label-caps mb-2">Catalogue Management</p>
             <h1 className="text-4xl md:text-6xl font-display italic tracking-tight text-white uppercase leading-[1.1] pb-2">
-              Your<br/><span className="text-gradient-red px-1">Catalogue</span>
+              Your<br /><span className="text-gradient-red px-1">Catalogue</span>
             </h1>
           </motion.div>
 
@@ -152,9 +153,9 @@ export default function Releases() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
               <AnimatePresence mode="popLayout">
                 {filtered.map((release, i) => {
-                  const status     = getStatusStyle(release.status);
-                  const date       = new Date(release.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-                  const hasTracks  = (release.tracks?.length ?? 0) > 0;
+                  const status = getStatusStyle(release.status);
+                  const date = new Date(release.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+                  const hasTracks = (release.tracks?.length ?? 0) > 0;
                   const multiTrack = (release.tracks?.length ?? 0) > 1;
                   const isExpanded = expandedId === release.id;
 
@@ -195,13 +196,30 @@ export default function Releases() {
 
                       {/* Info */}
                       <div className="p-6 md:p-8 flex flex-col flex-1 bg-white/[0.02]">
-                        <h3 className="text-lg md:text-xl font-black text-white truncate uppercase tracking-tight group-hover:text-red-500 transition-colors mb-1">
+                        <h3 className="text-lg md:text-xl font-black text-white truncate uppercase tracking-tight group-hover:text-red-500 transition-colors mb-3">
                           {release.title}
                         </h3>
-                        <p className="text-[10px] font-black text-white uppercase tracking-widest mb-4">
-                          {release.artist} · {release.type}
-                          {multiTrack && ` · ${release.tracks!.length} Tracks`}
-                        </p>
+
+                        {/* Artist + Featured Artists */}
+                        <div className="mb-4 p-3 rounded-2xl bg-white/[0.03] border border-white/5">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-red-600/10 border border-red-600/20 flex items-center justify-center shrink-0">
+                              <span className="text-xs font-black text-red-500">{release.artist?.charAt(0).toUpperCase()}</span>
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-black text-white truncate leading-tight">{release.artist}</p>
+                              {release.featured_artists && release.featured_artists.length > 0 && (
+                                <p className="text-[9px] font-bold text-white/50 truncate mt-0.5">
+                                  ft. {release.featured_artists.join(', ')}
+                                </p>
+                              )}
+                              <div className="flex items-center gap-1.5 mt-1">
+                                <span className="text-[8px] font-black text-red-500/80 uppercase tracking-widest px-1.5 py-0.5 bg-red-600/10 rounded-md border border-red-600/10">{release.type}</span>
+                                {multiTrack && <span className="text-[8px] font-bold text-white/40 uppercase tracking-widest">{release.tracks!.length} tracks</span>}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
 
                         <div className="mt-auto space-y-4">
                           <div className="pt-4 border-t border-white/5 flex items-center justify-between">
