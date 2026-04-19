@@ -52,6 +52,8 @@ interface Release {
         song_url: string;
         isrc?: string;
         explicit?: string;
+        featured_artist?: string;
+        songwriter?: string;
     }[];
 }
 
@@ -632,7 +634,10 @@ export default function AdminDashboard() {
                                                                     <div className="flex justify-between items-center mb-2">
                                                                         <div className="min-w-0 flex-1">
                                                                             <p className="text-xs font-black text-white truncate">{idx + 1}. {track.title}</p>
-                                                                            <p className="text-[9px] font-bold text-white/40 uppercase tracking-widest">{track.artist} • {track.genre}</p>
+                                                                            <p className="text-[9px] font-bold text-white/40 uppercase tracking-widest">
+                                                                                {track.artist} {track.featured_artist ? `ft. ${track.featured_artist}` : ''} • {track.genre}
+                                                                                {track.songwriter ? ` • Written by: ${track.songwriter}` : ''}
+                                                                            </p>
                                                                         </div>
                                                                         {track.isrc && <span className="text-[8px] font-mono text-white/30 bg-white/5 px-2 py-0.5 rounded border border-white/5 uppercase">{track.isrc}</span>}
                                                                     </div>

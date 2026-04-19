@@ -11,6 +11,8 @@ interface Track {
   song_url: string;
   isrc?: string;
   explicit?: string;
+  featured_artist?: string;
+  songwriter?: string;
 }
 
 interface Release {
@@ -271,7 +273,8 @@ export default function Releases() {
                                       <span className="text-red-500 mr-2">{idx + 1}.</span>{track.title}
                                     </p>
                                     <p className="text-[9px] font-bold text-white/40 uppercase tracking-widest mt-0.5">
-                                      {track.artist} · {track.genre}
+                                      {track.artist} {track.featured_artist ? `ft. ${track.featured_artist}` : ''} · {track.genre}
+                                      {track.songwriter && <><br /><span className="text-[8px] text-white/30 truncate">Written by: {track.songwriter}</span></>}
                                       {track.explicit === 'Yes' && (
                                         <span className="ml-2 px-1 bg-white/10 rounded text-[8px]">E</span>
                                       )}

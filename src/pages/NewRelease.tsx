@@ -45,8 +45,8 @@ export default function NewRelease() {
     const [contributors, setContributors] = useState<{ name: string, role: string }[]>([]);
     const [songwriters, setSongwriters] = useState<string[]>([]);
     const [musicians, setMusicians] = useState<{ name: string, instrument: string }[]>([]);
-    const [tracks, setTracks] = useState<{ title: string, artist: string, genre: string, file: File | null }[]>([
-        { title: '', artist: user.name || '', genre: '', file: null }
+    const [tracks, setTracks] = useState<{ title: string, artist: string, genre: string, featured_artist: string, songwriter: string, file: File | null }[]>([
+        { title: '', artist: user.name || '', genre: '', featured_artist: '', songwriter: '', file: null }
     ]);
     const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
     const [step, setStep] = useState(1);
@@ -86,7 +86,7 @@ export default function NewRelease() {
         setMusicians(next);
     };
 
-    const addTrack = () => setTracks([...tracks, { title: '', artist: formData.artist, genre: formData.genre, file: null }]);
+    const addTrack = () => setTracks([...tracks, { title: '', artist: formData.artist, genre: formData.genre, featured_artist: '', songwriter: '', file: null }]);
     const removeTrack = (index: number) => setTracks(tracks.filter((_, i) => i !== index));
     const updateTrack = (index: number, field: keyof typeof tracks[0], value: any) => {
         const next = [...tracks];
@@ -118,6 +118,8 @@ export default function NewRelease() {
             title: t.title,
             artist: t.artist,
             genre: t.genre,
+            featured_artist: t.featured_artist,
+            songwriter: t.songwriter,
             explicit: formData.explicit
         }));
         data.append('trackMetadata', JSON.stringify(trackMetadata));
@@ -430,7 +432,7 @@ export default function NewRelease() {
                                                                                 const newType = type;
                                                                                 setFormData({ ...formData, type: newType });
                                                                                 if (newType === 'Single') {
-                                                                                    setTracks([{ title: formData.title || '', artist: formData.artist, genre: formData.genre, file: null }]);
+                                                                                    setTracks([{ title: formData.title || '', artist: formData.artist, genre: formData.genre, featured_artist: '', songwriter: '', file: null }]);
                                                                                 }
                                                                             }
                                                                         }}
@@ -608,7 +610,7 @@ export default function NewRelease() {
                                                                         )}
                                                                     </div>
 
-                                                                    <div className="grid md:grid-cols-3 gap-6">
+                                                                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                                                                         <div className="space-y-2">
                                                                             <label className="text-[9px] font-black uppercase text-white/40 tracking-widest">Title</label>
                                                                             <input type="text" placeholder="Song Title" className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 text-white text-xs font-bold outline-none focus:border-red-500/50"
@@ -620,9 +622,19 @@ export default function NewRelease() {
                                                                                 value={t.artist} onChange={e => updateTrack(i, 'artist', e.target.value)} />
                                                                         </div>
                                                                         <div className="space-y-2">
+                                                                            <label className="text-[9px] font-black uppercase text-white/40 tracking-widest">Featured Artist</label>
+                                                                            <input type="text" placeholder="Featured (optional)" className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 text-white text-xs font-bold outline-none focus:border-red-500/50"
+                                                                                value={t.featured_artist} onChange={e => updateTrack(i, 'featured_artist', e.target.value)} />
+                                                                        </div>
+                                                                        <div className="space-y-2">
                                                                             <label className="text-[9px] font-black uppercase text-white/40 tracking-widest">Genre</label>
                                                                             <input type="text" placeholder="Genre" className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 text-white text-xs font-bold outline-none focus:border-red-500/50"
                                                                                 value={t.genre} onChange={e => updateTrack(i, 'genre', e.target.value)} />
+                                                                        </div>
+                                                                        <div className="space-y-2">
+                                                                            <label className="text-[9px] font-black uppercase text-white/40 tracking-widest">Songwriter</label>
+                                                                            <input type="text" placeholder="Songwriter (optional)" className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 text-white text-xs font-bold outline-none focus:border-red-500/50"
+                                                                                value={t.songwriter} onChange={e => updateTrack(i, 'songwriter', e.target.value)} />
                                                                         </div>
                                                                     </div>
 
