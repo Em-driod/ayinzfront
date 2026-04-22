@@ -148,47 +148,79 @@ export default function NewRelease() {
     const handleUpgrade = async (selectedPlan: typeof PLANS[0]) => {
         setPaymentLoading(true);
         setError('');
+        console.log('--- Paystack Initialization ---');
+        console.log('Selected Plan:', selectedPlan.id, 'Amount:', selectedPlan.amount);
 
         try {
             const pstack = (window as any).PaystackPop;
             if (!pstack) {
-                setError('Payment system not loaded. Please check your connection.');
+                console.error('PaystackPop not found on window object.');
+                setError('Payment system (Paystack) failed to load. Please refresh the page or check your internet connection.');
                 setPaymentLoading(false);
                 return;
             }
 
             const publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
+            console.log('Public Key found:', publicKey ? 'Yes (starts with ' + publicKey.substring(0, 7) + '...)' : 'No');
+            console.log('User Email:', user.email);
+
+            if (!publicKey) {
+                console.error('VITE_PAYSTACK_PUBLIC_KEY is missing in environment variables.');
+                setError('Server configuration error: Public key missing. Please contact support.');
+                setPaymentLoading(false);
+                return;
+            }
+
+            if (!user || !user.email) {
+                console.error('User email missing from local storage:', user);
+                setError('Your account session is missing an email address. Please log out and log back in.');
+                setPaymentLoading(false);
+                return;
+            }
+
             const handler = pstack.setup({
                 key: publicKey,
                 email: user.email,
-                amount: selectedPlan.amount * 100,
+                amount: Math.round(selectedPlan.amount * 100), // Paystack expects amount in kobo
                 currency: 'NGN',
                 callback: async (response: any) => {
+                    console.log('Paystack callback received:', response);
                     const reference = response.reference || response.trxref;
+                    
                     try {
+                        console.log('Verifying payment on backend with ref:', reference);
                         const res = await api.post('/user/upgrade-subscription', {
                             subscription: selectedPlan.id,
                             paymentReference: reference
                         });
 
+                        console.log('Backend verification successful:', res.data);
                         // Update local state and localStorage
                         const updatedUser = res.data.user;
                         localStorage.setItem('user', JSON.stringify(updatedUser));
                         setUser(updatedUser);
-                        setSuccess('Subscription active! You can now proceed with your release.');
+                        setSuccess('Subscription successful! You can now proceed with your release.');
+                        
+                        // Clear error if any
+                        setError('');
                     } catch (err: any) {
-                        setError(err.response?.data?.error || 'Failed to update subscription after payment.');
+                        console.error('Backend verification failed:', err.response?.data || err.message);
+                        setError(err.response?.data?.error || 'Payment was successful but backend verification failed. Please contact support with reference: ' + reference);
                     } finally {
                         setPaymentLoading(false);
                     }
                 },
                 onClose: () => {
+                    console.log('Paystack payment window closed by user.');
                     setPaymentLoading(false);
                 }
             });
+
+            console.log('Opening Paystack iframe...');
             handler.openIframe();
         } catch (err: any) {
-            setError('Payment initialization failed.');
+            console.error('Paystack execution error:', err);
+            setError('An error occurred during payment initialization: ' + (err.message || 'Unknown error'));
             setPaymentLoading(false);
         }
     };

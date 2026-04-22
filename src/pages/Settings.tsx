@@ -76,47 +76,78 @@ export default function Settings() {
   const handleUpgrade = async (selectedPlan: typeof PLANS[0]) => {
     setPaymentLoading(true);
     setMessage({ type: '', text: '' });
+    console.log('--- Paystack Initialization (Settings) ---');
+    console.log('Selected Plan:', selectedPlan.id, 'Amount:', selectedPlan.amount);
+
     try {
       const pstack = (window as any).PaystackPop;
       if (!pstack) {
-        setMessage({ type: 'error', text: 'Payment system not loaded. Please check your connection.' });
+        console.error('PaystackPop not found on window object.');
+        setMessage({ type: 'error', text: 'Payment system failed to load. Please check your connection and refresh.' });
         setPaymentLoading(false);
         return;
       }
 
       const publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
+      console.log('Public Key found:', publicKey ? 'Yes' : 'No');
+      console.log('User Email:', profile.email);
+
+      if (!publicKey) {
+        console.error('VITE_PAYSTACK_PUBLIC_KEY missing.');
+        setMessage({ type: 'error', text: 'Configuration error: Missing Paystack Public Key.' });
+        setPaymentLoading(false);
+        return;
+      }
+
+      if (!profile.email) {
+        console.error('Profile email missing.');
+        setMessage({ type: 'error', text: 'Account error: Email address not found in profile.' });
+        setPaymentLoading(false);
+        return;
+      }
+
       const handler = pstack.setup({
         key: publicKey,
         email: profile.email,
-        amount: selectedPlan.amount * 100,
+        amount: Math.round(selectedPlan.amount * 100),
         currency: 'NGN',
         callback: async (response: any) => {
+          console.log('Paystack callback received:', response);
           const reference = response.reference || response.trxref;
           try {
+            console.log('Verifying upgrade on backend...');
             const res = await api.post('/user/upgrade-subscription', {
               subscription: selectedPlan.id,
               paymentReference: reference
             });
+            console.log('Upgrade successful:', res.data);
             setUserPlan(res.data.user.subscription);
             const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
             localStorage.setItem('user', JSON.stringify({ ...storedUser, subscription: res.data.user.subscription }));
             setMessage({ type: 'success', text: 'Subscription upgraded successfully!' });
+            setShowPlanGrid(false); // Hide grid after success
           } catch (err: any) {
-            setMessage({ type: 'error', text: err.response?.data?.error || 'Upgrade failed after payment.' });
+            console.error('Upgrade verification failed:', err.response?.data || err.message);
+            setMessage({ type: 'error', text: err.response?.data?.error || 'Upgrade failed after payment. Please contact support.' });
           } finally {
             setPaymentLoading(false);
           }
         },
         onClose: () => {
+          console.log('Payment window closed.');
           setPaymentLoading(false);
         }
       });
+      console.log('Opening Paystack iframe...');
       handler.openIframe();
     } catch (err: any) {
+      console.error('Paystack initialization error:', err);
       setMessage({ type: 'error', text: 'Payment initialization failed.' });
       setPaymentLoading(false);
     }
   };
+
+  const [showPlanGrid, setShowPlanGrid] = useState(false);
 
   const planInfo: Record<string, { label: string; desc: string; perks: string[] }> = {
     none: {
@@ -342,10 +373,18 @@ export default function Settings() {
                         <h4 className="text-4xl md:text-5xl font-display italic text-white tracking-tight leading-none mb-2">{currentPlan.label}</h4>
                         <p className="text-xs text-white font-black uppercase tracking-widest">{currentPlan.desc}</p>
                       </div>
+                      {userPlan !== 'none' && !showPlanGrid && (
+                        <button 
+                          onClick={() => setShowPlanGrid(true)}
+                          className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all flex items-center gap-3"
+                        >
+                          <ChevronRight className="w-4 h-4" /> Change Plan
+                        </button>
+                      )}
                     </div>
                   </div>
 
-                  {userPlan === 'none' ? (
+                  {(userPlan === 'none' || showPlanGrid) ? (
                     <div className="space-y-10">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {PLANS.map((p) => (
@@ -354,25 +393,36 @@ export default function Settings() {
                             <div className="flex items-center justify-between mb-2">
                                 <p className="text-[10px] font-black uppercase text-white/50">{p.subtitle}</p>
                                 {selectedPlanId === p.id && <Check className="w-4 h-4 text-red-500" />}
+                                {userPlan === p.id && <span className="text-[8px] font-black bg-red-600 text-white px-2 py-0.5 rounded-full uppercase tracking-tighter">Current</span>}
                             </div>
                             <h3 className="text-lg font-black text-white mb-1 uppercase italic">{p.name}</h3>
                             <p className="text-xl font-black text-red-500">₦{p.price.toLocaleString()} <span className="text-[10px] text-white/40 uppercase">/ {p.period}</span></p>
                           </button>
                         ))}
                       </div>
-                      <button
-                        onClick={() => {
-                          const p = PLANS.find(x => x.id === selectedPlanId);
-                          if (p) handleUpgrade(p);
-                        }}
-                        disabled={paymentLoading}
-                        className="w-full bg-white text-black hover:bg-red-600 hover:text-white py-6 rounded-2xl font-black text-xs uppercase tracking-[0.4em] transition-all flex items-center justify-center gap-4 group disabled:opacity-50 shadow-2xl"
-                      >
-                        {paymentLoading
-                          ? <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                          : <><CreditCard className="w-5 h-5 group-hover:rotate-12 transition-transform" /> Authorize Distribution Plan</>
-                        }
-                      </button>
+                      <div className="flex flex-col gap-4">
+                        <button
+                          onClick={() => {
+                            const p = PLANS.find(x => x.id === selectedPlanId);
+                            if (p) handleUpgrade(p);
+                          }}
+                          disabled={paymentLoading || selectedPlanId === userPlan}
+                          className="w-full bg-white text-black hover:bg-red-600 hover:text-white py-6 rounded-2xl font-black text-xs uppercase tracking-[0.4em] transition-all flex items-center justify-center gap-4 group disabled:opacity-50 shadow-2xl"
+                        >
+                          {paymentLoading
+                            ? <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                            : <><CreditCard className="w-5 h-5 group-hover:rotate-12 transition-transform" /> {selectedPlanId === userPlan ? 'Already Subscribed' : 'Authorize Distribution Plan'}</>
+                          }
+                        </button>
+                        {showPlanGrid && userPlan !== 'none' && (
+                          <button 
+                            onClick={() => setShowPlanGrid(false)}
+                            className="text-[10px] font-black text-white/50 uppercase tracking-widest hover:text-white transition-colors"
+                          >
+                            Cancel and Return
+                          </button>
+                        )}
+                      </div>
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
