@@ -119,8 +119,14 @@ export default function Pricing() {
           <span className="text-lg font-black text-white tracking-tight">Ayinz</span>
         </Link>
         <div className="flex items-center space-x-4">
-          <Link to="/login" className="text-xs font-black text-white hover:text-white transition-colors uppercase tracking-[0.15em]">Sign In</Link>
-          <Link to="/register" className="bg-white text-black text-xs font-black px-4 py-2 rounded-xl hover:bg-zinc-100 active:scale-95 transition-all">Get Started</Link>
+          {localStorage.getItem('user') ? (
+            <Link to="/dashboard" className="bg-white text-black text-xs font-black px-4 py-2 rounded-xl hover:bg-zinc-100 active:scale-95 transition-all uppercase tracking-widest">Dashboard</Link>
+          ) : (
+            <>
+              <Link to="/login" className="text-xs font-black text-white hover:text-white transition-colors uppercase tracking-[0.15em]">Sign In</Link>
+              <Link to="/register" className="bg-white text-black text-xs font-black px-4 py-2 rounded-xl hover:bg-zinc-100 active:scale-95 transition-all">Get Started</Link>
+            </>
+          )}
         </div>
       </nav>
 
@@ -230,7 +236,7 @@ export default function Pricing() {
               {/* CTA */}
               <div className="p-5 pt-0">
                 <Link
-                  to={`/register?plan=${plan.id}`}
+                  to={localStorage.getItem('user') ? `/releases/new?plan=${plan.id}` : `/register?plan=${plan.id}`}
                   className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-black transition-all active:scale-95 ${
                     plan.temporary
                       ? 'bg-amber-500 text-black hover:bg-amber-400'
@@ -239,7 +245,7 @@ export default function Pricing() {
                       : 'bg-zinc-900 border border-zinc-800 text-white hover:bg-zinc-800'
                   }`}
                 >
-                  Get Started <ArrowRight className="w-3.5 h-3.5" />
+                  {localStorage.getItem('user') ? 'Subscribe Now' : 'Get Started'} <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
             </motion.div>

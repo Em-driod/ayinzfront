@@ -111,27 +111,32 @@ export default function Settings() {
         email: profile.email,
         amount: Math.round(selectedPlan.amount * 100),
         currency: 'NGN',
-        callback: async (response: any) => {
+        callback: (response: any) => {
           console.log('Paystack callback received:', response);
           const reference = response.reference || response.trxref;
-          try {
-            console.log('Verifying upgrade on backend...');
-            const res = await api.post('/user/upgrade-subscription', {
-              subscription: selectedPlan.id,
-              paymentReference: reference
-            });
-            console.log('Upgrade successful:', res.data);
-            setUserPlan(res.data.user.subscription);
-            const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-            localStorage.setItem('user', JSON.stringify({ ...storedUser, subscription: res.data.user.subscription }));
-            setMessage({ type: 'success', text: 'Subscription upgraded successfully!' });
-            setShowPlanGrid(false); // Hide grid after success
-          } catch (err: any) {
-            console.error('Upgrade verification failed:', err.response?.data || err.message);
-            setMessage({ type: 'error', text: err.response?.data?.error || 'Upgrade failed after payment. Please contact support.' });
-          } finally {
-            setPaymentLoading(false);
-          }
+          
+          const verifyAndUpgrade = async () => {
+            try {
+              console.log('Verifying upgrade on backend...');
+              const res = await api.post('/user/upgrade-subscription', {
+                subscription: selectedPlan.id,
+                paymentReference: reference
+              });
+              console.log('Upgrade successful:', res.data);
+              setUserPlan(res.data.user.subscription);
+              const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+              localStorage.setItem('user', JSON.stringify({ ...storedUser, subscription: res.data.user.subscription }));
+              setMessage({ type: 'success', text: 'Subscription upgraded successfully!' });
+              setShowPlanGrid(false); // Hide grid after success
+            } catch (err: any) {
+              console.error('Upgrade verification failed:', err.response?.data || err.message);
+              setMessage({ type: 'error', text: err.response?.data?.error || 'Upgrade failed after payment. Please contact support.' });
+            } finally {
+              setPaymentLoading(false);
+            }
+          };
+
+          verifyAndUpgrade();
         },
         onClose: () => {
           console.log('Payment window closed.');
@@ -388,44 +393,44 @@ export default function Settings() {
                     <div className="space-y-10">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {PLANS.map((p) => (
-                          <button key={p.id} onClick={() => {
-                            setSelectedPlanId(p.id);
-                            handleUpgrade(p);
-                          }}
-                            className={`p-6 rounded-3xl border text-left transition-all relative ${selectedPlanId === p.id ? 'border-red-600 bg-red-600/10 shadow-glow-red' : 'border-white/5 bg-white/[0.02] hover:border-white/10'}`}>
-                            <div className="flex items-center justify-between mb-2">
-                                <p className="text-[10px] font-black uppercase text-white/50">{p.subtitle}</p>
-                                {selectedPlanId === p.id && <Check className="w-4 h-4 text-red-500" />}
+                          <button
+                            key={p.id}
+                            onClick={() => {
+                              setSelectedPlanId(p.id);
+                              handleUpgrade(p);
+                            }}
+                            className={`p-6 rounded-3xl border text-left transition-all relative group h-full flex flex-col ${selectedPlanId === p.id ? 'border-red-600 bg-red-600/10 shadow-glow-red' : 'border-white/5 bg-white/[0.02] hover:border-white/10'}`}
+                          >
+                            <div className="flex items-center justify-between mb-4">
+                              <p className="text-[10px] font-black uppercase text-white/50">{p.subtitle}</p>
+                              <div className="flex items-center gap-1.5">
                                 {userPlan === p.id && <span className="text-[8px] font-black bg-red-600 text-white px-2 py-0.5 rounded-full uppercase tracking-tighter">Current</span>}
+                                {selectedPlanId === p.id && <Check className="w-4 h-4 text-red-500" />}
+                              </div>
                             </div>
                             <h3 className="text-lg font-black text-white mb-1 uppercase italic">{p.name}</h3>
-                            <p className="text-xl font-black text-red-500">₦{p.price.toLocaleString()} <span className="text-[10px] text-white/40 uppercase">/ {p.period}</span></p>
+                            <p className="text-xl font-black text-red-500 mb-6">₦{p.price.toLocaleString()} <span className="text-[10px] text-white/40 uppercase">/ {p.period}</span></p>
+
+                            <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between">
+                              <span className="text-[10px] font-black uppercase text-white/40 group-hover:text-white transition-colors">
+                                {userPlan === p.id ? 'Current Plan' : 'Subscribe Now'}
+                              </span>
+                              <ArrowUpRight className="w-4 h-4 text-white/20 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                            </div>
                           </button>
                         ))}
                       </div>
-                      <div className="flex flex-col gap-4">
-                        <button
-                          onClick={() => {
-                            const p = PLANS.find(x => x.id === selectedPlanId);
-                            if (p) handleUpgrade(p);
-                          }}
-                          disabled={paymentLoading || selectedPlanId === userPlan}
-                          className="w-full bg-white text-black hover:bg-red-600 hover:text-white py-6 rounded-2xl font-black text-xs uppercase tracking-[0.4em] transition-all flex items-center justify-center gap-4 group disabled:opacity-50 shadow-2xl"
-                        >
-                          {paymentLoading
-                            ? <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                            : <><CreditCard className="w-5 h-5 group-hover:rotate-12 transition-transform" /> {selectedPlanId === userPlan ? 'Already Subscribed' : 'Authorize Distribution Plan'}</>
-                          }
-                        </button>
-                        {showPlanGrid && userPlan !== 'none' && (
-                          <button 
+
+                      {showPlanGrid && userPlan !== 'none' && (
+                        <div className="flex justify-center">
+                          <button
                             onClick={() => setShowPlanGrid(false)}
                             className="text-[10px] font-black text-white/50 uppercase tracking-widest hover:text-white transition-colors"
                           >
                             Cancel and Return
                           </button>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

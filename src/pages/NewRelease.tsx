@@ -183,32 +183,36 @@ export default function NewRelease() {
                 email: user.email,
                 amount: Math.round(selectedPlan.amount * 100), // Paystack expects amount in kobo
                 currency: 'NGN',
-                callback: async (response: any) => {
+                callback: function(response: any) {
                     console.log('Paystack callback received:', response);
                     const reference = response.reference || response.trxref;
                     
-                    try {
-                        console.log('Verifying payment on backend with ref:', reference);
-                        const res = await api.post('/user/upgrade-subscription', {
-                            subscription: selectedPlan.id,
-                            paymentReference: reference
-                        });
+                    const verifyAndUpgrade = async () => {
+                        try {
+                            console.log('Verifying payment on backend with ref:', reference);
+                            const res = await api.post('/user/upgrade-subscription', {
+                                subscription: selectedPlan.id,
+                                paymentReference: reference
+                            });
 
-                        console.log('Backend verification successful:', res.data);
-                        // Update local state and localStorage
-                        const updatedUser = res.data.user;
-                        localStorage.setItem('user', JSON.stringify(updatedUser));
-                        setUser(updatedUser);
-                        setSuccess('Subscription successful! You can now proceed with your release.');
-                        
-                        // Clear error if any
-                        setError('');
-                    } catch (err: any) {
-                        console.error('Backend verification failed:', err.response?.data || err.message);
-                        setError(err.response?.data?.error || 'Payment was successful but backend verification failed. Please contact support with reference: ' + reference);
-                    } finally {
-                        setPaymentLoading(false);
-                    }
+                            console.log('Backend verification successful:', res.data);
+                            // Update local state and localStorage
+                            const updatedUser = res.data.user;
+                            localStorage.setItem('user', JSON.stringify(updatedUser));
+                            setUser(updatedUser);
+                            setSuccess('Subscription successful! You can now proceed with your release.');
+                            
+                            // Clear error if any
+                            setError('');
+                        } catch (err: any) {
+                            console.error('Backend verification failed:', err.response?.data || err.message);
+                            setError(err.response?.data?.error || 'Payment was successful but backend verification failed. Please contact support with reference: ' + reference);
+                        } finally {
+                            setPaymentLoading(false);
+                        }
+                    };
+
+                    verifyAndUpgrade();
                 },
                 onClose: () => {
                     console.log('Paystack payment window closed by user.');
@@ -314,7 +318,7 @@ export default function NewRelease() {
                                                     setSelectedPlanId(p.id);
                                                     handleUpgrade(p);
                                                 }}
-                                                className={`p-6 rounded-3xl border text-left transition-all relative group ${selectedPlanId === p.id
+                                                className={`p-6 rounded-3xl border text-left transition-all relative group h-full flex flex-col ${selectedPlanId === p.id
                                                         ? 'border-red-600 bg-red-600/10 shadow-glow-red'
                                                         : 'border-white/5 bg-white/[0.02] hover:border-white/10'
                                                     }`}
@@ -326,7 +330,7 @@ export default function NewRelease() {
                                                 <h3 className="text-lg font-black text-white mb-1 uppercase italic tracking-tight">{p.name}</h3>
                                                 <p className="text-xl font-black text-red-500 mb-6">₦{p.price.toLocaleString()} <span className="text-[10px] text-white/40 uppercase">/ {p.period}</span></p>
 
-                                                <div className="space-y-2">
+                                                <div className="space-y-2 mb-8 flex-1">
                                                     {p.features.slice(0, 3).map((f, i) => (
                                                         <div key={i} className="flex items-center gap-2">
                                                             <div className="w-1 h-1 rounded-full bg-red-500" />
@@ -334,26 +338,21 @@ export default function NewRelease() {
                                                         </div>
                                                     ))}
                                                 </div>
+
+                                                <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between">
+                                                    <span className="text-[10px] font-black uppercase text-white/40 group-hover:text-white transition-colors">Subscribe Now</span>
+                                                    <ArrowUpRight className="w-4 h-4 text-white/20 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                                                </div>
                                             </button>
                                         ))}
                                     </div>
 
-                                    <div className="mt-12 pt-8 border-t border-white/5">
-                                        <button
-                                            onClick={() => {
-                                                const p = PLANS.find(x => x.id === selectedPlanId);
-                                                if (p) handleUpgrade(p);
-                                            }}
-                                            disabled={paymentLoading}
-                                            className="w-full bg-white text-black hover:bg-red-600 hover:text-white py-6 rounded-2xl font-black text-xs uppercase tracking-[0.4em] transition-all flex items-center justify-center gap-4 group disabled:opacity-50"
-                                        >
-                                            {paymentLoading ? (
-                                                <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                                            ) : (
-                                                <>Authorize Distribution Plan <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" /></>
-                                            )}
-                                        </button>
-                                    </div>
+                                    {error && (
+                                        <div className="mt-8 flex items-center gap-4 p-5 bg-red-600/10 border border-red-600/20 text-red-500 rounded-2xl text-[11px] font-black uppercase tracking-widest leading-relaxed">
+                                            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                                            {error}
+                                        </div>
+                                    )}
                                 </motion.div>
                             ) : (
                                 <AnimatePresence mode="wait">
