@@ -388,7 +388,10 @@ export default function Settings() {
                     <div className="space-y-10">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {PLANS.map((p) => (
-                          <button key={p.id} onClick={() => setSelectedPlanId(p.id)}
+                          <button key={p.id} onClick={() => {
+                            setSelectedPlanId(p.id);
+                            handleUpgrade(p);
+                          }}
                             className={`p-6 rounded-3xl border text-left transition-all relative ${selectedPlanId === p.id ? 'border-red-600 bg-red-600/10 shadow-glow-red' : 'border-white/5 bg-white/[0.02] hover:border-white/10'}`}>
                             <div className="flex items-center justify-between mb-2">
                                 <p className="text-[10px] font-black uppercase text-white/50">{p.subtitle}</p>

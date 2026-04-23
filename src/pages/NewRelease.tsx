@@ -310,7 +310,10 @@ export default function NewRelease() {
                                             <button
                                                 key={p.id}
                                                 type="button"
-                                                onClick={() => setSelectedPlanId(p.id)}
+                                                onClick={() => {
+                                                    setSelectedPlanId(p.id);
+                                                    handleUpgrade(p);
+                                                }}
                                                 className={`p-6 rounded-3xl border text-left transition-all relative group ${selectedPlanId === p.id
                                                         ? 'border-red-600 bg-red-600/10 shadow-glow-red'
                                                         : 'border-white/5 bg-white/[0.02] hover:border-white/10'
