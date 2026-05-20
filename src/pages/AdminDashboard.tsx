@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Users, Music, DollarSign, CheckCircle, Clock, TrendingUp, BarChart3, X, Filter, Search, ChevronRight, LayoutDashboard, Wallet, MessageCircle, Send, UserCheck, UserPlus, Eye, Settings, Pencil } from 'lucide-react';
+import { Users, Music, DollarSign, CheckCircle, Clock, TrendingUp, BarChart3, X, Filter, Search, ChevronRight, LayoutDashboard, Wallet, MessageCircle, Send, UserCheck, UserPlus, Eye, Settings, Pencil, CreditCard } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../utils/api';
@@ -79,6 +79,34 @@ interface Payout {
     created_at: string;
 }
 
+interface Payment {
+    _id: string;
+    user: { name: string; email: string; subscription: string };
+    plan: string;
+    amount: number;
+    reference: string;
+    status: string;
+    paid_at: string;
+}
+
+const PLAN_LABELS: Record<string, string> = {
+    basic: 'Artiste Plan',
+    premium: 'Record Label',
+    plus: 'Record Label Plus',
+    standard: 'Enterprise',
+    plan500: 'Sonic 500',
+    none: 'Free'
+};
+
+const SUBSCRIPTION_STYLE: Record<string, string> = {
+    plus: 'bg-amber-500/15 border-amber-500/30 text-amber-400',
+    premium: 'bg-blue-500/15 border-blue-500/30 text-blue-400',
+    standard: 'bg-purple-500/15 border-purple-500/30 text-purple-400',
+    basic: 'bg-green-500/15 border-green-500/30 text-green-400',
+    plan500: 'bg-orange-500/15 border-orange-500/30 text-orange-400',
+    none: 'bg-zinc-900 border-white/5 text-white/40'
+};
+
 const PLATFORM_COLORS: Record<string, string> = {
     'Spotify': '#1DB954',
     'Apple Music': '#FB233B',
@@ -97,9 +125,10 @@ export default function AdminDashboard() {
     const [releases, setReleases] = useState<Release[]>([]);
     const [payouts, setPayouts] = useState<Payout[]>([]);
     const [tickets, setTickets] = useState<Ticket[]>([]);
+    const [payments, setPayments] = useState<Payment[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'releases' | 'payouts' | 'support'>('overview');
+    const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'releases' | 'payouts' | 'support' | 'payments'>('overview');
     const [selectedUserFilter, setSelectedUserFilter] = useState<User | null>(null);
 
     // For support chat modal
@@ -143,12 +172,17 @@ export default function AdminDashboard() {
                 api.get('/admin/users'),
                 api.get('/admin/releases'),
                 api.get('/admin/payouts'),
-                api.get('/support/all')
+                api.get('/support/all'),
             ]);
             setUsers(usersRes.data.users);
             setReleases(releasesRes.data.releases);
             setPayouts(payoutsRes.data.payouts);
             setTickets(ticketsRes.data.tickets);
+
+            // Fetch payments separately so a missing endpoint doesn't crash the whole dashboard
+            api.get('/admin/payments')
+                .then(res => setPayments(res.data.payments || []))
+                .catch(() => setPayments([]));
         } catch (err: any) {
             setError(err.response?.data?.error || 'Access denied. You must be an admin.');
         } finally {
@@ -345,6 +379,7 @@ export default function AdminDashboard() {
         { id: 'users', name: 'Users', icon: Users },
         { id: 'releases', name: 'Releases', icon: Music },
         { id: 'payouts', name: 'Payouts', icon: Wallet },
+        { id: 'payments', name: 'Payments', icon: CreditCard },
         { id: 'support', name: 'Support', icon: MessageCircle },
     ];
 
@@ -393,9 +428,9 @@ export default function AdminDashboard() {
                         >
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <StatCard title="Active Artists" value={users.length} icon={Users} color="blue" />
-                                <StatCard title="Total Releases" value={releases.length} icon={Music} color="purple" />
-                                <StatCard title="Total Streams" value={releases.reduce((s, r) => s + r.streams, 0).toLocaleString()} icon={BarChart3} color="red" />
-                                <StatCard title="Pending Payouts" value={payouts.filter(p => p.status === 'Pending').length} icon={DollarSign} color="rose" />
+                                <StatCard title="Paid Subscribers" value={users.filter((u: User) => u.subscription !== 'none').length} icon={CreditCard} color="green" />
+                                <StatCard title="Total Streams" value={releases.reduce((s: number, r: Release) => s + r.streams, 0).toLocaleString()} icon={BarChart3} color="red" />
+                                <StatCard title="Subscription Revenue" value={`₦${payments.reduce((s: number, p: Payment) => s + p.amount, 0).toLocaleString()}`} icon={DollarSign} color="rose" />
                             </div>
 
                             <div className="grid lg:grid-cols-2 gap-8">
@@ -413,7 +448,9 @@ export default function AdminDashboard() {
                                                         <p className="text-xs text-white">{u.email}</p>
                                                     </div>
                                                 </div>
-                                                <span className="text-[10px] font-black uppercase text-white bg-black/40 px-2.5 py-1 rounded-full border border-white/5">{u.subscription}</span>
+                                                <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-full border ${SUBSCRIPTION_STYLE[u.subscription] || SUBSCRIPTION_STYLE['none']}`}>
+                                                    {PLAN_LABELS[u.subscription] || u.subscription}
+                                                </span>
                                             </div>
                                         ))}
                                     </div>
@@ -498,13 +535,17 @@ export default function AdminDashboard() {
                                         </div>
 
                                         <div className="flex items-center gap-12">
-                                            <div className="hidden lg:flex flex-col items-center">
-                                                <span className={`text-[10px] font-black uppercase px-4 py-2 rounded-2xl border ${u.subscription === 'plus' ? 'bg-red-600/10 border-red-600/20 text-red-600' :
-                                                        u.subscription === 'premium' ? 'bg-blue-500/10 border-blue-500/20 text-blue-500' :
-                                                            'bg-zinc-900 border-white/5 text-white'
-                                                    }`}>
-                                                    {u.subscription.replace('_', ' ')}
+                                            <div className="hidden lg:flex flex-col items-center gap-1.5">
+                                                <span className={`text-[10px] font-black uppercase px-4 py-2 rounded-2xl border ${SUBSCRIPTION_STYLE[u.subscription] || SUBSCRIPTION_STYLE['none']}`}>
+                                                    {PLAN_LABELS[u.subscription] || u.subscription}
                                                 </span>
+                                                {u.subscription !== 'none' ? (
+                                                    <span className="text-[9px] font-black uppercase text-green-400 tracking-widest flex items-center gap-1">
+                                                        <CheckCircle className="w-2.5 h-2.5" /> PAID
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-[9px] font-black uppercase text-white/30 tracking-widest">FREE</span>
+                                                )}
                                             </div>
 
                                             <div className="hidden lg:flex flex-col justify-end text-right">
@@ -708,6 +749,76 @@ export default function AdminDashboard() {
                             </motion.div>
                         );
                     })()}
+
+                    {activeTab === 'payments' && (
+                        <motion.div
+                            key="payments"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                        >
+                            <div className="glass-card-premium rounded-[2.5rem] overflow-hidden border border-white/5">
+                                <div className="p-6 border-b border-white/5 bg-white/5 flex items-center justify-between">
+                                    <h2 className="text-xl font-display uppercase tracking-tight flex items-center gap-3">
+                                        <CreditCard className="w-6 h-6 text-green-500" /> Payment History
+                                    </h2>
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-[10px] font-black uppercase text-white/40 tracking-widest">{payments.length} total</span>
+                                        <span className="text-[10px] font-black uppercase px-3 py-1.5 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 tracking-widest">
+                                            ₦{payments.reduce((s: number, p: Payment) => s + p.amount, 0).toLocaleString()} collected
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="divide-y divide-white/5">
+                                    {payments.map((p: Payment) => (
+                                        <div key={p._id} className="p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-white/[0.02] transition-colors">
+                                            <div className="flex items-center gap-5 min-w-[220px]">
+                                                <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center font-bold text-green-400 text-lg shrink-0">
+                                                    {p.user?.name?.[0] ?? '?'}
+                                                </div>
+                                                <div>
+                                                    <p className="font-bold text-sm text-white">{p.user?.name}</p>
+                                                    <p className="text-xs text-white/50">{p.user?.email}</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex flex-col gap-1">
+                                                <p className="text-[9px] font-black uppercase tracking-widest text-white/40">Plan Purchased</p>
+                                                <span className={`text-[11px] font-black uppercase px-3 py-1.5 rounded-xl border w-fit ${SUBSCRIPTION_STYLE[p.plan] || SUBSCRIPTION_STYLE['none']}`}>
+                                                    {PLAN_LABELS[p.plan] || p.plan}
+                                                </span>
+                                            </div>
+
+                                            <div className="flex flex-col gap-1">
+                                                <p className="text-[9px] font-black uppercase tracking-widest text-white/40">Amount Paid</p>
+                                                <p className="text-2xl font-display text-green-400 tracking-tight">₦{p.amount.toLocaleString()}</p>
+                                            </div>
+
+                                            <div className="flex flex-col gap-1">
+                                                <p className="text-[9px] font-black uppercase tracking-widest text-white/40">Reference</p>
+                                                <p className="text-xs font-mono text-white/60 tracking-wider">{p.reference}</p>
+                                            </div>
+
+                                            <div className="flex flex-col items-end gap-1">
+                                                <p className="text-[9px] font-black uppercase tracking-widest text-white/40">Date</p>
+                                                <p className="text-xs font-black text-white">{new Date(p.paid_at).toLocaleDateString()}</p>
+                                                <span className="text-[9px] font-black uppercase px-2.5 py-1 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400">
+                                                    {p.status}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {payments.length === 0 && (
+                                        <div className="text-center py-24 text-white/30">
+                                            <CreditCard className="w-16 h-16 mx-auto mb-6 opacity-10" />
+                                            <h3 className="text-sm font-black uppercase tracking-[0.3em]">No Payment Records Yet</h3>
+                                            <p className="text-xs mt-2 opacity-60">Payments made via Paystack will appear here.</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
 
                     {activeTab === 'payouts' && (
                         <motion.div
