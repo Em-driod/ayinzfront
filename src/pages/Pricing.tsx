@@ -1,28 +1,9 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Check, ArrowRight, Music, Users, Globe, Zap, AlertTriangle } from 'lucide-react';
+import { Check, ArrowRight, Music, Users, Globe, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const plans = [
-  {
-    id: 'basic_temp',
-    name: 'Artiste Plan',
-    subtitle: 'Basic (Temporary)',
-    price: 1_500,
-    original: 35_000,
-    period: '3 Month',
-    temporary: true,
-    accounts: '1 Artist Account',
-    icon: Zap,
-    popular: false,
-    features: [
-      '1 Artist Account',
-      'Unlimited releases',
-      'Analytics suite',
-      '4–7 day delivery',
-      'Single, Album, EP support',
-    ],
-  },
   {
     id: 'basic',
     name: 'Artiste Plan',

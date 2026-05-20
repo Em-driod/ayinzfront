@@ -310,7 +310,6 @@ export default function Landing() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
             {[
-              { id: 'basic_temp', name: 'Basic (Temp)', subtitle: 'Artiste Plan', price: '₦1.5k', period: '3 Month', accounts: '01 Account', featured: false, temp: true },
               { id: 'basic', name: 'Basic', subtitle: 'Artiste Plan', price: '₦35k', period: 'Annually', accounts: '01 Account', featured: false, temp: false },
               { id: 'premium', name: 'Premium', subtitle: 'Record Label Plan', price: '₦50k', period: 'Annually', accounts: '10–15 Accounts', featured: true, temp: false },
               { id: 'plus', name: 'Plus', subtitle: 'Record Label Plus', price: '₦85k', period: 'Annually', accounts: '20+ Accounts', featured: false, temp: false },

@@ -405,13 +405,13 @@ export default function AdminDashboard() {
                                         setSelectedUserFilter(null);
                                     }
                                 }}
-                                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap ${activeTab === tab.id
+                                className={`flex items-center gap-2 px-3 sm:px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap ${activeTab === tab.id
                                         ? 'bg-red-600 text-black'
                                         : 'text-white hover:text-white hover:bg-white/5'
                                     }`}
                             >
-                                <tab.icon className="w-3.5 h-3.5" />
-                                {tab.name}
+                                <tab.icon className="w-3.5 h-3.5 shrink-0" />
+                                <span className="hidden sm:inline">{tab.name}</span>
                             </button>
                         ))}
                     </div>
@@ -523,18 +523,23 @@ export default function AdminDashboard() {
                             </div>
                             <div className="divide-y divide-white/5">
                                 {users.map(u => (
-                                    <div key={u._id} className="p-6 md:p-8 flex items-center justify-between hover:bg-white/[0.02] transition-colors group">
-                                        <div className="flex items-center gap-6">
-                                            <div className="w-14 h-14 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center font-bold text-white group-hover:border-blue-500/50 shadow-2xl transition-colors shrink-0">
+                                    <div key={u._id} className="p-4 sm:p-6 md:p-8 flex items-center justify-between hover:bg-white/[0.02] transition-colors group gap-3">
+                                        <div className="flex items-center gap-3 sm:gap-6 min-w-0">
+                                            <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center font-bold text-white group-hover:border-blue-500/50 shadow-2xl transition-colors shrink-0">
                                                 {u.name[0]}
                                             </div>
-                                            <div>
-                                                <p className="font-black text-lg text-white mb-1 tracking-tight">{u.name}</p>
-                                                <p className="text-xs text-white uppercase tracking-widest font-bold">{u.email}</p>
+                                            <div className="min-w-0">
+                                                <p className="font-black text-sm sm:text-lg text-white mb-0.5 tracking-tight truncate">{u.name}</p>
+                                                <p className="text-[10px] sm:text-xs text-white/60 uppercase tracking-widest font-bold truncate">{u.email}</p>
+                                                <div className="flex items-center gap-1.5 mt-1 sm:hidden">
+                                                    <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full border ${SUBSCRIPTION_STYLE[u.subscription] || SUBSCRIPTION_STYLE['none']}`}>
+                                                        {PLAN_LABELS[u.subscription] || u.subscription}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center gap-12">
+                                        <div className="flex items-center gap-3 sm:gap-8 shrink-0">
                                             <div className="hidden lg:flex flex-col items-center gap-1.5">
                                                 <span className={`text-[10px] font-black uppercase px-4 py-2 rounded-2xl border ${SUBSCRIPTION_STYLE[u.subscription] || SUBSCRIPTION_STYLE['none']}`}>
                                                     {PLAN_LABELS[u.subscription] || u.subscription}
@@ -553,27 +558,27 @@ export default function AdminDashboard() {
                                                 <p className="text-xs font-black text-white">{new Date(u.created_at).toLocaleDateString()}</p>
                                             </div>
 
-                                            <div className="flex items-center gap-3">
+                                            <div className="flex items-center gap-1.5 sm:gap-2">
                                                 <button
                                                     onClick={() => { setSelectedUserFilter(u); setActiveTab('releases'); }}
-                                                    className="w-12 h-12 flex items-center justify-center bg-zinc-900 hover:bg-purple-500 text-white hover:text-black rounded-2xl border border-white/5 hover:border-purple-500 transition-all shadow-xl"
+                                                    className="w-9 h-9 sm:w-11 sm:h-11 flex items-center justify-center bg-zinc-900 hover:bg-purple-500 text-white hover:text-black rounded-xl sm:rounded-2xl border border-white/5 hover:border-purple-500 transition-all"
                                                     title="View Releases"
                                                 >
-                                                    <Music className="w-5 h-5" />
+                                                    <Music className="w-4 h-4" />
                                                 </button>
                                                 <button
                                                     onClick={() => openEditUser(u)}
-                                                    className="w-12 h-12 flex items-center justify-center bg-zinc-900 hover:bg-blue-500 text-white hover:text-black rounded-2xl border border-white/5 hover:border-blue-500 transition-all shadow-xl"
+                                                    className="w-9 h-9 sm:w-11 sm:h-11 flex items-center justify-center bg-zinc-900 hover:bg-blue-500 text-white hover:text-black rounded-xl sm:rounded-2xl border border-white/5 hover:border-blue-500 transition-all"
                                                     title="Edit User"
                                                 >
-                                                    <Pencil className="w-5 h-5" />
+                                                    <Pencil className="w-4 h-4" />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDeleteUser(u._id, u.name)}
-                                                    className="w-12 h-12 flex items-center justify-center bg-zinc-900 hover:bg-rose-500 text-white hover:text-black rounded-2xl border border-white/5 hover:border-rose-500 transition-all shadow-xl"
+                                                    className="w-9 h-9 sm:w-11 sm:h-11 flex items-center justify-center bg-zinc-900 hover:bg-rose-500 text-white hover:text-black rounded-xl sm:rounded-2xl border border-white/5 hover:border-rose-500 transition-all"
                                                     title="Delete User"
                                                 >
-                                                    <X className="w-5 h-5" />
+                                                    <X className="w-4 h-4" />
                                                 </button>
                                             </div>
                                         </div>
@@ -693,53 +698,51 @@ export default function AdminDashboard() {
                                                     </div>
                                                 )}
 
-                                                <div className="grid grid-cols-3 gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/5 mb-6">
+                                                <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-white/[0.02] border border-white/5 mb-6">
                                                     <div>
                                                         <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">Streams</p>
-                                                        <p className="font-display text-xl text-white">{r.streams.toLocaleString()}</p>
+                                                        <p className="font-display text-lg sm:text-xl text-white">{r.streams.toLocaleString()}</p>
                                                     </div>
                                                     <div>
                                                         <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">Revenue</p>
-                                                        <p className="font-display text-xl text-red-500">₦{r.revenue.toLocaleString()}</p>
+                                                        <p className="font-display text-lg sm:text-xl text-red-500">₦{r.revenue.toLocaleString()}</p>
                                                     </div>
                                                     <div>
                                                         <p className="text-[9px] font-black text-white uppercase tracking-widest mb-1">Price</p>
                                                         <input
                                                             type="number"
-                                                            className="w-full bg-transparent border-none p-0 font-display text-xl text-blue-500 focus:ring-0"
+                                                            className="w-full bg-transparent border-none p-0 font-display text-lg sm:text-xl text-blue-500 focus:ring-0"
                                                             defaultValue={r.price || 0}
                                                             onBlur={(e) => handleUpdatePrice(r.id, Number(e.target.value))}
                                                         />
                                                     </div>
-                                                    <div className="flex flex-col items-center justify-center border-l border-white/5 pl-2">
-                                                        <button
-                                                            onClick={() => handleDeleteRelease(r.id, r.title)}
-                                                            className="p-3 bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white rounded-xl transition-all"
-                                                            title="Delete Release"
-                                                        >
-                                                            <X className="w-4 h-4" />
-                                                        </button>
-                                                    </div>
                                                 </div>
 
-                                                <div className="flex gap-3">
+                                                <div className="flex gap-2 sm:gap-3">
                                                     <button
                                                         onClick={() => handleViewStats(r)}
-                                                        className="flex-1 py-3.5 bg-white/5 hover:bg-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-white/5 transition-all flex items-center justify-center gap-2"
+                                                        className="flex-1 py-3 sm:py-3.5 bg-white/5 hover:bg-white/10 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-[0.15em] border border-white/5 transition-all flex items-center justify-center gap-1.5"
                                                     >
-                                                        <TrendingUp className="w-3.5 h-3.5" /> Growth
+                                                        <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" /> Graph
                                                     </button>
                                                     <button
                                                         onClick={() => setSelectedRelease(r)}
-                                                        className="flex-1 py-3.5 bg-white/5 hover:bg-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-white/5 transition-all flex items-center justify-center gap-2"
+                                                        className="flex-1 py-3 sm:py-3.5 bg-white/5 hover:bg-white/10 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-[0.15em] border border-white/5 transition-all flex items-center justify-center gap-1.5"
                                                     >
-                                                        <Eye className="w-3.5 h-3.5" /> Details
+                                                        <Eye className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" /> Details
                                                     </button>
                                                     <button
                                                         onClick={() => setEditingRelease(r)}
-                                                        className="flex-1 py-3.5 bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-black rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-red-600/20 transition-all flex items-center justify-center gap-2"
+                                                        className="flex-1 py-3 sm:py-3.5 bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-black rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-[0.15em] border border-red-600/20 transition-all flex items-center justify-center gap-1.5"
                                                     >
                                                         + Stats
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteRelease(r.id, r.title)}
+                                                        className="py-3 sm:py-3.5 px-3 bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white rounded-xl sm:rounded-2xl border border-rose-500/20 transition-all flex items-center justify-center"
+                                                        title="Delete Release"
+                                                    >
+                                                        <X className="w-3.5 h-3.5" />
                                                     </button>
                                                 </div>
                                             </div>
@@ -771,8 +774,8 @@ export default function AdminDashboard() {
                                 </div>
                                 <div className="divide-y divide-white/5">
                                     {payments.map((p: Payment) => (
-                                        <div key={p._id} className="p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-white/[0.02] transition-colors">
-                                            <div className="flex items-center gap-5 min-w-[220px]">
+                                        <div key={p._id} className="p-4 sm:p-6 md:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 hover:bg-white/[0.02] transition-colors">
+                                            <div className="flex items-center gap-4 sm:gap-5">
                                                 <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center font-bold text-green-400 text-lg shrink-0">
                                                     {p.user?.name?.[0] ?? '?'}
                                                 </div>
@@ -1100,9 +1103,9 @@ export default function AdminDashboard() {
                             className="glass-dark rounded-[2.5rem] w-full max-w-5xl h-[90vh] overflow-hidden border border-white/10 flex flex-col shadow-2xl"
                         >
                             {/* Modal Header */}
-                            <div className="p-8 border-b border-white/5 flex justify-between items-start bg-white/5">
-                                <div className="flex gap-8">
-                                    <div className="w-24 h-24 rounded-3xl overflow-hidden bg-zinc-900 border border-white/10 shadow-2xl">
+                            <div className="p-4 sm:p-8 border-b border-white/5 flex justify-between items-start bg-white/5 gap-4">
+                                <div className="flex gap-4 sm:gap-8 min-w-0">
+                                    <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-2xl sm:rounded-3xl overflow-hidden bg-zinc-900 border border-white/10 shadow-2xl shrink-0">
                                         {selectedRelease.cover_url ? (
                                             <img src={selectedRelease.cover_url} alt={selectedRelease.title} className="w-full h-full object-cover" />
                                         ) : (
@@ -1120,7 +1123,7 @@ export default function AdminDashboard() {
                                                 {selectedRelease.type} • {selectedRelease.genre}
                                             </span>
                                         </div>
-                                        <h2 className="text-4xl font-display uppercase italic tracking-tight text-white mb-1 leading-none">{selectedRelease.title}</h2>
+                                        <h2 className="text-2xl sm:text-4xl font-display uppercase italic tracking-tight text-white mb-1 leading-none">{selectedRelease.title}</h2>
                                         <p className="text-sm font-black text-white uppercase tracking-widest">by {selectedRelease.artist}</p>
                                         {selectedRelease.featured_artists && selectedRelease.featured_artists.length > 0 && (
                                             <p className="text-xs font-bold text-white/50 uppercase tracking-widest mt-1 italic">ft. {selectedRelease.featured_artists.join(', ')}</p>
@@ -1282,23 +1285,23 @@ export default function AdminDashboard() {
                             </div>
 
                             {/* Modal Footer */}
-                            <div className="p-8 border-t border-white/5 bg-black/40 flex justify-between items-center">
-                                <div className="flex gap-4">
+                            <div className="p-4 sm:p-8 border-t border-white/5 bg-black/40 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                <div className="flex flex-wrap gap-4">
                                     <div className="flex flex-col">
                                         <p className="text-[9px] font-black text-white uppercase tracking-widest mb-0.5">Contact Email</p>
-                                        <p className="text-xs font-bold text-white">{selectedRelease.contact_email}</p>
+                                        <p className="text-xs font-bold text-white break-all">{selectedRelease.contact_email}</p>
                                     </div>
-                                    <div className="w-px h-8 bg-white/5 self-center mx-2" />
+                                    <div className="w-px h-8 bg-white/5 self-center hidden sm:block" />
                                     <div className="flex flex-col">
                                         <p className="text-[9px] font-black text-white uppercase tracking-widest mb-0.5">Artist Email</p>
-                                        <p className="text-xs font-bold text-white">{selectedRelease.user?.email}</p>
+                                        <p className="text-xs font-bold text-white break-all">{selectedRelease.user?.email}</p>
                                     </div>
                                 </div>
                                 <button
                                     onClick={() => setSelectedRelease(null)}
-                                    className="px-10 py-4 bg-white text-black rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-zinc-200 transition-colors shadow-xl shadow-white/10"
+                                    className="w-full sm:w-auto px-8 py-4 bg-white text-black rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-zinc-200 transition-colors shadow-xl shadow-white/10"
                                 >
-                                    Dismiss Details
+                                    Dismiss
                                 </button>
                             </div>
                         </motion.div>

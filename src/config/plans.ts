@@ -1,26 +1,6 @@
-import { Music, Zap, Star, Globe, Users } from 'lucide-react';
+import { Music, Globe, Users } from 'lucide-react';
 
 export const PLANS = [
-  {
-    id: 'basic_temp',
-    name: 'Artiste Plan',
-    subtitle: 'Basic (Temporary)',
-    price: 1500,
-    amount: 1500,
-    original: 35000,
-    period: '3 Month',
-    temporary: true,
-    accounts: '1 Artist Account',
-    icon: Zap,
-    popular: false,
-    features: [
-      '1 Artist Account',
-      'Unlimited releases',
-      'Analytics suite',
-      '4–7 day delivery',
-      'Single, Album, EP support',
-    ],
-  },
   {
     id: 'basic',
     name: 'Artiste Plan',
