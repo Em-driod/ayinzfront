@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Eye, EyeOff, ArrowRight, Music, Zap, Star, Globe, AlertCircle, AlertTriangle } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '../utils/api';
 
@@ -12,11 +12,10 @@ const labelClass = 'block text-[10px] font-black text-white uppercase tracking-[
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const planFromUrl = searchParams.get('plan') || 'basic';
-
   const [formData, setFormData] = useState({
     name: '', email: '', password: '',
+    artisteName: '', phone: '', whatsapp: '',
+    stateOfOrigin: '', nationality: '', socialLink: '',
     agreeToTerms: false
   });
   const [error, setError] = useState('');
@@ -26,14 +25,20 @@ export default function Register() {
     e.preventDefault();
     if (!formData.agreeToTerms) { setError('Please agree to the Terms of Service.'); return; }
     setError('');
-    
+
     setLoading(true);
 
     try {
       const res = await api.post('/auth/register', {
         name: formData.name,
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        artisteName: formData.artisteName,
+        phone: formData.phone,
+        whatsapp: formData.whatsapp,
+        stateOfOrigin: formData.stateOfOrigin,
+        nationality: formData.nationality,
+        socialLink: formData.socialLink,
       });
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
@@ -108,7 +113,43 @@ export default function Register() {
                 </div>
               </div>
 
-              {/* Removed Plan Selection UI */}
+              <div>
+                <label htmlFor="artisteName" className={labelClass}>Artiste Name</label>
+                <input id="artisteName" type="text" placeholder="Your stage name" className={inputClass}
+                  value={formData.artisteName} onChange={e => setFormData({ ...formData, artisteName: e.target.value })} />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="phone" className={labelClass}>Phone Number</label>
+                  <input id="phone" type="tel" placeholder="+234 800 000 0000" className={inputClass}
+                    value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} />
+                </div>
+                <div>
+                  <label htmlFor="whatsapp" className={labelClass}>WhatsApp</label>
+                  <input id="whatsapp" type="tel" placeholder="+234 800 000 0000" className={inputClass}
+                    value={formData.whatsapp} onChange={e => setFormData({ ...formData, whatsapp: e.target.value })} />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="stateOfOrigin" className={labelClass}>State of Origin</label>
+                  <input id="stateOfOrigin" type="text" placeholder="Lagos" className={inputClass}
+                    value={formData.stateOfOrigin} onChange={e => setFormData({ ...formData, stateOfOrigin: e.target.value })} />
+                </div>
+                <div>
+                  <label htmlFor="nationality" className={labelClass}>Nationality</label>
+                  <input id="nationality" type="text" placeholder="Nigerian" className={inputClass}
+                    value={formData.nationality} onChange={e => setFormData({ ...formData, nationality: e.target.value })} />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="socialLink" className={labelClass}>IG / FB Profile Link</label>
+                <input id="socialLink" type="url" placeholder="https://instagram.com/yourname" className={inputClass}
+                  value={formData.socialLink} onChange={e => setFormData({ ...formData, socialLink: e.target.value })} />
+              </div>
 
               {/* Terms */}
               <div className="flex items-start gap-2.5 pt-1">

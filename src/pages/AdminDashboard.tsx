@@ -11,6 +11,12 @@ interface User {
     email: string;
     subscription: string;
     created_at: string;
+    artisteName?: string;
+    phone?: string;
+    whatsapp?: string;
+    stateOfOrigin?: string;
+    nationality?: string;
+    socialLink?: string;
 }
 
 interface Release {
@@ -564,8 +570,8 @@ export default function AdminDashboard() {
                                                     {u.name[0].toUpperCase()}
                                                 </div>
                                                 <div className="min-w-0">
-                                                    <p className="text-sm font-bold text-white truncate mb-0.5">{u.name}</p>
-                                                    <p className="text-[10px] text-white/30 font-medium truncate">{u.email}</p>
+                                                    <p className="text-sm font-bold text-white truncate mb-0.5">{u.name}{u.artisteName ? <span className="text-white/30 font-medium ml-1.5">· {u.artisteName}</span> : null}</p>
+                                                    <p className="text-[10px] text-white/30 font-medium truncate">{u.email}{u.phone ? <span className="ml-2 text-white/20">{u.phone}</span> : null}</p>
                                                     <div className="flex items-center gap-2 mt-1 sm:hidden">
                                                         <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded border ${SUBSCRIPTION_STYLE[u.subscription] || SUBSCRIPTION_STYLE['none']}`}>
                                                             {PLAN_LABELS[u.subscription] || u.subscription}
@@ -778,8 +784,8 @@ export default function AdminDashboard() {
                                                             {u.name?.[0]?.toUpperCase()}
                                                         </div>
                                                         <div className="flex-1 min-w-0">
-                                                            <p className="text-sm font-bold text-white truncate">{u.name}</p>
-                                                            <p className="text-[10px] text-white/30 truncate">{u.email}</p>
+                                                            <p className="text-sm font-bold text-white truncate">{u.name}{u.artisteName ? <span className="text-white/30 font-medium ml-1.5">· {u.artisteName}</span> : null}</p>
+                                                            <p className="text-[10px] text-white/30 truncate">{u.email}{u.phone ? <span className="ml-2 text-white/20">{u.phone}</span> : null}</p>
                                                         </div>
                                                         <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl border shrink-0 ${SUBSCRIPTION_STYLE[u.subscription] || SUBSCRIPTION_STYLE['none']}`}>
                                                             {PLAN_LABELS[u.subscription] || u.subscription}
@@ -788,7 +794,6 @@ export default function AdminDashboard() {
                                                             <p className="text-[9px] text-white/25 font-medium">
                                                                 {new Date(u.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                                                             </p>
-                                                            {/* Flag if no payment record exists */}
                                                             {unrecordedPayers.some(up => up._id === u._id) && (
                                                                 <span className="text-[8px] font-black text-amber-400 uppercase tracking-wide">no log</span>
                                                             )}
@@ -1314,6 +1319,7 @@ export default function AdminDashboard() {
                                 </div>
                                 <button onClick={() => setEditingUser(null)} className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-white transition-colors"><X className="w-4 h-4" /></button>
                             </div>
+                            <div className="overflow-y-auto max-h-[75vh]">
                             <form onSubmit={handleUpdateUser} className="p-6 space-y-4">
                                 <div><label className={labelCls}>Full Name</label><input type="text" required placeholder="Artist or Band Name" className={inputCls} value={editUserForm.name} onChange={e => setEditUserForm({ ...editUserForm, name: e.target.value })} /></div>
                                 <div><label className={labelCls}>Email Address</label><input type="email" required className={inputCls} value={editUserForm.email} onChange={e => setEditUserForm({ ...editUserForm, email: e.target.value })} /></div>
@@ -1328,6 +1334,52 @@ export default function AdminDashboard() {
                                         <option value="standard">Enterprise</option>
                                     </select>
                                 </div>
+
+                                {/* Read-only artist profile info */}
+                                {(editingUser?.artisteName || editingUser?.phone || editingUser?.whatsapp || editingUser?.stateOfOrigin || editingUser?.nationality || editingUser?.socialLink) && (
+                                    <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 space-y-3">
+                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30">Artist Profile</p>
+                                        <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                                            {editingUser.artisteName && (
+                                                <div className="col-span-2">
+                                                    <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-0.5">Artiste Name</p>
+                                                    <p className="text-sm font-bold text-white">{editingUser.artisteName}</p>
+                                                </div>
+                                            )}
+                                            {editingUser.phone && (
+                                                <div>
+                                                    <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-0.5">Phone</p>
+                                                    <p className="text-xs font-medium text-white/70">{editingUser.phone}</p>
+                                                </div>
+                                            )}
+                                            {editingUser.whatsapp && (
+                                                <div>
+                                                    <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-0.5">WhatsApp</p>
+                                                    <p className="text-xs font-medium text-white/70">{editingUser.whatsapp}</p>
+                                                </div>
+                                            )}
+                                            {editingUser.stateOfOrigin && (
+                                                <div>
+                                                    <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-0.5">State of Origin</p>
+                                                    <p className="text-xs font-medium text-white/70">{editingUser.stateOfOrigin}</p>
+                                                </div>
+                                            )}
+                                            {editingUser.nationality && (
+                                                <div>
+                                                    <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-0.5">Nationality</p>
+                                                    <p className="text-xs font-medium text-white/70">{editingUser.nationality}</p>
+                                                </div>
+                                            )}
+                                            {editingUser.socialLink && (
+                                                <div className="col-span-2">
+                                                    <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-0.5">IG / FB Link</p>
+                                                    <a href={editingUser.socialLink} target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-blue-400 hover:text-blue-300 truncate block transition-colors">{editingUser.socialLink}</a>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
                                 <div className="flex gap-3 pt-2">
                                     <button type="button" onClick={() => setEditingUser(null)} className="flex-1 py-3 rounded-xl border border-white/[0.06] text-xs font-black uppercase tracking-wider text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">Cancel</button>
                                     <button type="submit" disabled={updatingUser} className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-blue-600/20 disabled:opacity-50 flex items-center justify-center gap-2">
@@ -1335,6 +1387,7 @@ export default function AdminDashboard() {
                                     </button>
                                 </div>
                             </form>
+                            </div>
                         </motion.div>
                     </motion.div>
                 )}
