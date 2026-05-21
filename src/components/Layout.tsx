@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Music, Home, Upload, BarChart3, DollarSign, Settings, X, LogOut, ShieldAlert, HelpCircle } from 'lucide-react';
+import { Home, Upload, BarChart3, DollarSign, Settings, X, LogOut, ShieldAlert, HelpCircle } from 'lucide-react';
 import api from '../utils/api';
 
 interface LayoutProps {
@@ -218,13 +218,33 @@ export default function Layout({ children }: LayoutProps) {
       {/* ── Main Content ── */}
       <div className="flex-1 lg:ml-64 flex flex-col min-h-screen">
 
-        {/* Mobile top bar — logo only */}
+        {/* Mobile top bar */}
         <div className="lg:hidden sticky top-0 z-30 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-zinc-900">
-          <div className="flex items-center justify-center h-14 px-5 relative">
+          <div className="flex items-center justify-between h-14 px-4">
+            {/* Left spacer / placeholder */}
+            <div className="w-10" />
+
+            {/* Centered logo */}
             <div className="flex items-center gap-2.5">
               <img src="/ayinz.jpeg" alt="Ayinz" className="w-7 h-7 rounded-lg object-cover border border-zinc-800" />
               <span className="text-lg font-black text-white tracking-tighter">Ayinz</span>
             </div>
+
+            {/* Right: Admin shortcut (only for admins) */}
+            {isAdmin ? (
+              <Link
+                to="/admin"
+                className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all active:scale-90 ${
+                  location.pathname === '/admin'
+                    ? 'bg-red-600 shadow-lg shadow-red-600/30'
+                    : 'bg-red-950/40 border border-red-900/40'
+                }`}
+              >
+                <ShieldAlert className="w-5 h-5 text-red-400" />
+              </Link>
+            ) : (
+              <div className="w-10" />
+            )}
           </div>
         </div>
 
