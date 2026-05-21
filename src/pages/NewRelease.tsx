@@ -196,8 +196,9 @@ export default function NewRelease() {
                             });
 
                             console.log('Backend verification successful:', res.data);
-                            // Update local state and localStorage
-                            const updatedUser = res.data.user;
+                            // Merge subscription into existing stored user (preserves avatar, etc.)
+                            const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+                            const updatedUser = { ...storedUser, subscription: res.data.user.subscription };
                             localStorage.setItem('user', JSON.stringify(updatedUser));
                             setUser(updatedUser);
                             setSuccess('Subscription successful! You can now proceed with your release.');

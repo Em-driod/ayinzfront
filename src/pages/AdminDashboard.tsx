@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Users, Music, DollarSign, CheckCircle, TrendingUp, BarChart3, X, Search, ChevronRight, LayoutDashboard, Wallet, MessageCircle, Send, UserCheck, UserPlus, Eye, Pencil, CreditCard, ArrowUpRight, Shield } from 'lucide-react';
+import { Users, Music, DollarSign, CheckCircle, TrendingUp, BarChart3, X, Search, ChevronRight, LayoutDashboard, Wallet, MessageCircle, Send, UserCheck, UserPlus, Eye, Pencil, CreditCard, ArrowUpRight, Shield, AlertCircle } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../utils/api';
@@ -133,6 +133,8 @@ export default function AdminDashboard() {
     const [payouts, setPayouts] = useState<Payout[]>([]);
     const [tickets, setTickets] = useState<Ticket[]>([]);
     const [payments, setPayments] = useState<Payment[]>([]);
+    const [unrecordedPayers, setUnrecordedPayers] = useState<User[]>([]);
+    const [paymentsError, setPaymentsError] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'releases' | 'payouts' | 'support' | 'payments'>('overview');
@@ -155,17 +157,20 @@ export default function AdminDashboard() {
 
     const fetchData = async () => {
         try {
-            const [usersRes, releasesRes, payoutsRes, ticketsRes] = await Promise.all([
-                api.get('/admin/users'), api.get('/admin/releases'),
-                api.get('/admin/payouts'), api.get('/support/all'),
+            const [usersRes, releasesRes, payoutsRes, ticketsRes, paymentsRes, unrecordedRes] = await Promise.all([
+                api.get('/admin/users'),
+                api.get('/admin/releases'),
+                api.get('/admin/payouts'),
+                api.get('/support/all'),
+                api.get('/admin/payments').catch((e) => { setPaymentsError('Failed to load payment records: ' + (e.response?.data?.error || e.message)); return { data: { payments: [] } }; }),
+                api.get('/admin/payments/unrecorded').catch(() => ({ data: { users: [] } })),
             ]);
             setUsers(usersRes.data.users);
             setReleases(releasesRes.data.releases);
             setPayouts(payoutsRes.data.payouts);
             setTickets(ticketsRes.data.tickets);
-            api.get('/admin/payments')
-                .then(res => setPayments(res.data.payments || []))
-                .catch(() => setPayments([]));
+            setPayments(paymentsRes.data.payments || []);
+            setUnrecordedPayers(unrecordedRes.data.users || []);
         } catch (err: any) {
             setError(err.response?.data?.error || 'Access denied. You must be an admin.');
         } finally {
@@ -737,12 +742,108 @@ export default function AdminDashboard() {
 
                     {/* PAYMENTS */}
                     {activeTab === 'payments' && (
-                        <motion.div key="payments" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
+                        <motion.div key="payments" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="space-y-6">
+
+                            {/* ── All Active Subscribers (ground truth) ── */}
+                            {(() => {
+                                const subscribers = users.filter(u => u.subscription && u.subscription !== 'none');
+                                return (
+                                    <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent overflow-hidden">
+                                        <div className="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between gap-4 flex-wrap">
+                                            <div>
+                                                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-0.5">All Time</p>
+                                                <h2 className="text-base font-black uppercase tracking-tight">Active Subscribers</h2>
+                                                <p className="text-[10px] text-white/30 mt-0.5 font-medium">Every user with a paid plan — the complete record regardless of when they subscribed</p>
+                                            </div>
+                                            <span className="text-[9px] font-black uppercase px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                                                {subscribers.length} subscriber{subscribers.length !== 1 ? 's' : ''}
+                                            </span>
+                                        </div>
+                                        {subscribers.length === 0 ? (
+                                            <div className="py-16 text-center">
+                                                <Users className="w-10 h-10 mx-auto mb-3 text-white/10" />
+                                                <p className="text-xs font-black uppercase tracking-[0.3em] text-white/20">No active subscribers yet</p>
+                                            </div>
+                                        ) : (
+                                            <div className="divide-y divide-white/[0.04]">
+                                                {subscribers.map((u, i) => (
+                                                    <motion.div
+                                                        key={u._id}
+                                                        initial={{ opacity: 0, x: -8 }}
+                                                        animate={{ opacity: 1, x: 0 }}
+                                                        transition={{ delay: i * 0.03 }}
+                                                        className="px-4 sm:px-6 py-3.5 flex items-center gap-4 hover:bg-white/[0.02] transition-colors"
+                                                    >
+                                                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-sm shrink-0 border ${AVATAR_BG[u.subscription] || AVATAR_BG['none']}`}>
+                                                            {u.name?.[0]?.toUpperCase()}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="text-sm font-bold text-white truncate">{u.name}</p>
+                                                            <p className="text-[10px] text-white/30 truncate">{u.email}</p>
+                                                        </div>
+                                                        <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl border shrink-0 ${SUBSCRIPTION_STYLE[u.subscription] || SUBSCRIPTION_STYLE['none']}`}>
+                                                            {PLAN_LABELS[u.subscription] || u.subscription}
+                                                        </span>
+                                                        <div className="text-right shrink-0">
+                                                            <p className="text-[9px] text-white/25 font-medium">
+                                                                {new Date(u.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                                            </p>
+                                                            {/* Flag if no payment record exists */}
+                                                            {unrecordedPayers.some(up => up._id === u._id) && (
+                                                                <span className="text-[8px] font-black text-amber-400 uppercase tracking-wide">no log</span>
+                                                            )}
+                                                        </div>
+                                                    </motion.div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })()}
+
+                            {/* Error banner */}
+                            {paymentsError && (
+                                <div className="flex items-center gap-3 px-5 py-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold">
+                                    <AlertCircle className="w-4 h-4 shrink-0" />
+                                    {paymentsError}
+                                </div>
+                            )}
+
+                            {/* Unrecorded payers — users with active subscriptions but no Payment log */}
+                            {unrecordedPayers.length > 0 && (
+                                <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 overflow-hidden">
+                                    <div className="px-6 py-4 border-b border-amber-500/10 flex items-center gap-3">
+                                        <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+                                        <div className="flex-1">
+                                            <h3 className="text-sm font-black uppercase text-amber-400 tracking-tight">Missing Payment Records — {unrecordedPayers.length} user{unrecordedPayers.length > 1 ? 's' : ''}</h3>
+                                            <p className="text-[10px] text-amber-400/60 font-medium mt-0.5">These users have an active subscription but no Paystack payment log. They may have paid before payment tracking was enabled, or their payment record failed to save.</p>
+                                        </div>
+                                    </div>
+                                    <div className="divide-y divide-amber-500/10">
+                                        {unrecordedPayers.map((u) => (
+                                            <div key={u._id} className="px-6 py-4 flex items-center gap-4">
+                                                <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center font-black text-amber-400 text-sm shrink-0">
+                                                    {u.name?.[0]?.toUpperCase()}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-bold text-white truncate">{u.name}</p>
+                                                    <p className="text-[10px] text-white/30 truncate">{u.email}</p>
+                                                </div>
+                                                <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl border shrink-0 ${SUBSCRIPTION_STYLE[u.subscription] || SUBSCRIPTION_STYLE['none']}`}>
+                                                    {PLAN_LABELS[u.subscription] || u.subscription}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Verified payment records */}
                             <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent overflow-hidden">
                                 <div className="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between gap-4 flex-wrap">
                                     <div>
                                         <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-0.5">Finance</p>
-                                        <h2 className="text-base font-black uppercase tracking-tight">Payment History</h2>
+                                        <h2 className="text-base font-black uppercase tracking-tight">Verified Payments</h2>
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <span className="text-[9px] font-black uppercase tracking-widest text-white/25">{payments.length} records</span>
@@ -782,11 +883,11 @@ export default function AdminDashboard() {
                                             </div>
                                         </motion.div>
                                     ))}
-                                    {payments.length === 0 && (
-                                        <div className="py-24 text-center">
-                                            <CreditCard className="w-12 h-12 mx-auto mb-4 text-white/10" />
-                                            <p className="text-xs font-black uppercase tracking-[0.3em] text-white/20">No payment records yet</p>
-                                            <p className="text-[10px] text-white/15 mt-1">Payments via Paystack appear here</p>
+                                    {payments.length === 0 && !paymentsError && (
+                                        <div className="py-20 text-center">
+                                            <CreditCard className="w-10 h-10 mx-auto mb-4 text-white/10" />
+                                            <p className="text-xs font-black uppercase tracking-[0.3em] text-white/20">No verified payment records</p>
+                                            <p className="text-[10px] text-white/15 mt-1">Paystack-verified payments appear here</p>
                                         </div>
                                     )}
                                 </div>
