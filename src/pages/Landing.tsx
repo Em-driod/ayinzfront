@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, ArrowRight, Menu, X, Play, Shield, Globe, TrendingUp, Zap, Instagram, Twitter, Facebook } from 'lucide-react';
+import { SiSpotify, SiApplemusic, SiYoutubemusic, SiTidal, SiSoundcloud, SiAudiomack, SiPandora, SiTiktok } from 'react-icons/si';
+import { FaAmazon, FaDeezer } from 'react-icons/fa';
 
 export default function Landing() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,14 +18,22 @@ export default function Landing() {
   }, [isMenuOpen]);
 
   const testimonials = [
-    { name: "SARAH JOHNSON", role: "Vocalist", content: "Complete operational control. Absolutely no compromise on fidelity. Ayinz handles everything." },
-    { name: "MARCUS CHEN", role: "Producer", content: "The analytics architecture is unforgivingly precise. Exactly what our label required." },
-    { name: "ELENA DAVIS", role: "Composer", content: "A distribution matrix that respects the art form. Transparent, instantaneous royalty reports." }
+    { name: "SARAH JOHNSON", role: "Vocalist", photo: "/serah.jpeg",  content: "Complete operational control. Absolutely no compromise on fidelity. Ayinz handles everything." },
+    { name: "BEN CHRIS",     role: "Producer", photo: "/bella.jpeg",  content: "The analytics architecture is unforgivingly precise. Exactly what our label required." },
+    { name: "ELENA DAVIS",   role: "Composer", photo: "",             content: "A distribution matrix that respects the art form. Transparent, instantaneous royalty reports." }
   ];
 
   const platforms = [
-    "Spotify", "Apple Music", "Amazon Music", "YouTube Music", 
-    "Tidal", "Deezer", "SoundCloud", "Audiomack", "Pandora", "Boomplay"
+    { name: 'Spotify',       icon: SiSpotify,     color: '#1DB954', bg: 'rgba(29,185,84,0.12)',  border: 'rgba(29,185,84,0.3)'  },
+    { name: 'Apple Music',   icon: SiApplemusic,  color: '#FC3C44', bg: 'rgba(252,60,68,0.12)',  border: 'rgba(252,60,68,0.3)'  },
+    { name: 'Amazon Music',  icon: FaAmazon,      color: '#00A8E1', bg: 'rgba(0,168,225,0.12)',  border: 'rgba(0,168,225,0.3)'  },
+    { name: 'YouTube Music', icon: SiYoutubemusic,color: '#FF0000', bg: 'rgba(255,0,0,0.10)',    border: 'rgba(255,0,0,0.3)'    },
+    { name: 'Tidal',         icon: SiTidal,       color: '#e0e0e0', bg: 'rgba(255,255,255,0.06)',border: 'rgba(255,255,255,0.15)'},
+    { name: 'Deezer',        icon: FaDeezer,      color: '#FF0092', bg: 'rgba(255,0,146,0.12)', border: 'rgba(255,0,146,0.3)'  },
+    { name: 'SoundCloud',    icon: SiSoundcloud,  color: '#FF5500', bg: 'rgba(255,85,0,0.12)',   border: 'rgba(255,85,0,0.3)'   },
+    { name: 'Audiomack',     icon: SiAudiomack,   color: '#FFA200', bg: 'rgba(255,162,0,0.12)', border: 'rgba(255,162,0,0.3)'  },
+    { name: 'Pandora',       icon: SiPandora,     color: '#224099', bg: 'rgba(34,64,153,0.15)',  border: 'rgba(34,64,153,0.35)' },
+    { name: 'TikTok',        icon: SiTiktok,      color: '#e0e0e0', bg: 'rgba(255,255,255,0.06)',border: 'rgba(255,255,255,0.15)'},
   ];
 
   return (
@@ -149,25 +159,25 @@ export default function Landing() {
             transition={{ duration: 1.2, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight text-white mb-6 max-w-5xl leading-[1.1]"
           >
-            Global Distribution for the 
-            <span className="font-light italic px-3 font-serif text-red-600 drop-shadow-[0_0_20px_rgba(220,38,38,0.4)] relative inline-block">
-              Independent
-              <motion.span 
-                animate={{ opacity: [0.3, 0.6, 0.3] }} 
-                transition={{ duration: 3, repeat: Infinity }} 
+            Put Your Music Everywhere.{' '}
+            <span className="font-light italic px-1 font-serif text-red-600 drop-shadow-[0_0_20px_rgba(220,38,38,0.4)] relative inline-block">
+              Keep 100%
+              <motion.span
+                animate={{ opacity: [0.3, 0.6, 0.3] }}
+                transition={{ duration: 3, repeat: Infinity }}
                 className="absolute inset-0 bg-red-600/20 blur-xl rounded-full -z-10"
               />
-            </span> 
-            Visionaries.
+            </span>{' '}
+            of Your Rights.
           </motion.h1>
 
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.9, ease: [0.16, 1, 0.3, 1] }}
             className="text-sm md:text-base text-white max-w-2xl font-light leading-relaxed mb-12"
           >
-            Delivering high-fidelity catalogs to over 150 digital endpoints worldwide. <span className="text-white">Uncompromising royalty retention</span> with precision <span className="text-red-500">analytics.</span>
+            Distribute to Spotify, Apple Music, TikTok, Boomplay &amp; 150+ platforms worldwide. Get paid fast with clear, <span className="text-red-500">real-time analytics.</span>
           </motion.p>
 
           <motion.div 
@@ -177,7 +187,7 @@ export default function Landing() {
             className="flex flex-col sm:flex-row items-center gap-6"
           >
             <Link to="/register" className="group rounded-full flex items-center gap-4 bg-red-600 text-white px-8 py-4 text-xs uppercase tracking-[0.2em] font-bold transition-all hover:bg-red-700 shadow-lg shadow-red-900/20 hover:shadow-[0_0_30px_rgba(220,38,38,0.3)]">
-              Launch Release <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              Release Your Music <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link to="/login" className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] font-medium text-white hover:text-white transition-colors">
               <Play className="w-4 h-4" /> Watch Demo
@@ -218,17 +228,26 @@ export default function Landing() {
           </motion.div>
 
           {/* Staggered elegant grid */}
-          <div className="flex flex-wrap justify-center gap-4 md:gap-8 max-w-5xl mx-auto">
+          <div className="flex flex-wrap justify-center gap-3 md:gap-4 max-w-5xl mx-auto">
             {platforms.map((platform, i) => (
-              <motion.div 
+              <motion.div
                 key={i}
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                whileHover={{ scale: 1.05, y: -5 }}
-                className="px-6 py-3 rounded-full border border-white/10 bg-white/[0.02] hover:bg-red-600/10 hover:border-red-600/60 hover:shadow-[0_0_20px_rgba(220,38,38,0.15)] hover:text-white transition-all duration-500 cursor-pointer group"
+                transition={{ delay: i * 0.05 }}
+                whileHover={{ scale: 1.06, y: -4 }}
+                className="flex items-center gap-2.5 px-5 py-3 rounded-full border cursor-pointer transition-all duration-300 group"
+                style={{ background: platform.bg, borderColor: platform.border }}
               >
-                <span className="text-xs uppercase tracking-[0.1em] font-medium text-white group-hover:text-red-100 transition-colors">{platform}</span>
+                <platform.icon
+                  style={{ color: platform.color }}
+                  className="w-4 h-4 shrink-0 transition-transform duration-300 group-hover:scale-110"
+                  size={16}
+                />
+                <span className="text-xs font-semibold tracking-wide text-white/80 group-hover:text-white transition-colors whitespace-nowrap">
+                  {platform.name}
+                </span>
               </motion.div>
             ))}
           </div>
@@ -382,12 +401,18 @@ export default function Landing() {
               >
                 <div className="absolute top-0 right-0 w-24 h-24 bg-red-600/10 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-red-600/30 transition-all duration-500" />
                 <p className="text-lg lg:text-xl font-light text-white leading-relaxed italic mb-8 flex-1 relative z-10">"{t.content}"</p>
-                <div className="border-t border-white/10 pt-6 relative z-10">
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-white flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-red-600 rounded-full" />
-                    {t.name}
-                  </h4>
-                  <p className="text-[9px] uppercase tracking-[0.2em] text-white mt-1 ml-3.5">{t.role}</p>
+                <div className="border-t border-white/10 pt-6 relative z-10 flex items-center gap-3">
+                  {t.photo ? (
+                    <img src={t.photo} alt={t.name} className="w-10 h-10 rounded-full object-cover border border-white/10 shrink-0" />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-red-600/20 border border-red-600/30 flex items-center justify-center shrink-0">
+                      <span className="text-xs font-black text-red-400">{t.name[0]}</span>
+                    </div>
+                  )}
+                  <div>
+                    <h4 className="text-xs font-bold uppercase tracking-widest text-white">{t.name}</h4>
+                    <p className="text-[9px] uppercase tracking-[0.2em] text-white/50 mt-0.5">{t.role}</p>
+                  </div>
                 </div>
               </motion.div>
             ))}
