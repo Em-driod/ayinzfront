@@ -221,8 +221,17 @@ export default function Layout({ children }: LayoutProps) {
         {/* Mobile top bar */}
         <div className="lg:hidden sticky top-0 z-30 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-zinc-900">
           <div className="flex items-center justify-between h-14 px-4">
-            {/* Left spacer / placeholder */}
-            <div className="w-10" />
+            {/* Left: Sign Out */}
+            <button
+              onClick={handleSignOut}
+              disabled={isSigningOut}
+              className="w-10 h-10 rounded-xl flex items-center justify-center bg-zinc-900/60 border border-zinc-800 text-zinc-500 hover:text-white active:scale-90 transition-all disabled:opacity-50"
+            >
+              {isSigningOut
+                ? <div className="w-4 h-4 border-2 border-zinc-400 border-t-transparent rounded-full animate-spin" />
+                : <LogOut className="w-4 h-4" />
+              }
+            </button>
 
             {/* Centered logo */}
             <div className="flex items-center gap-2.5">
