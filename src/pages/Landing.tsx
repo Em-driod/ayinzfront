@@ -76,10 +76,10 @@ export default function Landing() {
   ];
 
   const plans = [
-    { id: 'basic',    name: 'Artiste',    price: '₦35k', accounts: '1 account',        hot: false },
-    { id: 'premium',  name: 'Record Label', price: '₦50k', accounts: '10–15 accounts', hot: true  },
-    { id: 'plus',     name: 'Label Plus', price: '₦85k', accounts: '20+ accounts',     hot: false },
-    { id: 'standard', name: 'Enterprise', price: '₦350k',accounts: 'Unlimited',        hot: false },
+    { id: 'basic',    name: 'Artiste',    price: '₦18k', accounts: '1 account',        hot: false },
+    { id: 'premium',  name: 'Record Label', price: '₦35k', accounts: '10–15 accounts', hot: true  },
+    { id: 'plus',     name: 'Label Plus', price: '₦50k', accounts: '20+ accounts',     hot: false },
+    { id: 'standard', name: 'Enterprise', price: '₦150k',accounts: 'Unlimited',        hot: false },
   ];
 
   const testimonials = [
