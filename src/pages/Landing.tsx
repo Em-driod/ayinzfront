@@ -103,8 +103,7 @@ export default function Landing() {
     .run-l { animation: ml 38s linear infinite; }
     .run-r { animation: mr 38s linear infinite; }
     .run-l:hover, .run-r:hover { animation-play-state: paused; }
-    .grad-border { background: linear-gradient(#0c0c14, #0c0c14) padding-box, linear-gradient(135deg, rgba(225,29,72,0.6) 0%, rgba(255,255,255,0.08) 50%, rgba(225,29,72,0.3) 100%) border-box; border: 1px solid transparent; }
-    .glow-text { text-shadow: 0 0 60px rgba(225,29,72,0.35); }
+    .grad-border { background: linear-gradient(#0c0c14, #0c0c14) padding-box, linear-gradient(135deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.16) 100%) border-box; border: 1px solid transparent; }
   `;
 
   return (
@@ -117,25 +116,19 @@ export default function Landing() {
         style={{ backgroundImage: GRAIN_URL, backgroundRepeat: 'repeat', backgroundSize: '182px', opacity: 0.048 }}
       />
 
-      {/* ── Ambient background orbs (fixed, behind everything) ── */}
+      {/* ── Ambient background wash (fixed, behind everything) — quiet, neutral ── */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <motion.div
-          animate={{ scale: [1, 1.18, 1], x: [0, 30, 0], y: [0, -20, 0] }}
-          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+          animate={{ scale: [1, 1.12, 1], x: [0, 20, 0], y: [0, -15, 0] }}
+          transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
           className="absolute top-[-15%] right-[-10%] w-[700px] h-[700px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(225,29,72,0.11) 0%, transparent 65%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.035) 0%, transparent 65%)' }}
         />
         <motion.div
-          animate={{ scale: [1.1, 1, 1.1], x: [0, -25, 0], y: [0, 30, 0] }}
-          transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
+          animate={{ scale: [1.08, 1, 1.08], x: [0, -18, 0], y: [0, 20, 0] }}
+          transition={{ duration: 26, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
           className="absolute bottom-[20%] left-[-12%] w-[600px] h-[600px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(225,29,72,0.08) 0%, transparent 65%)' }}
-        />
-        <motion.div
-          animate={{ scale: [1, 1.25, 1], opacity: [0.5, 0.8, 0.5] }}
-          transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut', delay: 8 }}
-          className="absolute top-[45%] left-[38%] w-[400px] h-[400px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(225,29,72,0.06) 0%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.025) 0%, transparent 65%)' }}
         />
       </div>
 
@@ -196,7 +189,7 @@ export default function Landing() {
                 <motion.a key={s} href={`#${s.toLowerCase()}`}
                   initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.07 }}
-                  className="text-3xl font-black uppercase tracking-tight text-white/70 hover:text-red-500 transition-colors"
+                  className="text-3xl font-black uppercase tracking-tight text-white/70 hover:text-white transition-colors"
                   onClick={() => setMenuOpen(false)}>
                   {s}
                 </motion.a>
@@ -204,49 +197,113 @@ export default function Landing() {
             </nav>
             <div className="mt-auto space-y-3 pt-8 border-t border-white/[0.07]">
               <Link to="/login" className="block text-xs font-bold uppercase tracking-widest text-white/30" onClick={() => setMenuOpen(false)}>Sign In</Link>
-              <Link to="/register" className="block text-xs font-bold uppercase tracking-widest text-red-500" onClick={() => setMenuOpen(false)}>Get Started →</Link>
+              <Link to="/register" className="block text-xs font-bold uppercase tracking-widest text-white" onClick={() => setMenuOpen(false)}>Get Started →</Link>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* ══════════════════════════════════════════════════════════ HERO */}
-      <section className="relative min-h-screen flex items-center overflow-hidden pt-32 pb-20 lg:pt-28">
-        {/* Vignette */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_30%_20%,rgba(225,29,72,0.05)_0%,transparent_60%)]" />
+      <section className="relative min-h-[100svh] lg:min-h-screen flex items-center overflow-hidden pt-24 pb-12 lg:pt-28 lg:pb-20">
+        {/* Backdrop portrait — huge, blurred, monochrome; texture instead of a flat void */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <img src="/fine.jpeg" alt=""
+            className="absolute -top-[10%] -right-[18%] w-[65%] max-w-[820px] grayscale opacity-[0.09] blur-2xl scale-110" />
+          <div className="absolute inset-0 bg-[#07070E]/40" />
+        </div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_30%_15%,rgba(255,255,255,0.035)_0%,transparent_60%)]" />
         <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-[#07070E] to-transparent" />
 
-        <div className="relative z-10 max-w-6xl mx-auto px-6 grid lg:grid-cols-[1.05fr_0.95fr] gap-14 lg:gap-8 items-center w-full">
+        <div className="relative z-10 max-w-6xl mx-auto px-6 grid lg:grid-cols-[1.05fr_0.95fr] gap-8 lg:gap-8 items-center w-full">
 
-          {/* ── Left: copy ── */}
-          <motion.div style={{ opacity: heroOp }} className="text-left">
+          {/* ── Photo collage — shown first on phones so it isn't buried below a scroll ── */}
+          <motion.div style={{ y: heroY }} className="order-1 lg:order-2 relative h-[280px] sm:h-[380px] lg:h-[540px] select-none">
+
+            {/* Decorative vinyl ring, sits behind the prints */}
+            <motion.div
+              animate={{ rotate: 360 }} transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+              className="absolute top-[8%] right-[2%] w-28 h-28 sm:w-52 sm:h-52 rounded-full border border-white/[0.06] pointer-events-none"
+              style={{ background: 'repeating-radial-gradient(circle, transparent 0 8px, rgba(255,255,255,0.03) 9px 10px)' }}
+            />
+
+            {/* Back print — girl.jpeg */}
+            <motion.div
+              initial={{ opacity: 0, y: 24, rotate: -10 }}
+              animate={{ opacity: 1, y: 0, rotate: -7 }}
+              whileHover={{ rotate: -3, scale: 1.02 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute left-0 top-2 w-[58%] sm:w-[56%] z-10 cursor-default"
+            >
+              <div className="relative bg-[#f2ede2] p-2 sm:p-2.5 pb-6 sm:pb-8 rounded-[2px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)]">
+                <div className="absolute -top-2.5 sm:-top-3 left-1/2 -translate-x-1/2 w-12 sm:w-14 h-4 sm:h-5 bg-white/25 border border-white/10 backdrop-blur-sm rotate-2" />
+                <div className="aspect-[3/4] overflow-hidden">
+                  <img src="/girl.jpeg" alt="Artist distributing with Ayinz" className="w-full h-full object-cover" />
+                </div>
+                <p className="absolute bottom-1.5 sm:bottom-2 inset-x-0 text-center text-[9px] sm:text-[11px] font-serif italic text-black/60">
+                  stream ready
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Front print — fine.jpeg */}
+            <motion.div
+              initial={{ opacity: 0, y: 24, rotate: 12 }}
+              animate={{ opacity: 1, y: 0, rotate: 6 }}
+              whileHover={{ rotate: 2, scale: 1.02 }}
+              transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute right-0 bottom-0 w-[58%] sm:w-[58%] z-20 cursor-default"
+            >
+              <div className="relative bg-[#f2ede2] p-2 sm:p-2.5 pb-6 sm:pb-8 rounded-[2px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)]">
+                <div className="absolute -top-2.5 sm:-top-3 left-1/2 -translate-x-1/2 w-12 sm:w-14 h-4 sm:h-5 bg-white/20 border border-white/10 backdrop-blur-sm -rotate-3" />
+                <div className="aspect-[3/4] overflow-hidden">
+                  <img src="/fine.jpeg" alt="Artist distributing with Ayinz" className="w-full h-full object-cover" />
+                </div>
+                <p className="absolute bottom-1.5 sm:bottom-2 inset-x-0 text-center text-[9px] sm:text-[11px] font-serif italic text-black/60">
+                  live in 48h
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Floating sticker */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.7, rotate: -8 }}
+              animate={{ opacity: 1, scale: 1, rotate: -8 }}
+              transition={{ duration: 0.6, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute top-[2%] left-[36%] sm:left-[42%] z-30 bg-white text-black text-[8px] sm:text-[10px] font-black uppercase tracking-widest px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full shadow-2xl"
+            >
+              100% royalties
+            </motion.div>
+          </motion.div>
+
+          {/* ── Copy ── */}
+          <motion.div style={{ opacity: heroOp }} className="order-2 lg:order-1 text-left">
 
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-white/[0.09] bg-white/[0.03] backdrop-blur-sm mb-8">
+              className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-white/[0.09] bg-white/[0.03] backdrop-blur-sm mb-6 lg:mb-8">
               <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_6px_rgba(225,29,72,1)]" />
               <span className="text-[9px] uppercase tracking-[0.4em] font-bold text-white/50">Made for independent artists</span>
             </motion.div>
 
             {/* Headline */}
-            <motion.div variants={stagger(0.3)} initial="hidden" animate="show" className="mb-7">
+            <motion.div variants={stagger(0.3)} initial="hidden" animate="show" className="mb-5 lg:mb-7">
               <div className="overflow-hidden">
                 <motion.h1 variants={fadeUp}
-                  className="text-[clamp(2.6rem,6.4vw,5rem)] font-black tracking-[-0.03em] leading-[0.98] text-white">
+                  className="text-[clamp(2.4rem,6.4vw,5rem)] font-black tracking-[-0.03em] leading-[0.98] text-white">
                   Your sound.
                 </motion.h1>
               </div>
               <div className="overflow-hidden">
                 <motion.h1 variants={fadeUp}
-                  className="text-[clamp(2.6rem,6.4vw,5rem)] font-black tracking-[-0.03em] leading-[0.98] text-white">
+                  className="text-[clamp(2.4rem,6.4vw,5rem)] font-black tracking-[-0.03em] leading-[0.98] text-white">
                   Everywhere it
                 </motion.h1>
               </div>
               <div className="overflow-hidden mt-1">
                 <motion.div variants={fadeUp}>
-                  <span className="text-[clamp(2.6rem,6.4vw,5rem)] italic font-serif tracking-[-0.02em] leading-[0.98] text-red-500 glow-text">
+                  <span className="text-[clamp(2.4rem,6.4vw,5rem)] italic font-serif tracking-[-0.02em] leading-[0.98] text-red-500">
                     needs to be.
                   </span>
                 </motion.div>
@@ -255,7 +312,7 @@ export default function Landing() {
 
             {/* Sub */}
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8, duration: 0.9 }}
-              className="text-sm md:text-base text-white/40 font-light max-w-md leading-relaxed mb-10">
+              className="text-sm md:text-base text-white/40 font-light max-w-md leading-relaxed mb-7 lg:mb-10">
               No label breathing down your neck. No cut of your royalties.
               Just you, 150+ platforms, and a 48-hour runway to release day.
             </motion.p>
@@ -263,9 +320,9 @@ export default function Landing() {
             {/* CTAs */}
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.95, duration: 0.7 }}
-              className="flex flex-col sm:flex-row items-center sm:items-start gap-3 mb-12">
+              className="flex flex-col sm:flex-row items-center sm:items-start gap-3 mb-8 lg:mb-12">
               <Link to="/register"
-                className="group flex items-center gap-3 bg-red-600 hover:bg-red-500 text-white px-8 py-4 rounded-full text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-[0_0_40px_rgba(225,29,72,0.3)] hover:shadow-[0_0_60px_rgba(225,29,72,0.45)]">
+                className="group flex items-center gap-3 bg-red-600 hover:bg-red-500 text-white px-8 py-4 rounded-full text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-[0_0_25px_rgba(225,29,72,0.2)] hover:shadow-[0_0_40px_rgba(225,29,72,0.3)]">
                 Release Your Music
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -290,65 +347,6 @@ export default function Landing() {
               </p>
             </motion.div>
           </motion.div>
-
-          {/* ── Right: photo collage ── */}
-          <motion.div style={{ y: heroY }} className="relative h-[400px] sm:h-[460px] lg:h-[540px] select-none">
-
-            {/* Decorative vinyl ring, sits behind the prints */}
-            <motion.div
-              animate={{ rotate: 360 }} transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-              className="absolute top-[8%] right-[2%] w-40 h-40 sm:w-52 sm:h-52 rounded-full border border-white/[0.06] pointer-events-none"
-              style={{ background: 'repeating-radial-gradient(circle, transparent 0 8px, rgba(255,255,255,0.03) 9px 10px)' }}
-            />
-
-            {/* Back print — girl.jpeg */}
-            <motion.div
-              initial={{ opacity: 0, y: 24, rotate: -10 }}
-              animate={{ opacity: 1, y: 0, rotate: -7 }}
-              whileHover={{ rotate: -3, scale: 1.02 }}
-              transition={{ duration: 0.8, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute left-0 top-2 w-[60%] sm:w-[56%] z-10 cursor-default"
-            >
-              <div className="relative bg-[#f2ede2] p-2.5 pb-8 rounded-[2px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)]">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-14 h-5 bg-white/25 border border-white/10 backdrop-blur-sm rotate-2" />
-                <div className="aspect-[3/4] overflow-hidden">
-                  <img src="/girl.jpeg" alt="Artist distributing with Ayinz" className="w-full h-full object-cover" />
-                </div>
-                <p className="absolute bottom-2 inset-x-0 text-center text-[11px] font-serif italic text-black/60">
-                  stream ready
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Front print — fine.jpeg */}
-            <motion.div
-              initial={{ opacity: 0, y: 24, rotate: 12 }}
-              animate={{ opacity: 1, y: 0, rotate: 6 }}
-              whileHover={{ rotate: 2, scale: 1.02 }}
-              transition={{ duration: 0.8, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute right-0 bottom-0 w-[60%] sm:w-[58%] z-20 cursor-default"
-            >
-              <div className="relative bg-[#f2ede2] p-2.5 pb-8 rounded-[2px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)]">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-14 h-5 bg-red-600/20 border border-red-500/20 backdrop-blur-sm -rotate-3" />
-                <div className="aspect-[3/4] overflow-hidden">
-                  <img src="/fine.jpeg" alt="Artist distributing with Ayinz" className="w-full h-full object-cover" />
-                </div>
-                <p className="absolute bottom-2 inset-x-0 text-center text-[11px] font-serif italic text-black/60">
-                  live in 48h
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Floating sticker */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.7, rotate: -8 }}
-              animate={{ opacity: 1, scale: 1, rotate: -8 }}
-              transition={{ duration: 0.6, delay: 1, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute top-[2%] left-[38%] sm:left-[42%] z-30 bg-white text-black text-[10px] font-black uppercase tracking-widest px-3.5 py-2 rounded-full shadow-2xl"
-            >
-              100% royalties
-            </motion.div>
-          </motion.div>
         </div>
       </section>
 
@@ -357,7 +355,7 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto px-6 mb-12 text-center">
           <motion.div initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.6 }}>
-            <p className="text-[8px] uppercase tracking-[0.5em] font-bold text-red-500/70 mb-3">Distribution Network</p>
+            <p className="text-[8px] uppercase tracking-[0.5em] font-bold text-white/30 mb-3">Distribution Network</p>
             <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white/90">Your music. Every platform.</h2>
           </motion.div>
         </div>
@@ -387,7 +385,7 @@ export default function Landing() {
             viewport={{ once: true, margin: '-80px' }}
             className="mb-16 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <motion.div variants={fadeUp}>
-              <p className="text-[8px] uppercase tracking-[0.5em] font-bold text-red-500/70 mb-4">Why Ayinz</p>
+              <p className="text-[8px] uppercase tracking-[0.5em] font-bold text-white/30 mb-4">Why Ayinz</p>
               <h2 className="text-4xl md:text-5xl font-black tracking-tight leading-[1.05] text-white">
                 Built for artists.<br />
                 <span className="text-white/25 font-light italic font-serif">Not for labels.</span>
@@ -395,7 +393,7 @@ export default function Landing() {
             </motion.div>
             <motion.div variants={fadeUp}>
               <Link to="/register"
-                className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-white/40 hover:text-red-400 transition-colors group">
+                className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-white/40 hover:text-white transition-colors group">
                 Start distributing <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
               </Link>
             </motion.div>
@@ -407,11 +405,11 @@ export default function Landing() {
             {features.map((f, i) => (
               <motion.div key={i} variants={fadeUp}
                 whileHover={{ y: -6 }}
-                className="group relative p-6 rounded-2xl border border-white/[0.07] bg-white/[0.02] hover:border-red-500/20 hover:bg-white/[0.035] transition-all duration-400 overflow-hidden cursor-default backdrop-blur-sm">
+                className="group relative p-6 rounded-2xl border border-white/[0.07] bg-white/[0.02] hover:border-white/15 hover:bg-white/[0.035] transition-all duration-400 overflow-hidden cursor-default backdrop-blur-sm">
                 <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                  style={{ background: 'radial-gradient(circle, rgba(225,29,72,0.12) 0%, transparent 70%)', transform: 'translate(30%, -30%)' }} />
-                <div className="w-9 h-9 rounded-xl border border-white/[0.08] bg-white/[0.04] flex items-center justify-center mb-5 group-hover:border-red-500/30 group-hover:bg-red-500/10 transition-all duration-300">
-                  <f.Icon className="w-4 h-4 text-white/40 group-hover:text-red-400 transition-colors" />
+                  style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%)', transform: 'translate(30%, -30%)' }} />
+                <div className="w-9 h-9 rounded-xl border border-white/[0.08] bg-white/[0.04] flex items-center justify-center mb-5 group-hover:border-white/20 group-hover:bg-white/[0.08] transition-all duration-300">
+                  <f.Icon className="w-4 h-4 text-white/40 group-hover:text-white transition-colors" />
                 </div>
                 <h3 className="text-sm font-black text-white mb-2.5">{f.title}</h3>
                 <p className="text-xs text-white/35 leading-relaxed font-light">{f.body}</p>
@@ -449,7 +447,7 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto px-6">
           <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} className="mb-16 text-center">
-            <p className="text-[8px] uppercase tracking-[0.5em] font-bold text-red-500/70 mb-4">Membership</p>
+            <p className="text-[8px] uppercase tracking-[0.5em] font-bold text-white/30 mb-4">Membership</p>
             <h2 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-3">One price. Unlimited releases.</h2>
             <p className="text-sm text-white/30 font-light">No hidden fees. No royalty cuts. Cancel anytime.</p>
           </motion.div>
@@ -460,12 +458,12 @@ export default function Landing() {
             {plans.map((plan, i) => (
               <motion.div key={i} variants={fadeUp} whileHover={{ y: -6 }}
                 className={`relative flex flex-col p-6 rounded-2xl transition-all duration-400 overflow-hidden
-                  ${plan.hot ? 'grad-border bg-[#0c0c14] shadow-[0_0_60px_rgba(225,29,72,0.12)]' : 'border border-white/[0.07] bg-white/[0.02] hover:border-white/12 hover:bg-white/[0.035]'}`}>
+                  ${plan.hot ? 'grad-border bg-[#0c0c14] shadow-[0_0_60px_rgba(255,255,255,0.05)]' : 'border border-white/[0.07] bg-white/[0.02] hover:border-white/12 hover:bg-white/[0.035]'}`}>
                 {plan.hot && (
-                  <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-red-500/60 to-transparent" />
+                  <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
                 )}
                 {plan.hot && (
-                  <span className="absolute top-4 right-4 text-[8px] font-black uppercase tracking-[0.15em] bg-red-600 text-white px-2.5 py-1 rounded-full">Popular</span>
+                  <span className="absolute top-4 right-4 text-[8px] font-black uppercase tracking-[0.15em] bg-white text-black px-2.5 py-1 rounded-full">Popular</span>
                 )}
 
                 <div className="mb-6">
@@ -474,14 +472,14 @@ export default function Landing() {
                 </div>
 
                 <div className="mb-7">
-                  <span className={`text-4xl font-black ${plan.hot ? 'text-red-400' : 'text-white'}`}>{plan.price}</span>
+                  <span className="text-4xl font-black text-white">{plan.price}</span>
                   <span className="text-[10px] text-white/25 font-bold ml-1.5 uppercase tracking-wider">/yr</span>
                 </div>
 
                 <ul className="space-y-2.5 mb-8 flex-1">
                   {['Unlimited releases', 'Live analytics', '100% royalties', '4–7 day SLA', 'Direct payouts'].map(feat => (
                     <li key={feat} className="flex items-center gap-2.5">
-                      <Check className={`w-3 h-3 shrink-0 ${plan.hot ? 'text-red-500' : 'text-white/20'}`} />
+                      <Check className={`w-3 h-3 shrink-0 ${plan.hot ? 'text-white/70' : 'text-white/20'}`} />
                       <span className="text-[11px] text-white/40 font-medium">{feat}</span>
                     </li>
                   ))}
@@ -489,7 +487,7 @@ export default function Landing() {
 
                 <Link to={`/register?plan=${plan.id}`}
                   className={`w-full py-3 text-center text-[10px] font-black uppercase tracking-[0.2em] rounded-xl transition-all duration-300
-                    ${plan.hot ? 'bg-red-600 hover:bg-red-500 text-white shadow-lg shadow-red-600/25' : 'border border-white/[0.08] bg-white/[0.03] hover:bg-white hover:text-black text-white/60'}`}>
+                    ${plan.hot ? 'bg-white hover:bg-white/90 text-black shadow-lg shadow-white/10' : 'border border-white/[0.08] bg-white/[0.03] hover:bg-white hover:text-black text-white/60'}`}>
                   Get Started
                 </Link>
               </motion.div>
@@ -503,7 +501,7 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto px-6">
           <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} className="mb-16">
-            <p className="text-[8px] uppercase tracking-[0.5em] font-bold text-red-500/70 mb-4">Artists</p>
+            <p className="text-[8px] uppercase tracking-[0.5em] font-bold text-white/30 mb-4">Artists</p>
             <h2 className="text-4xl md:text-5xl font-black tracking-tight text-white">What artists say.</h2>
           </motion.div>
 
@@ -514,16 +512,16 @@ export default function Landing() {
               <motion.div key={i} variants={fadeUp} whileHover={{ y: -6 }}
                 className="group relative flex flex-col p-7 rounded-2xl border border-white/[0.07] bg-white/[0.02] hover:border-white/12 hover:bg-white/[0.035] transition-all duration-400 overflow-hidden cursor-default">
                 <div className="absolute top-0 right-0 w-28 h-28 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                  style={{ background: 'radial-gradient(circle, rgba(225,29,72,0.1) 0%, transparent 70%)', transform: 'translate(30%, -30%)' }} />
+                  style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 70%)', transform: 'translate(30%, -30%)' }} />
 
-                <span className="text-5xl font-black text-red-600/15 leading-none mb-5 select-none">&ldquo;</span>
+                <span className="text-5xl font-black text-white/10 leading-none mb-5 select-none">&ldquo;</span>
                 <p className="text-sm text-white/50 font-light leading-relaxed flex-1 mb-8">{t.quote}</p>
 
                 <div className="flex items-center gap-3 pt-6 border-t border-white/[0.06]">
                   {t.photo
-                    ? <img src={t.photo} alt={t.name} className="w-10 h-10 rounded-full object-cover border border-white/10 shrink-0 group-hover:border-red-500/30 transition-colors" />
-                    : <div className="w-10 h-10 rounded-full bg-red-600/10 border border-red-600/20 flex items-center justify-center shrink-0">
-                        <span className="text-xs font-black text-red-400">{t.name[0]}</span>
+                    ? <img src={t.photo} alt={t.name} className="w-10 h-10 rounded-full object-cover border border-white/10 shrink-0 group-hover:border-white/25 transition-colors" />
+                    : <div className="w-10 h-10 rounded-full bg-white/[0.06] border border-white/10 flex items-center justify-center shrink-0">
+                        <span className="text-xs font-black text-white/60">{t.name[0]}</span>
                       </div>
                   }
                   <div>
@@ -539,26 +537,22 @@ export default function Landing() {
 
       {/* ══════════════════════════════════════════════════════════ CTA */}
       <section className="relative py-36 overflow-hidden border-t border-white/[0.05]">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(225,29,72,0.07)_0%,transparent_70%)] pointer-events-none" />
-        <motion.div animate={{ scale: [1, 1.3, 1], opacity: [0.06, 0.14, 0.06] }}
-          transition={{ duration: 12, repeat: Infinity }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(225,29,72,0.18) 0%, transparent 65%)' }} />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(255,255,255,0.03)_0%,transparent_70%)] pointer-events-none" />
 
         <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
           <motion.div initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.8 }}>
-            <p className="text-[8px] uppercase tracking-[0.55em] font-bold text-red-500/60 mb-8">Ready?</p>
+            <p className="text-[8px] uppercase tracking-[0.55em] font-bold text-white/30 mb-8">Ready?</p>
             <h2 className="text-5xl md:text-7xl font-black tracking-[-0.03em] leading-[0.97] text-white mb-5">
               Your music deserves<br />
-              <span className="italic font-serif font-light text-red-500 glow-text">the world.</span>
+              <span className="italic font-serif font-light text-red-500">the world.</span>
             </h2>
             <p className="text-sm text-white/30 font-light mb-12 max-w-sm mx-auto">
               Join thousands of independent artists distributing worldwide with Ayinz.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link to="/register"
-                className="group flex items-center gap-3 bg-red-600 hover:bg-red-500 text-white px-9 py-4 rounded-full text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-[0_0_50px_rgba(225,29,72,0.3)] hover:shadow-[0_0_70px_rgba(225,29,72,0.5)]">
+                className="group flex items-center gap-3 bg-red-600 hover:bg-red-500 text-white px-9 py-4 rounded-full text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-[0_0_25px_rgba(225,29,72,0.2)] hover:shadow-[0_0_40px_rgba(225,29,72,0.3)]">
                 Release Your Music
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </Link>
