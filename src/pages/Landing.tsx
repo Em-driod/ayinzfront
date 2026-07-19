@@ -211,84 +211,145 @@ export default function Landing() {
       </AnimatePresence>
 
       {/* ══════════════════════════════════════════════════════════ HERO */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Video */}
-        <video autoPlay loop muted playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-[0.18] scale-105">
-          <source src="/back.mp4" type="video/mp4" />
-        </video>
+      <section className="relative min-h-screen flex items-center overflow-hidden pt-32 pb-20 lg:pt-28">
         {/* Vignette */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_50%,transparent_30%,#07070E_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_30%_20%,rgba(225,29,72,0.05)_0%,transparent_60%)]" />
         <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-[#07070E] to-transparent" />
 
-        <motion.div style={{ y: heroY, opacity: heroOp }}
-          className="relative z-10 max-w-5xl mx-auto px-6 text-center pt-24 pb-16">
+        <div className="relative z-10 max-w-6xl mx-auto px-6 grid lg:grid-cols-[1.05fr_0.95fr] gap-14 lg:gap-8 items-center w-full">
 
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-white/[0.09] bg-white/[0.03] backdrop-blur-sm mb-10">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_6px_rgba(225,29,72,1)]" />
-            <span className="text-[9px] uppercase tracking-[0.4em] font-bold text-white/50">Global Music Distribution Network</span>
+          {/* ── Left: copy ── */}
+          <motion.div style={{ opacity: heroOp }} className="text-left">
+
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-white/[0.09] bg-white/[0.03] backdrop-blur-sm mb-8">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_6px_rgba(225,29,72,1)]" />
+              <span className="text-[9px] uppercase tracking-[0.4em] font-bold text-white/50">Made for independent artists</span>
+            </motion.div>
+
+            {/* Headline */}
+            <motion.div variants={stagger(0.3)} initial="hidden" animate="show" className="mb-7">
+              <div className="overflow-hidden">
+                <motion.h1 variants={fadeUp}
+                  className="text-[clamp(2.6rem,6.4vw,5rem)] font-black tracking-[-0.03em] leading-[0.98] text-white">
+                  Your sound.
+                </motion.h1>
+              </div>
+              <div className="overflow-hidden">
+                <motion.h1 variants={fadeUp}
+                  className="text-[clamp(2.6rem,6.4vw,5rem)] font-black tracking-[-0.03em] leading-[0.98] text-white">
+                  Everywhere it
+                </motion.h1>
+              </div>
+              <div className="overflow-hidden mt-1">
+                <motion.div variants={fadeUp}>
+                  <span className="text-[clamp(2.6rem,6.4vw,5rem)] italic font-serif tracking-[-0.02em] leading-[0.98] text-red-500 glow-text">
+                    needs to be.
+                  </span>
+                </motion.div>
+              </div>
+            </motion.div>
+
+            {/* Sub */}
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8, duration: 0.9 }}
+              className="text-sm md:text-base text-white/40 font-light max-w-md leading-relaxed mb-10">
+              No label breathing down your neck. No cut of your royalties.
+              Just you, 150+ platforms, and a 48-hour runway to release day.
+            </motion.p>
+
+            {/* CTAs */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.95, duration: 0.7 }}
+              className="flex flex-col sm:flex-row items-center sm:items-start gap-3 mb-12">
+              <Link to="/register"
+                className="group flex items-center gap-3 bg-red-600 hover:bg-red-500 text-white px-8 py-4 rounded-full text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-[0_0_40px_rgba(225,29,72,0.3)] hover:shadow-[0_0_60px_rgba(225,29,72,0.45)]">
+                Release Your Music
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link to="/login"
+                className="flex items-center gap-2 px-8 py-4 rounded-full border border-white/[0.09] bg-white/[0.03] text-[11px] font-bold uppercase tracking-[0.2em] text-white/40 hover:text-white/70 hover:border-white/15 hover:bg-white/[0.06] transition-all duration-300 backdrop-blur-sm">
+                Sign In
+              </Link>
+            </motion.div>
+
+            {/* Trust row — real faces, not a stat card */}
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2, duration: 0.8 }}
+              className="flex items-center gap-4">
+              <div className="flex -space-x-3">
+                {['/girl.jpeg', '/fine.jpeg', '/serah.jpeg'].map((src, i) => (
+                  <div key={i} className="w-9 h-9 rounded-full border-2 border-[#07070E] overflow-hidden shrink-0">
+                    <img src={src} alt="Artist on Ayinz" className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
+              <p className="text-[11px] text-white/35 font-medium leading-tight">
+                <span className="text-white font-black">10,000+</span> artists already<br className="hidden sm:block" /> distributing with Ayinz
+              </p>
+            </motion.div>
           </motion.div>
 
-          {/* Headline — word by word */}
-          <motion.div variants={stagger(0.45)} initial="hidden" animate="show" className="mb-7">
-            {/* Line 1 */}
-            <div className="overflow-hidden">
-              <motion.h1 variants={fadeUp}
-                className="text-[clamp(3rem,9vw,7rem)] font-black tracking-[-0.03em] leading-[0.95] text-white">
-                Put Your Music
-              </motion.h1>
-            </div>
-            {/* Line 2 — accent */}
-            <div className="overflow-hidden">
-              <motion.div variants={fadeUp}>
-                <span className="text-[clamp(3rem,9vw,7rem)] font-black tracking-[-0.03em] leading-[0.95] italic font-serif text-red-500 glow-text">
-                  Everywhere.
-                </span>
-              </motion.div>
-            </div>
-            {/* Line 3 */}
-            <div className="overflow-hidden mt-1">
-              <motion.h1 variants={fadeUp}
-                className="text-[clamp(2rem,6vw,5rem)] font-light tracking-[-0.02em] leading-[1.1] text-white/40">
-                Keep <span className="font-black text-white">100%</span> of Your Rights.
-              </motion.h1>
-            </div>
-          </motion.div>
+          {/* ── Right: photo collage ── */}
+          <motion.div style={{ y: heroY }} className="relative h-[400px] sm:h-[460px] lg:h-[540px] select-none">
 
-          {/* Sub */}
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1, duration: 0.9 }}
-            className="text-sm md:text-base text-white/35 font-light max-w-md mx-auto leading-relaxed mb-12">
-            150+ platforms. 48-hour delivery. Zero royalty cuts.
-            Built for independent artists who refuse to compromise.
-          </motion.p>
+            {/* Decorative vinyl ring, sits behind the prints */}
+            <motion.div
+              animate={{ rotate: 360 }} transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+              className="absolute top-[8%] right-[2%] w-40 h-40 sm:w-52 sm:h-52 rounded-full border border-white/[0.06] pointer-events-none"
+              style={{ background: 'repeating-radial-gradient(circle, transparent 0 8px, rgba(255,255,255,0.03) 9px 10px)' }}
+            />
 
-          {/* CTAs */}
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.25, duration: 0.7 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link to="/register"
-              className="group flex items-center gap-3 bg-red-600 hover:bg-red-500 text-white px-8 py-4 rounded-full text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-[0_0_40px_rgba(225,29,72,0.3)] hover:shadow-[0_0_60px_rgba(225,29,72,0.45)]">
-              Release Your Music
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link to="/login"
-              className="flex items-center gap-2 px-8 py-4 rounded-full border border-white/[0.09] bg-white/[0.03] text-[11px] font-bold uppercase tracking-[0.2em] text-white/40 hover:text-white/70 hover:border-white/15 hover:bg-white/[0.06] transition-all duration-300 backdrop-blur-sm">
-              Sign In
-            </Link>
-          </motion.div>
+            {/* Back print — girl.jpeg */}
+            <motion.div
+              initial={{ opacity: 0, y: 24, rotate: -10 }}
+              animate={{ opacity: 1, y: 0, rotate: -7 }}
+              whileHover={{ rotate: -3, scale: 1.02 }}
+              transition={{ duration: 0.8, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute left-0 top-2 w-[60%] sm:w-[56%] z-10 cursor-default"
+            >
+              <div className="relative bg-[#f2ede2] p-2.5 pb-8 rounded-[2px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)]">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-14 h-5 bg-white/25 border border-white/10 backdrop-blur-sm rotate-2" />
+                <div className="aspect-[3/4] overflow-hidden">
+                  <img src="/girl.jpeg" alt="Artist distributing with Ayinz" className="w-full h-full object-cover" />
+                </div>
+                <p className="absolute bottom-2 inset-x-0 text-center text-[11px] font-serif italic text-black/60">
+                  stream ready
+                </p>
+              </div>
+            </motion.div>
 
-          {/* Scroll cue */}
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2, duration: 1 }}
-            className="flex flex-col items-center gap-2 mt-24">
-            <span className="text-[8px] uppercase tracking-[0.45em] text-white/15 font-bold">Scroll</span>
-            <motion.div animate={{ scaleY: [0, 1, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-              className="w-px h-9 bg-gradient-to-b from-red-500/60 to-transparent origin-top" />
+            {/* Front print — fine.jpeg */}
+            <motion.div
+              initial={{ opacity: 0, y: 24, rotate: 12 }}
+              animate={{ opacity: 1, y: 0, rotate: 6 }}
+              whileHover={{ rotate: 2, scale: 1.02 }}
+              transition={{ duration: 0.8, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute right-0 bottom-0 w-[60%] sm:w-[58%] z-20 cursor-default"
+            >
+              <div className="relative bg-[#f2ede2] p-2.5 pb-8 rounded-[2px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)]">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-14 h-5 bg-red-600/20 border border-red-500/20 backdrop-blur-sm -rotate-3" />
+                <div className="aspect-[3/4] overflow-hidden">
+                  <img src="/fine.jpeg" alt="Artist distributing with Ayinz" className="w-full h-full object-cover" />
+                </div>
+                <p className="absolute bottom-2 inset-x-0 text-center text-[11px] font-serif italic text-black/60">
+                  live in 48h
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Floating sticker */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.7, rotate: -8 }}
+              animate={{ opacity: 1, scale: 1, rotate: -8 }}
+              transition={{ duration: 0.6, delay: 1, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute top-[2%] left-[38%] sm:left-[42%] z-30 bg-white text-black text-[10px] font-black uppercase tracking-widest px-3.5 py-2 rounded-full shadow-2xl"
+            >
+              100% royalties
+            </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
       </section>
 
       {/* ══════════════════════════════════════════════════════════ PLATFORMS */}
