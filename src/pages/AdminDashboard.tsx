@@ -17,6 +17,7 @@ interface User {
     stateOfOrigin?: string;
     nationality?: string;
     socialLink?: string;
+    referralCode?: string;
 }
 
 interface Release {
@@ -576,6 +577,11 @@ export default function AdminDashboard() {
                                                         <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded border ${SUBSCRIPTION_STYLE[u.subscription] || SUBSCRIPTION_STYLE['none']}`}>
                                                             {PLAN_LABELS[u.subscription] || u.subscription}
                                                         </span>
+                                                        {u.referralCode && (
+                                                            <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded border border-amber-500/30 bg-amber-500/10 text-amber-400">
+                                                                Ref: {u.referralCode}
+                                                            </span>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
@@ -588,6 +594,11 @@ export default function AdminDashboard() {
                                                     <span className={`text-[8px] font-black uppercase tracking-widest ${u.subscription !== 'none' ? 'text-emerald-400' : 'text-white/20'}`}>
                                                         {u.subscription !== 'none' ? '✓ paid' : 'free'}
                                                     </span>
+                                                    {u.referralCode && (
+                                                        <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded border border-amber-500/30 bg-amber-500/10 text-amber-400 tracking-widest">
+                                                            Ref: {u.referralCode}
+                                                        </span>
+                                                    )}
                                                 </div>
                                                 <p className="hidden lg:block text-[10px] text-white/20 font-medium tabular-nums">
                                                     {new Date(u.created_at).toLocaleDateString()}

@@ -16,6 +16,7 @@ export default function Register() {
     name: '', email: '', password: '',
     artisteName: '', phone: '', whatsapp: '',
     stateOfOrigin: '', nationality: '', socialLink: '',
+    referralCode: '',
     agreeToTerms: false
   });
   const [error, setError] = useState('');
@@ -39,6 +40,7 @@ export default function Register() {
         stateOfOrigin: formData.stateOfOrigin,
         nationality: formData.nationality,
         socialLink: formData.socialLink,
+        referralCode: formData.referralCode,
       });
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
@@ -149,6 +151,12 @@ export default function Register() {
                 <label htmlFor="socialLink" className={labelClass}>IG / FB Profile Link</label>
                 <input id="socialLink" type="url" placeholder="https://instagram.com/yourname" className={inputClass}
                   value={formData.socialLink} onChange={e => setFormData({ ...formData, socialLink: e.target.value })} />
+              </div>
+
+              <div>
+                <label htmlFor="referralCode" className={labelClass}>Referral Code <span className="text-white/40 normal-case font-medium">(optional)</span></label>
+                <input id="referralCode" type="text" placeholder="e.g. AYINZ01" className={inputClass}
+                  value={formData.referralCode} onChange={e => setFormData({ ...formData, referralCode: e.target.value })} />
               </div>
 
               {/* Terms */}
