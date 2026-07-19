@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Music, Upload, BarChart3, DollarSign, TrendingUp, ChevronRight, Play } from 'lucide-react';
+import { Music, Upload, BarChart3, DollarSign, TrendingUp, ChevronRight, Play, Copy, Check as CheckIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '../utils/api';
 
@@ -10,6 +10,8 @@ export default function Dashboard() {
   const plan = user.subscription || 'basic';
 
   const [userReleases, setUserReleases] = useState<any[]>([]);
+  const [myReferralCode, setMyReferralCode] = useState<string>(user.myReferralCode || '');
+  const [copied, setCopied] = useState(false);
   const [stats, setStats] = useState({
     totalReleases: 0,
     totalStreams: 0,
@@ -36,8 +38,27 @@ export default function Dashboard() {
         setLoading(false);
       }
     };
+    const fetchProfile = async () => {
+      try {
+        const res = await api.get('/user/profile');
+        if (res.data?.user?.myReferralCode) {
+          setMyReferralCode(res.data.user.myReferralCode);
+          localStorage.setItem('user', JSON.stringify({ ...user, myReferralCode: res.data.user.myReferralCode }));
+        }
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
+      }
+    };
     fetchUserData();
+    fetchProfile();
   }, []);
+
+  const copyReferralCode = () => {
+    if (!myReferralCode) return;
+    navigator.clipboard.writeText(myReferralCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
+  };
 
   const getPlanLabel = (plan: string) => {
     const labels: Record<string, { name: string; desc: string }> = {
@@ -273,6 +294,29 @@ export default function Dashboard() {
                 )}
               </motion.button>
             ))}
+
+            {/* Your referral code */}
+            <motion.div
+              initial={{ opacity: 0, x: 16 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.35 + 3 * 0.08 }}
+              className="glass-card-premium rounded-2xl md:rounded-[1.5rem] p-5 md:p-6"
+            >
+              <p className="label-caps text-[8px] opacity-60 mb-3">Your Referral Code</p>
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-lg md:text-xl font-black text-white tracking-widest truncate">
+                  {myReferralCode || '—'}
+                </span>
+                <button
+                  onClick={copyReferralCode}
+                  disabled={!myReferralCode}
+                  className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center bg-red-600/10 border border-red-600/20 text-red-500 hover:bg-red-600/20 transition-colors disabled:opacity-30"
+                >
+                  {copied ? <CheckIcon className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                </button>
+              </div>
+              <p className="text-[10px] font-bold text-zinc-500 mt-2">Share it — it's yours alone.</p>
+            </motion.div>
           </div>
         </div>
       </div>

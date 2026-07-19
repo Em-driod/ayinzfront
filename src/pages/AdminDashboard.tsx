@@ -18,6 +18,7 @@ interface User {
     nationality?: string;
     socialLink?: string;
     referralCode?: string;
+    myReferralCode?: string;
 }
 
 interface Release {
@@ -582,6 +583,11 @@ export default function AdminDashboard() {
                                                                 Ref: {u.referralCode}
                                                             </span>
                                                         )}
+                                                        {u.myReferralCode && (
+                                                            <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded border border-sky-500/30 bg-sky-500/10 text-sky-400">
+                                                                Code: {u.myReferralCode}
+                                                            </span>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
@@ -597,6 +603,11 @@ export default function AdminDashboard() {
                                                     {u.referralCode && (
                                                         <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded border border-amber-500/30 bg-amber-500/10 text-amber-400 tracking-widest">
                                                             Ref: {u.referralCode}
+                                                        </span>
+                                                    )}
+                                                    {u.myReferralCode && (
+                                                        <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded border border-sky-500/30 bg-sky-500/10 text-sky-400 tracking-widest">
+                                                            Code: {u.myReferralCode}
                                                         </span>
                                                     )}
                                                 </div>
