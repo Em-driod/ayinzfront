@@ -42,7 +42,7 @@ export default function Layout({ children }: LayoutProps) {
     } finally {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      navigate('/login');
+      navigate('/login', { replace: true });
       setIsSigningOut(false);
     }
   };

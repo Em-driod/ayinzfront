@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
+import ProtectedRoute from './components/ProtectedRoute';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
@@ -30,46 +31,62 @@ function App() {
         <Route path="/promote" element={<Promote />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/dashboard" element={
-          <Layout>
-            <Dashboard />
-          </Layout>
+          <ProtectedRoute>
+            <Layout>
+              <Dashboard />
+            </Layout>
+          </ProtectedRoute>
         } />
         <Route path="/releases" element={
-          <Layout>
-            <Releases />
-          </Layout>
+          <ProtectedRoute>
+            <Layout>
+              <Releases />
+            </Layout>
+          </ProtectedRoute>
         } />
         <Route path="/releases/new" element={
-          <Layout>
-            <NewRelease />
-          </Layout>
+          <ProtectedRoute>
+            <Layout>
+              <NewRelease />
+            </Layout>
+          </ProtectedRoute>
         } />
         {/* Add more routes as we create them */}
         <Route path="/analytics" element={
-          <Layout>
-            <Analytics />
-          </Layout>
+          <ProtectedRoute>
+            <Layout>
+              <Analytics />
+            </Layout>
+          </ProtectedRoute>
         } />
 
         <Route path="/revenue" element={
-          <Layout>
-            <Revenue />
-          </Layout>
+          <ProtectedRoute>
+            <Layout>
+              <Revenue />
+            </Layout>
+          </ProtectedRoute>
         } />
         <Route path="/settings" element={
-          <Layout>
-            <Settings />
-          </Layout>
+          <ProtectedRoute>
+            <Layout>
+              <Settings />
+            </Layout>
+          </ProtectedRoute>
         } />
         <Route path="/support" element={
-          <Layout>
-            <Support />
-          </Layout>
+          <ProtectedRoute>
+            <Layout>
+              <Support />
+            </Layout>
+          </ProtectedRoute>
         } />
         <Route path="/admin" element={
-          <Layout>
-            <AdminDashboard />
-          </Layout>
+          <ProtectedRoute adminOnly>
+            <Layout>
+              <AdminDashboard />
+            </Layout>
+          </ProtectedRoute>
         } />
       </Routes>
     </Router>
