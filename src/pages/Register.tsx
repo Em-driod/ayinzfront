@@ -167,9 +167,9 @@ export default function Register() {
                   onChange={e => setFormData({ ...formData, agreeToTerms: e.target.checked })} />
                 <label htmlFor="terms" className="text-xs text-white font-bold leading-relaxed">
                   I agree to the{' '}
-                  <a href="#" className="text-white hover:text-white transition-colors">Terms of Service</a>
+                  <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="text-white underline underline-offset-2 hover:text-zinc-300 transition-colors">Terms of Service</Link>
                   {' '}and{' '}
-                  <a href="#" className="text-white hover:text-white transition-colors">Privacy Policy</a>
+                  <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="text-white underline underline-offset-2 hover:text-zinc-300 transition-colors">Privacy Policy</Link>
                 </label>
               </div>
 

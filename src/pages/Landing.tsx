@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform, AnimatePresence, useInView } from 'framer-motion';
-import { ArrowRight, ArrowUpRight, Menu, X, Zap, Shield, TrendingUp, Globe, Check } from 'lucide-react';
+import { motion, useScroll, useTransform, useInView } from 'framer-motion';
+import { ArrowRight, Zap, Shield, TrendingUp, Globe, Check } from 'lucide-react';
 import { SiSpotify, SiApplemusic, SiYoutubemusic, SiTidal, SiSoundcloud, SiAudiomack, SiPandora, SiTiktok } from 'react-icons/si';
 import { FaAmazon, FaDeezer, FaInstagram, FaXTwitter } from 'react-icons/fa6';
+import SiteNav from '../components/SiteNav';
 
 /* ─── Film grain SVG overlay ─────────────────────────────────────────── */
 const GRAIN_URL = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E")`;
@@ -37,20 +38,9 @@ function Counter({ to, suffix = '' }: { to: number; suffix?: string }) {
 }
 
 export default function Landing() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const { scrollY } = useScroll();
   const heroY   = useTransform(scrollY, [0, 600], [0, 110]);
   const heroOp  = useTransform(scrollY, [0, 350], [1, 0]);
-
-  useEffect(() => {
-    const u = scrollY.on('change', v => setScrolled(v > 30));
-    return u;
-  }, [scrollY]);
-  useEffect(() => {
-    document.body.style.overflow = menuOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
-  }, [menuOpen]);
 
   /* ── Data ── */
   const platforms = [
@@ -132,76 +122,7 @@ export default function Landing() {
         />
       </div>
 
-      {/* ══════════════════════════════════════════════════════════ NAV */}
-      <motion.nav
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#07070E]/80 backdrop-blur-2xl border-b border-white/[0.06]' : ''}`}
-      >
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-7 h-7 rounded-lg overflow-hidden border border-white/10 shrink-0">
-              <img src="/ayinz.jpeg" alt="Ayinz" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
-            </div>
-            <span className="font-black text-sm tracking-widest uppercase">Ayinz</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-          </Link>
-
-          <div className="hidden md:flex items-center gap-8">
-            {['Platforms', 'Features', 'Pricing', 'Artists'].map(s => (
-              <a key={s} href={`#${s.toLowerCase()}`}
-                className="text-[10px] uppercase tracking-[0.25em] font-bold text-white/35 hover:text-white/80 transition-colors">
-                {s}
-              </a>
-            ))}
-          </div>
-
-          <div className="hidden md:flex items-center gap-4">
-            <Link to="/login" className="text-[10px] uppercase tracking-[0.25em] font-bold text-white/35 hover:text-white/70 transition-colors">
-              Sign In
-            </Link>
-            <Link to="/register"
-              className="flex items-center gap-2 bg-white text-black text-[10px] uppercase tracking-[0.2em] font-black px-5 py-2.5 rounded-full hover:bg-white/90 transition-all shadow-[0_0_30px_rgba(255,255,255,0.1)]">
-              Get Started <ArrowUpRight className="w-3 h-3" />
-            </Link>
-          </div>
-
-          <button onClick={() => setMenuOpen(true)} className="md:hidden text-white/50 hover:text-white transition-colors">
-            <Menu className="w-5 h-5" />
-          </button>
-        </div>
-      </motion.nav>
-
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-[#07070E]/98 backdrop-blur-3xl flex flex-col p-7">
-            <div className="flex justify-between items-center mb-16">
-              <span className="font-black text-sm tracking-widest uppercase">Ayinz</span>
-              <button onClick={() => setMenuOpen(false)} className="p-2 rounded-xl border border-white/10 text-white/40 hover:text-white transition-colors">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <nav className="flex flex-col gap-5">
-              {['Platforms', 'Features', 'Pricing', 'Artists'].map((s, i) => (
-                <motion.a key={s} href={`#${s.toLowerCase()}`}
-                  initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.07 }}
-                  className="text-3xl font-black uppercase tracking-tight text-white/70 hover:text-white transition-colors"
-                  onClick={() => setMenuOpen(false)}>
-                  {s}
-                </motion.a>
-              ))}
-            </nav>
-            <div className="mt-auto space-y-3 pt-8 border-t border-white/[0.07]">
-              <Link to="/login" className="block text-xs font-bold uppercase tracking-widest text-white/30" onClick={() => setMenuOpen(false)}>Sign In</Link>
-              <Link to="/register" className="block text-xs font-bold uppercase tracking-widest text-white" onClick={() => setMenuOpen(false)}>Get Started →</Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <SiteNav />
 
       {/* ══════════════════════════════════════════════════════════ HERO */}
       <section className="relative min-h-[100svh] lg:min-h-screen flex items-center overflow-hidden pt-24 pb-12 lg:pt-28 lg:pb-20">
@@ -586,16 +507,27 @@ export default function Landing() {
             </div>
 
             {[
-              { label: 'Platform', links: ['Distribution', 'Analytics', 'Royalties', 'Support'] },
-              { label: 'Company',  links: ['About', 'Pricing', 'Contact', 'Blog'] },
-              { label: 'Legal',    links: ['Privacy', 'Terms', 'Cookies'] },
+              { label: 'Platform', links: [
+                { l: 'Distribution', to: '/#platforms' },
+                { l: 'Analytics',    to: '/#features' },
+                { l: 'Royalties',    to: '/#features' },
+                { l: 'Promote',      to: '/promote' },
+              ] },
+              { label: 'Company',  links: [
+                { l: 'About',   to: '/about' },
+                { l: 'Pricing', to: '/pricing' },
+                { l: 'Help',    to: '/help' },
+              ] },
+              { label: 'Legal',    links: [
+                { l: 'Privacy', to: '/privacy' },
+              ] },
             ].map(col => (
               <div key={col.label}>
                 <p className="text-[8px] font-black uppercase tracking-[0.4em] text-white/20 mb-5">{col.label}</p>
                 <ul className="space-y-3">
-                  {col.links.map(l => (
-                    <li key={l}>
-                      <a href="#" className="text-[10px] font-bold uppercase tracking-widest text-white/25 hover:text-white/60 transition-colors">{l}</a>
+                  {col.links.map(link => (
+                    <li key={link.l}>
+                      <Link to={link.to} className="text-[10px] font-bold uppercase tracking-widest text-white/25 hover:text-white/60 transition-colors">{link.l}</Link>
                     </li>
                   ))}
                 </ul>

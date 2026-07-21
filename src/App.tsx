@@ -12,6 +12,10 @@ import AdminDashboard from './pages/AdminDashboard';
 import Revenue from './pages/Revenue';
 import Settings from './pages/Settings';
 import Support from './pages/Support';
+import About from './pages/About';
+import Help from './pages/Help';
+import Promote from './pages/Promote';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 function App() {
   return (
@@ -21,6 +25,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/help" element={<Help />} />
+        <Route path="/promote" element={<Promote />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/dashboard" element={
           <Layout>
             <Dashboard />

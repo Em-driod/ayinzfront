@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Check, ArrowRight, Music, Users, Globe, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import SiteNav from '../components/SiteNav';
 
 const plans = [
   {
@@ -91,28 +92,10 @@ export default function Pricing() {
       {/* Subtle top gradient */}
       <div className="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-red-950/10 to-transparent pointer-events-none" />
 
-      {/* Nav */}
-      <nav className="relative z-10 flex items-center justify-between px-6 md:px-12 py-5 border-b border-zinc-900">
-        <Link to="/" className="flex items-center space-x-2.5">
-          <div className="w-8 h-8 rounded-xl overflow-hidden border border-zinc-800">
-            <img src="/ayinz.jpeg" alt="Ayinz" className="w-full h-full object-cover" />
-          </div>
-          <span className="text-lg font-black text-white tracking-tight">Ayinz</span>
-        </Link>
-        <div className="flex items-center space-x-4">
-          {localStorage.getItem('user') ? (
-            <Link to="/dashboard" className="bg-white text-black text-xs font-black px-4 py-2 rounded-xl hover:bg-zinc-100 active:scale-95 transition-all uppercase tracking-widest">Dashboard</Link>
-          ) : (
-            <>
-              <Link to="/login" className="text-xs font-black text-white hover:text-white transition-colors uppercase tracking-[0.15em]">Sign In</Link>
-              <Link to="/register" className="bg-white text-black text-xs font-black px-4 py-2 rounded-xl hover:bg-zinc-100 active:scale-95 transition-all">Get Started</Link>
-            </>
-          )}
-        </div>
-      </nav>
+      <SiteNav />
 
       {/* Hero */}
-      <div className="relative z-10 text-center pt-16 pb-14 px-6">
+      <div className="relative z-10 text-center pt-32 pb-14 px-6">
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
           <p className="text-[10px] font-black text-white uppercase tracking-[0.4em] mb-4">Distribution Plans</p>
           <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4 leading-[1.1] pb-2">
