@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Users, Music, DollarSign, CheckCircle, TrendingUp, BarChart3, X, Search, ChevronRight, LayoutDashboard, Wallet, MessageCircle, Send, UserCheck, UserPlus, Eye, Pencil, CreditCard, ArrowUpRight, Shield, AlertCircle, ListMusic, Plus, Trash2, ExternalLink, Paperclip } from 'lucide-react';
+import { Users, Music, DollarSign, CheckCircle, TrendingUp, BarChart3, X, Search, ChevronRight, LayoutDashboard, Wallet, MessageCircle, Send, UserCheck, UserPlus, Eye, Pencil, CreditCard, ArrowUpRight, Shield, AlertCircle, ListMusic, Plus, Trash2, ExternalLink, Paperclip, Bell, Megaphone, Sparkles, AlertTriangle, Gift, Upload } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../utils/api';
@@ -84,6 +84,18 @@ interface PromoSubmission {
     created_at: string;
 }
 
+interface AdminNotification {
+    _id: string;
+    title: string;
+    message: string;
+    image_url?: string;
+    template: 'announcement' | 'promo' | 'alert' | 'update';
+    audience: 'public' | 'all_users' | 'individual';
+    target_user?: { _id: string; name: string; email: string };
+    active: boolean;
+    created_at: string;
+}
+
 interface Ticket {
     _id: string;
     user: { name: string; email: string };
@@ -149,6 +161,19 @@ const PLATFORM_COLORS: Record<string, string> = {
     'Boomplay': '#f1c40f', 'Audiomack': '#FFA200', 'Other': '#fb923c', 'Overall': '#ef4444'
 };
 
+const NOTIFICATION_TEMPLATES: { id: AdminNotification['template']; label: string; icon: any; accent: string }[] = [
+    { id: 'announcement', label: 'Announcement', icon: Megaphone, accent: 'text-red-400 bg-red-500/10 border-red-500/20' },
+    { id: 'promo', label: 'Promo / Offer', icon: Gift, accent: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
+    { id: 'alert', label: 'Alert', icon: AlertTriangle, accent: 'text-red-400 bg-red-500/10 border-red-500/20' },
+    { id: 'update', label: "What's New", icon: Sparkles, accent: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
+];
+
+const AUDIENCE_LABELS: Record<string, string> = {
+    public: 'Public (Landing Page)',
+    all_users: 'All Accounts (Dashboard)',
+    individual: 'Specific Artist',
+};
+
 const STATUS_COLORS: Record<string, string> = {
     approved: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
     uploaded: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
@@ -166,7 +191,7 @@ export default function AdminDashboard() {
     const [paymentsError, setPaymentsError] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'releases' | 'payouts' | 'support' | 'payments' | 'promote'>('overview');
+    const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'releases' | 'payouts' | 'support' | 'payments' | 'promote' | 'notifications'>('overview');
     const [selectedUserFilter, setSelectedUserFilter] = useState<User | null>(null);
     const [activeTicket, setActiveTicket] = useState<Ticket | null>(null);
     const [replyMessage, setReplyMessage] = useState('');
@@ -197,9 +222,17 @@ export default function AdminDashboard() {
     const [playlistForm, setPlaylistForm] = useState({ name: '', curator: 'Curated by Ayinz', cover: '', url: '', order: 0, active: true });
     const [savingPlaylist, setSavingPlaylist] = useState(false);
 
+    const [notifications, setNotifications] = useState<AdminNotification[]>([]);
+    const [showNewNotification, setShowNewNotification] = useState(false);
+    const [notificationForm, setNotificationForm] = useState<{ title: string; message: string; template: AdminNotification['template']; audience: AdminNotification['audience']; target_user: string }>({
+        title: '', message: '', template: 'announcement', audience: 'all_users', target_user: ''
+    });
+    const [notificationImage, setNotificationImage] = useState<File | null>(null);
+    const [savingNotification, setSavingNotification] = useState(false);
+
     const fetchData = async () => {
         try {
-            const [usersRes, releasesRes, payoutsRes, ticketsRes, paymentsRes, unrecordedRes, playlistsRes, promoSubsRes] = await Promise.all([
+            const [usersRes, releasesRes, payoutsRes, ticketsRes, paymentsRes, unrecordedRes, playlistsRes, promoSubsRes, notificationsRes] = await Promise.all([
                 api.get('/admin/users'),
                 api.get('/admin/releases'),
                 api.get('/admin/payouts'),
@@ -208,6 +241,7 @@ export default function AdminDashboard() {
                 api.get('/admin/payments/unrecorded').catch(() => ({ data: { users: [] } })),
                 api.get('/admin/playlists').catch(() => ({ data: { playlists: [] } })),
                 api.get('/admin/promo-submissions').catch(() => ({ data: { submissions: [] } })),
+                api.get('/admin/notifications').catch(() => ({ data: { notifications: [] } })),
             ]);
             setUsers(usersRes.data.users);
             setReleases(releasesRes.data.releases);
@@ -217,6 +251,7 @@ export default function AdminDashboard() {
             setUnrecordedPayers(unrecordedRes.data.users || []);
             setPlaylists(playlistsRes.data.playlists || []);
             setPromoSubmissions(promoSubsRes.data.submissions || []);
+            setNotifications(notificationsRes.data.notifications || []);
         } catch (err: any) {
             setError(err.response?.data?.error || 'Access denied. You must be an admin.');
         } finally {
@@ -416,6 +451,50 @@ export default function AdminDashboard() {
         } catch { alert('Failed to update submission'); }
     };
 
+    const resetNotificationForm = () => {
+        setNotificationForm({ title: '', message: '', template: 'announcement', audience: 'all_users', target_user: '' });
+        setNotificationImage(null);
+    };
+
+    const handleCreateNotification = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (notificationForm.audience === 'individual' && !notificationForm.target_user) {
+            alert('Choose an artist to target this notification at.');
+            return;
+        }
+        setSavingNotification(true);
+        try {
+            const data = new FormData();
+            data.append('title', notificationForm.title);
+            data.append('message', notificationForm.message);
+            data.append('template', notificationForm.template);
+            data.append('audience', notificationForm.audience);
+            if (notificationForm.audience === 'individual') data.append('target_user', notificationForm.target_user);
+            if (notificationImage) data.append('image', notificationImage);
+
+            const res = await api.post('/admin/notifications', data, { headers: { 'Content-Type': 'multipart/form-data' } });
+            setNotifications([res.data.notification, ...notifications]);
+            setShowNewNotification(false);
+            resetNotificationForm();
+        } catch (err: any) { alert(err.response?.data?.error || 'Failed to create notification'); }
+        finally { setSavingNotification(false); }
+    };
+
+    const handleToggleNotificationActive = async (n: AdminNotification) => {
+        try {
+            const res = await api.patch(`/admin/notifications/${n._id}`, { active: !n.active });
+            setNotifications(notifications.map(x => x._id === n._id ? res.data.notification : x));
+        } catch { alert('Failed to update notification'); }
+    };
+
+    const handleDeleteNotification = async (id: string, title: string) => {
+        if (!window.confirm(`Delete notification "${title}"?`)) return;
+        try {
+            await api.delete(`/admin/notifications/${id}`);
+            setNotifications(notifications.filter(n => n._id !== id));
+        } catch { alert('Failed to delete notification'); }
+    };
+
     const handleCreateUser = async (e: React.FormEvent) => {
         e.preventDefault();
         setCreatingUser(true);
@@ -495,6 +574,7 @@ export default function AdminDashboard() {
         { id: 'payments', name: 'Payments', icon: CreditCard, badge: 0 },
         { id: 'support', name: 'Support', icon: MessageCircle, badge: unreadCount },
         { id: 'promote', name: 'Promote', icon: ListMusic, badge: promoSubmissions.filter(s => s.status === 'pending').length },
+        { id: 'notifications', name: 'Notify', icon: Bell, badge: 0 },
     ];
 
     const inputCls = "w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:border-white/20 focus:bg-white/[0.06] outline-none transition-all font-medium";
@@ -1298,6 +1378,61 @@ export default function AdminDashboard() {
                         </motion.div>
                     )}
 
+                    {/* NOTIFICATIONS */}
+                    {activeTab === 'notifications' && (
+                        <motion.div key="notifications" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
+                            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent overflow-hidden">
+                                <div className="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between">
+                                    <div>
+                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-0.5">Broadcast Center</p>
+                                        <h2 className="text-base font-black uppercase tracking-tight">Notifications <span className="text-white/20 font-bold ml-2">{notifications.length}</span></h2>
+                                    </div>
+                                    <button onClick={() => { resetNotificationForm(); setShowNewNotification(true); }} className="flex items-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all">
+                                        <Plus className="w-3.5 h-3.5" /> New Notification
+                                    </button>
+                                </div>
+                                <div className="divide-y divide-white/[0.04]">
+                                    {notifications.map(n => {
+                                        const tmpl = NOTIFICATION_TEMPLATES.find(t => t.id === n.template) || NOTIFICATION_TEMPLATES[0];
+                                        const TmplIcon = tmpl.icon;
+                                        return (
+                                            <div key={n._id} className="px-4 sm:px-6 py-4 flex items-start gap-4">
+                                                <div className={`w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 ${tmpl.accent}`}>
+                                                    <TmplIcon className="w-4 h-4" />
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <p className="text-sm font-bold text-white truncate">{n.title}</p>
+                                                    <p className="text-[10px] text-white/30 font-medium truncate mt-0.5">{n.message}</p>
+                                                    <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+                                                        <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/40">
+                                                            {n.audience === 'individual' ? `${n.target_user?.name || 'Artist'}` : AUDIENCE_LABELS[n.audience]}
+                                                        </span>
+                                                        <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/40">{tmpl.label}</span>
+                                                        <span className="text-[8px] text-white/20">{new Date(n.created_at).toLocaleDateString()}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-2 shrink-0">
+                                                    <button onClick={() => handleToggleNotificationActive(n)} className={`text-[8px] font-black uppercase px-2.5 py-1.5 rounded-lg border transition-all ${n.active ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-white/5 border-white/10 text-white/30'}`}>
+                                                        {n.active ? 'Live' : 'Hidden'}
+                                                    </button>
+                                                    <button onClick={() => handleDeleteNotification(n._id, n.title)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-red-400 transition-all">
+                                                        <Trash2 className="w-3.5 h-3.5" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                    {notifications.length === 0 && (
+                                        <div className="py-24 text-center">
+                                            <Bell className="w-12 h-12 mx-auto mb-4 text-white/10" />
+                                            <p className="text-xs font-black uppercase tracking-[0.3em] text-white/20">No notifications sent yet</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+
                 </AnimatePresence>
             </div>
 
@@ -1793,6 +1928,92 @@ export default function AdminDashboard() {
                                     <button type="button" onClick={() => setEditingPlaylist(null)} className="flex-1 py-3 rounded-xl border border-white/[0.06] text-xs font-black uppercase tracking-wider text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">Cancel</button>
                                     <button type="submit" disabled={savingPlaylist} className="flex-1 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-red-600/20 disabled:opacity-50">
                                         {savingPlaylist ? 'Saving…' : 'Save'}
+                                    </button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* New Notification Modal */}
+            <AnimatePresence>
+                {showNewNotification && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-50 p-4">
+                        <motion.div initial={{ scale: 0.96, y: 16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, y: 16 }} className="w-full max-w-lg rounded-2xl border border-white/[0.08] bg-[#0a0a0a] overflow-hidden max-h-[90vh] flex flex-col">
+                            <div className="px-6 py-5 border-b border-white/[0.06] flex items-start justify-between gap-4 shrink-0">
+                                <div>
+                                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-red-500 mb-0.5">Broadcast Center</p>
+                                    <h3 className="text-lg font-display uppercase">New Notification</h3>
+                                </div>
+                                <button onClick={() => setShowNewNotification(false)} className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-white transition-colors"><X className="w-4 h-4" /></button>
+                            </div>
+                            <form onSubmit={handleCreateNotification} className="p-6 space-y-5 overflow-y-auto">
+                                <div>
+                                    <label className={labelCls}>Send To</label>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        {(['public', 'all_users', 'individual'] as const).map(a => (
+                                            <button key={a} type="button" onClick={() => setNotificationForm({ ...notificationForm, audience: a })}
+                                                className={`py-3 px-2 rounded-xl border text-[9px] font-black uppercase tracking-wider transition-all ${notificationForm.audience === a ? 'bg-red-600 border-red-600 text-white' : 'bg-white/[0.03] border-white/[0.08] text-white/40 hover:text-white/70'}`}>
+                                                {a === 'public' ? 'Everyone' : a === 'all_users' ? 'All Accounts' : 'One Artist'}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <p className="text-[9px] text-white/25 mt-1.5">
+                                        {notificationForm.audience === 'public' && 'Pops up on the public landing page for any visitor, account or not.'}
+                                        {notificationForm.audience === 'all_users' && 'Pops up on the dashboard for every artist with an account.'}
+                                        {notificationForm.audience === 'individual' && 'Pops up only for the specific artist you choose below.'}
+                                    </p>
+                                </div>
+
+                                {notificationForm.audience === 'individual' && (
+                                    <div>
+                                        <label className={labelCls}>Artist</label>
+                                        <select className={inputCls} value={notificationForm.target_user} onChange={e => setNotificationForm({ ...notificationForm, target_user: e.target.value })}>
+                                            <option value="">Select an artist…</option>
+                                            {users.map(u => <option key={u._id} value={u._id}>{u.name} — {u.email}</option>)}
+                                        </select>
+                                    </div>
+                                )}
+
+                                <div>
+                                    <label className={labelCls}>Template</label>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {NOTIFICATION_TEMPLATES.map(t => (
+                                            <button key={t.id} type="button" onClick={() => setNotificationForm({ ...notificationForm, template: t.id })}
+                                                className={`flex items-center gap-2.5 p-3 rounded-xl border transition-all text-left ${notificationForm.template === t.id ? 'border-red-600 bg-red-600/10' : 'border-white/[0.08] bg-white/[0.02] hover:border-white/20'}`}>
+                                                <div className={`w-8 h-8 rounded-lg border flex items-center justify-center shrink-0 ${t.accent}`}>
+                                                    <t.icon className="w-3.5 h-3.5" />
+                                                </div>
+                                                <span className="text-[10px] font-bold text-white/70">{t.label}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className={labelCls}>Title</label>
+                                    <input type="text" required placeholder="e.g. New Payout Cycle Starts Monday" className={inputCls} value={notificationForm.title} onChange={e => setNotificationForm({ ...notificationForm, title: e.target.value })} />
+                                </div>
+                                <div>
+                                    <label className={labelCls}>Message</label>
+                                    <textarea required rows={4} placeholder="Write the notification body…" className={`${inputCls} resize-none`} value={notificationForm.message} onChange={e => setNotificationForm({ ...notificationForm, message: e.target.value })} />
+                                </div>
+
+                                <div>
+                                    <label className={labelCls}>Image (Optional)</label>
+                                    <div onClick={() => document.getElementById('notification-image-upload')?.click()}
+                                        className={`py-6 border-2 border-dashed rounded-xl transition-all cursor-pointer flex flex-col items-center justify-center gap-2 ${notificationImage ? 'border-red-600/30 bg-red-600/5' : 'border-white/10 bg-black/20 hover:border-white/20'}`}>
+                                        <Upload className={`w-4 h-4 ${notificationImage ? 'text-red-500' : 'text-white/30'}`} />
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-white/60">{notificationImage ? notificationImage.name : 'Attach an image'}</p>
+                                        <input id="notification-image-upload" type="file" accept="image/*" className="sr-only" onChange={e => { if (e.target.files?.[0]) setNotificationImage(e.target.files[0]); }} />
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-3 pt-2">
+                                    <button type="button" onClick={() => setShowNewNotification(false)} className="flex-1 py-3 rounded-xl border border-white/[0.06] text-xs font-black uppercase tracking-wider text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">Cancel</button>
+                                    <button type="submit" disabled={savingNotification} className="flex-1 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-red-600/20 disabled:opacity-50">
+                                        {savingNotification ? 'Sending…' : 'Send Notification'}
                                     </button>
                                 </div>
                             </form>

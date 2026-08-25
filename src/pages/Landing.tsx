@@ -5,6 +5,8 @@ import { ArrowRight, Zap, Shield, TrendingUp, Globe, Check } from 'lucide-react'
 import { SiSpotify, SiApplemusic, SiYoutubemusic, SiTidal, SiSoundcloud, SiAudiomack, SiPandora, SiTiktok } from 'react-icons/si';
 import { FaAmazon, FaDeezer, FaInstagram, FaXTwitter } from 'react-icons/fa6';
 import SiteNav from '../components/SiteNav';
+import NotificationPopup, { AyinzNotification } from '../components/NotificationPopup';
+import api from '../utils/api';
 
 /* ─── Film grain SVG overlay ─────────────────────────────────────────── */
 const GRAIN_URL = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E")`;
@@ -41,6 +43,16 @@ export default function Landing() {
   const { scrollY } = useScroll();
   const heroY   = useTransform(scrollY, [0, 600], [0, 110]);
   const heroOp  = useTransform(scrollY, [0, 350], [1, 0]);
+
+  const [notifications, setNotifications] = useState<AyinzNotification[]>([]);
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await api.get('/notifications/public');
+        setNotifications(res.data.notifications || []);
+      } catch { /* silently skip if unavailable */ }
+    })();
+  }, []);
 
   /* ── Data ── */
   const platforms = [
@@ -99,6 +111,7 @@ export default function Landing() {
   return (
     <div className="relative bg-[#07070E] text-white overflow-x-hidden selection:bg-red-600/80 selection:text-white">
       <style>{css}</style>
+      <NotificationPopup notifications={notifications} />
 
       {/* ── Film grain fixed overlay ── */}
       <div

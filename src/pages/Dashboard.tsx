@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Music, Upload, BarChart3, DollarSign, TrendingUp, ChevronRight, Play, Copy, Check as CheckIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '../utils/api';
+import NotificationPopup, { AyinzNotification } from '../components/NotificationPopup';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ export default function Dashboard() {
     monthlyGrowth: '+0%'
   });
   const [loading, setLoading] = useState(true);
+  const [notifications, setNotifications] = useState<AyinzNotification[]>([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -49,8 +51,17 @@ export default function Dashboard() {
         console.error('Failed to fetch profile:', error);
       }
     };
+    const fetchNotifications = async () => {
+      try {
+        const res = await api.get('/notifications/mine');
+        setNotifications(res.data.notifications || []);
+      } catch (error) {
+        console.error('Failed to fetch notifications:', error);
+      }
+    };
     fetchUserData();
     fetchProfile();
+    fetchNotifications();
   }, []);
 
   const copyReferralCode = () => {
@@ -109,6 +120,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen">
+      <NotificationPopup notifications={notifications} />
       <div className="relative z-10 p-4 md:p-8 lg:p-10 space-y-6 md:space-y-10">
 
         {/* ─── Welcome Header ─── */}
