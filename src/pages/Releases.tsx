@@ -22,11 +22,15 @@ interface Release {
   featured_artists?: string[];
   type: string;
   status: string;
+  rejection_reason?: string;
   streams: number;
   revenue: number;
   created_at: string;
   cover_url?: string;
   tracks?: Track[];
+  isrc?: string;
+  upc?: string;
+  label?: string;
 }
 
 const getStatusStyle = (status: string) => {
@@ -203,6 +207,18 @@ export default function Releases() {
                           {release.title}
                         </h3>
 
+                        {release.status === 'rejected' && (
+                          <div className="mb-3 p-2.5 rounded-xl bg-red-600/[0.06] border border-red-600/20 flex items-start gap-2">
+                            <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" />
+                            <div className="min-w-0">
+                              <p className="text-[8px] font-black text-red-500 uppercase tracking-widest mb-0.5">Rejected</p>
+                              <p className="text-[10px] font-medium text-red-300/80 leading-snug">
+                                {release.rejection_reason || 'No reason provided — contact support for details.'}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
                         {/* Artist */}
                         <div className="mb-3 p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
                           <div className="flex items-center gap-2.5">
@@ -240,6 +256,23 @@ export default function Releases() {
                             <Calendar className="w-3 h-3" />
                             <span>{date}</span>
                           </div>
+
+                          {(release.isrc || release.upc) && (
+                            <div className="pt-2.5 border-t border-white/5 space-y-1">
+                              {release.isrc && (
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">ISRC</span>
+                                  <span className="text-[9px] font-mono tracking-wider text-zinc-400">{release.isrc}</span>
+                                </div>
+                              )}
+                              {release.upc && (
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">UPC</span>
+                                  <span className="text-[9px] font-mono tracking-wider text-zinc-400">{release.upc}</span>
+                                </div>
+                              )}
+                            </div>
+                          )}
 
                           {multiTrack && (
                             <button

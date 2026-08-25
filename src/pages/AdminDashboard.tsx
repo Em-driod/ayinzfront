@@ -33,6 +33,7 @@ interface Release {
     song_file: string;
     price: number;
     status: string;
+    rejection_reason?: string;
     streams: number;
     revenue: number;
     cover_url: string;
@@ -153,6 +154,12 @@ export default function AdminDashboard() {
     const [editingRelease, setEditingRelease] = useState<Release | null>(null);
     const [statsForm, setStatsForm] = useState({ date: '', streams: 0, revenue: 0, platform: 'Spotify' });
     const [selectedRelease, setSelectedRelease] = useState<Release | null>(null);
+    const [editingIdentifiers, setEditingIdentifiers] = useState(false);
+    const [identifierForm, setIdentifierForm] = useState({ isrc: '', upc: '', label: '' });
+    const [savingIdentifiers, setSavingIdentifiers] = useState(false);
+    const [rejectingRelease, setRejectingRelease] = useState<Release | null>(null);
+    const [rejectionReasonInput, setRejectionReasonInput] = useState('');
+    const [savingRejection, setSavingRejection] = useState(false);
     const [viewingRelease, setViewingRelease] = useState<Release | null>(null);
     const [history, setHistory] = useState<any[]>([]);
     const [loadingHistory, setLoadingHistory] = useState(false);
@@ -231,7 +238,28 @@ export default function AdminDashboard() {
         try {
             await api.patch(`/admin/releases/${id}/status`, { status: newStatus });
             setReleases(releases.map(r => r.id === id ? { ...r, status: newStatus } : r));
+            if (selectedRelease?.id === id) setSelectedRelease({ ...selectedRelease, status: newStatus });
         } catch { alert('Failed to update status'); }
+    };
+
+    const startRejectingRelease = (release: Release) => {
+        setRejectingRelease(release);
+        setRejectionReasonInput(release.rejection_reason || '');
+    };
+
+    const handleConfirmRejection = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!rejectingRelease) return;
+        setSavingRejection(true);
+        try {
+            await api.patch(`/admin/releases/${rejectingRelease.id}/status`, { status: 'rejected', rejection_reason: rejectionReasonInput });
+            const updated = { status: 'rejected', rejection_reason: rejectionReasonInput };
+            setReleases(releases.map(r => r.id === rejectingRelease.id ? { ...r, ...updated } : r));
+            if (selectedRelease?.id === rejectingRelease.id) setSelectedRelease({ ...selectedRelease, ...updated });
+            setRejectingRelease(null);
+            setRejectionReasonInput('');
+        } catch { alert('Failed to reject release'); }
+        finally { setSavingRejection(false); }
     };
 
     const handleViewStats = async (release: Release) => {
@@ -254,6 +282,35 @@ export default function AdminDashboard() {
             setEditingRelease(null);
             setStatsForm({ date: '', streams: 0, revenue: 0, platform: 'Spotify' });
         } catch { alert('Failed to update stats'); }
+    };
+
+    const closeReleaseModal = () => {
+        setSelectedRelease(null);
+        setEditingIdentifiers(false);
+    };
+
+    const startEditingIdentifiers = () => {
+        if (!selectedRelease) return;
+        setIdentifierForm({
+            isrc: selectedRelease.isrc || '',
+            upc: selectedRelease.upc || '',
+            label: selectedRelease.label || ''
+        });
+        setEditingIdentifiers(true);
+    };
+
+    const handleUpdateIdentifiers = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!selectedRelease) return;
+        setSavingIdentifiers(true);
+        try {
+            const res = await api.patch(`/admin/releases/${selectedRelease.id}/identifiers`, identifierForm);
+            const updated = { isrc: res.data.isrc, upc: res.data.upc, label: res.data.label };
+            setReleases(releases.map(r => r.id === selectedRelease.id ? { ...r, ...updated } : r));
+            setSelectedRelease({ ...selectedRelease, ...updated });
+            setEditingIdentifiers(false);
+        } catch { alert('Failed to update identifiers'); }
+        finally { setSavingIdentifiers(false); }
     };
 
     const handleUpdatePrice = async (id: string, newPrice: number) => {
@@ -690,7 +747,7 @@ export default function AdminDashboard() {
                                                         </div>
                                                         <select
                                                             value={r.status}
-                                                            onChange={e => handleStatusChange(r.id, e.target.value)}
+                                                            onChange={e => e.target.value === 'rejected' ? startRejectingRelease(r) : handleStatusChange(r.id, e.target.value)}
                                                             className={`text-[9px] font-black uppercase rounded-xl px-3 py-1.5 border outline-none cursor-pointer shrink-0 transition-all ${STATUS_COLORS[r.status] || 'bg-white/5 border-white/10 text-white/40'}`}
                                                         >
                                                             <option value="pending">Reviewing</option>
@@ -704,6 +761,12 @@ export default function AdminDashboard() {
                                                         <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/30">{r.genre}</span>
                                                         {r.explicit === 'Yes' && <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded-md bg-red-500/10 border border-red-500/20 text-red-400">E</span>}
                                                     </div>
+                                                    {r.status === 'rejected' && (
+                                                        <button onClick={() => startRejectingRelease(r)} className="mt-2 w-full flex items-start gap-1.5 text-left p-2 rounded-lg bg-red-500/5 border border-red-500/15 hover:border-red-500/30 transition-colors">
+                                                            <span className="text-[8px] font-black uppercase text-red-400/60 shrink-0 mt-px">Reason</span>
+                                                            <span className="text-[9px] font-medium text-red-300/80 line-clamp-2">{r.rejection_reason || 'No reason given — click to add one'}</span>
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </div>
 
@@ -1094,6 +1157,44 @@ export default function AdminDashboard() {
                     </motion.div>
                 )}
 
+                {/* Reject Release Modal */}
+                {rejectingRelease && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-50 p-4">
+                        <motion.div initial={{ scale: 0.96, y: 16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, y: 16 }} className="w-full max-w-md rounded-2xl border border-white/[0.08] bg-[#0a0a0a] overflow-hidden">
+                            <div className="px-6 py-5 border-b border-white/[0.06] flex items-start justify-between gap-4">
+                                <div>
+                                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-red-500 mb-0.5">Admin Action</p>
+                                    <h3 className="text-lg font-display uppercase">Reject Release</h3>
+                                    <p className="text-[10px] text-white/30 mt-0.5">{rejectingRelease.title} — {rejectingRelease.artist}</p>
+                                </div>
+                                <button onClick={() => setRejectingRelease(null)} className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-white transition-colors">
+                                    <X className="w-4 h-4" />
+                                </button>
+                            </div>
+                            <form onSubmit={handleConfirmRejection} className="p-6 space-y-4">
+                                <div>
+                                    <label className={labelCls}>Reason for Rejection</label>
+                                    <textarea
+                                        required
+                                        rows={4}
+                                        placeholder="Explain what the artist needs to fix, e.g. cover art resolution, missing metadata…"
+                                        className={`${inputCls} resize-none`}
+                                        value={rejectionReasonInput}
+                                        onChange={e => setRejectionReasonInput(e.target.value)}
+                                    />
+                                    <p className="text-[9px] text-white/25 mt-1.5">The artist will see this message on their release.</p>
+                                </div>
+                                <div className="flex gap-3 pt-2">
+                                    <button type="button" onClick={() => setRejectingRelease(null)} className="flex-1 py-3 rounded-xl border border-white/[0.06] text-xs font-black uppercase tracking-wider text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">Cancel</button>
+                                    <button type="submit" disabled={savingRejection} className="flex-1 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-red-600/20 disabled:opacity-50">
+                                        {savingRejection ? 'Saving…' : 'Confirm Rejection'}
+                                    </button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </motion.div>
+                )}
+
                 {/* Growth Graph Modal */}
                 {viewingRelease && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/85 backdrop-blur-2xl flex items-center justify-center z-50 p-4">
@@ -1166,26 +1267,67 @@ export default function AdminDashboard() {
                                         )}
                                     </div>
                                 </div>
-                                <button onClick={() => setSelectedRelease(null)} className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-white transition-colors shrink-0">
+                                <button onClick={closeReleaseModal} className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-white transition-colors shrink-0">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
 
                             {/* Modal Body */}
                             <div className="flex-1 overflow-y-auto p-4 sm:p-8 space-y-8">
+                                {selectedRelease.status === 'rejected' && (
+                                    <div className="rounded-2xl border border-red-500/20 bg-red-500/[0.04] p-5 flex items-start justify-between gap-4">
+                                        <div>
+                                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-red-500 mb-1.5">Rejection Reason</p>
+                                            <p className="text-sm text-white/70 leading-relaxed">{selectedRelease.rejection_reason || 'No reason given yet.'}</p>
+                                        </div>
+                                        <button onClick={() => startRejectingRelease(selectedRelease)} className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-red-500 transition-colors shrink-0">
+                                            <Pencil className="w-3.5 h-3.5" />
+                                        </button>
+                                    </div>
+                                )}
                                 <div className="grid sm:grid-cols-3 gap-6">
                                     <div className="space-y-4">
-                                        <h4 className="text-[9px] font-black uppercase tracking-[0.4em] text-red-500 border-b border-red-500/15 pb-2">Identification</h4>
-                                        {[
-                                            { label: 'ISRC', value: selectedRelease.isrc || 'Not assigned' },
-                                            { label: 'UPC', value: selectedRelease.upc || 'Not assigned' },
-                                            { label: 'Label', value: selectedRelease.label || 'Indie / None' },
-                                        ].map(item => (
-                                            <div key={item.label}>
-                                                <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-1">{item.label}</p>
-                                                <p className="text-xs font-mono tracking-wider text-white/70">{item.value}</p>
-                                            </div>
-                                        ))}
+                                        <div className="flex items-center justify-between border-b border-red-500/15 pb-2">
+                                            <h4 className="text-[9px] font-black uppercase tracking-[0.4em] text-red-500">Identification</h4>
+                                            {!editingIdentifiers && (
+                                                <button onClick={startEditingIdentifiers} className="text-white/30 hover:text-red-500 transition-colors">
+                                                    <Pencil className="w-3 h-3" />
+                                                </button>
+                                            )}
+                                        </div>
+                                        {editingIdentifiers ? (
+                                            <form onSubmit={handleUpdateIdentifiers} className="space-y-3">
+                                                <div>
+                                                    <label className={labelCls}>ISRC</label>
+                                                    <input type="text" placeholder="e.g. USRC17607839" className={inputCls} value={identifierForm.isrc} onChange={e => setIdentifierForm({ ...identifierForm, isrc: e.target.value })} />
+                                                </div>
+                                                <div>
+                                                    <label className={labelCls}>UPC</label>
+                                                    <input type="text" placeholder="e.g. 093624947405" className={inputCls} value={identifierForm.upc} onChange={e => setIdentifierForm({ ...identifierForm, upc: e.target.value })} />
+                                                </div>
+                                                <div>
+                                                    <label className={labelCls}>Label</label>
+                                                    <input type="text" placeholder="Indie / None" className={inputCls} value={identifierForm.label} onChange={e => setIdentifierForm({ ...identifierForm, label: e.target.value })} />
+                                                </div>
+                                                <div className="flex gap-2 pt-1">
+                                                    <button type="button" onClick={() => setEditingIdentifiers(false)} className="flex-1 py-2.5 rounded-xl border border-white/[0.06] text-[10px] font-black uppercase tracking-wider text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">Cancel</button>
+                                                    <button type="submit" disabled={savingIdentifiers} className="flex-1 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all disabled:opacity-50">
+                                                        {savingIdentifiers ? 'Saving…' : 'Save'}
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        ) : (
+                                            [
+                                                { label: 'ISRC', value: selectedRelease.isrc || 'Not assigned' },
+                                                { label: 'UPC', value: selectedRelease.upc || 'Not assigned' },
+                                                { label: 'Label', value: selectedRelease.label || 'Indie / None' },
+                                            ].map(item => (
+                                                <div key={item.label}>
+                                                    <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-1">{item.label}</p>
+                                                    <p className="text-xs font-mono tracking-wider text-white/70">{item.value}</p>
+                                                </div>
+                                            ))
+                                        )}
                                     </div>
                                     <div className="space-y-4">
                                         <h4 className="text-[9px] font-black uppercase tracking-[0.4em] text-blue-500 border-b border-blue-500/15 pb-2">Technical Specs</h4>
@@ -1283,7 +1425,7 @@ export default function AdminDashboard() {
                                         <p className="text-xs font-bold text-white/50 break-all">{selectedRelease.user?.email}</p>
                                     </div>
                                 </div>
-                                <button onClick={() => setSelectedRelease(null)} className="w-full sm:w-auto px-8 py-3 bg-white text-black rounded-xl text-xs font-black uppercase tracking-wider hover:bg-zinc-100 transition-colors">Dismiss</button>
+                                <button onClick={closeReleaseModal} className="w-full sm:w-auto px-8 py-3 bg-white text-black rounded-xl text-xs font-black uppercase tracking-wider hover:bg-zinc-100 transition-colors">Dismiss</button>
                             </div>
                         </motion.div>
                     </motion.div>
