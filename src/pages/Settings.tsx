@@ -16,6 +16,7 @@ export default function Settings() {
   const [selectedPlanId, setSelectedPlanId] = useState('basic');
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [showPlanGrid, setShowPlanGrid] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -49,6 +50,28 @@ export default function Settings() {
       setMessage({ type: 'error', text: err.response?.data?.error || 'Update failed' });
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleAvatarSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingAvatar(true);
+    setMessage({ type: '', text: '' });
+    try {
+      const data = new FormData();
+      data.append('avatar', file);
+      const res = await api.post('/user/avatar', data, { headers: { 'Content-Type': 'multipart/form-data' } });
+      const newAvatarUrl = res.data.user.avatar_url;
+      setProfile(p => ({ ...p, avatar_url: newAvatarUrl }));
+      const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+      localStorage.setItem('user', JSON.stringify({ ...storedUser, avatar_url: newAvatarUrl }));
+      setMessage({ type: 'success', text: 'Avatar updated!' });
+    } catch (err: any) {
+      setMessage({ type: 'error', text: err.response?.data?.error || 'Failed to upload avatar' });
+    } finally {
+      setUploadingAvatar(false);
+      e.target.value = '';
     }
   };
 
@@ -242,14 +265,21 @@ export default function Settings() {
                   <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
                     <div className="relative group shrink-0">
                       <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-amber-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500" />
-                      <div className="relative w-20 h-20 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center text-white text-2xl font-display italic overflow-hidden">
+                      <div
+                        onClick={() => !uploadingAvatar && document.getElementById('avatar-upload')?.click()}
+                        className="relative w-20 h-20 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center text-white text-2xl font-display italic overflow-hidden cursor-pointer"
+                      >
                         {profile.avatar_url
                           ? <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
                           : profile.name.charAt(0).toUpperCase()
                         }
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer backdrop-blur-sm">
-                          <Camera className="w-5 h-5 text-white" />
+                        <div className={`absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm transition-opacity ${uploadingAvatar ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                          {uploadingAvatar
+                            ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            : <Camera className="w-5 h-5 text-white" />
+                          }
                         </div>
+                        <input id="avatar-upload" type="file" accept="image/*" className="sr-only" onChange={handleAvatarSelect} />
                       </div>
                     </div>
                     <div className="pt-1 text-center sm:text-left">

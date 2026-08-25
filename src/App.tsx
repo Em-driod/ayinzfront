@@ -51,6 +51,13 @@ function App() {
             </Layout>
           </ProtectedRoute>
         } />
+        <Route path="/releases/:id/edit" element={
+          <ProtectedRoute>
+            <Layout>
+              <NewRelease />
+            </Layout>
+          </ProtectedRoute>
+        } />
         {/* Add more routes as we create them */}
         <Route path="/analytics" element={
           <ProtectedRoute>

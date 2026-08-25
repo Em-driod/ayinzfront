@@ -1,35 +1,18 @@
+import { useState, useEffect, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Share2, ListMusic, BarChart3, Users, Sparkles } from 'lucide-react';
+import { ArrowRight, Share2, ListMusic, BarChart3, Users, Sparkles, Upload, CheckCircle, AlertCircle, Info } from 'lucide-react';
 import { SiSpotify } from 'react-icons/si';
 import PageShell from '../components/PageShell';
+import api from '../utils/api';
 
-const playlists = [
-  {
-    name: 'Afro Replay',
-    curator: 'Curated by Ayinz',
-    cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67706c0000d72c8af591abf85398f917697c48',
-    url: 'https://open.spotify.com/playlist/3hJrrIzwP5O1PVCCfUzR3R',
-  },
-  {
-    name: 'Gospel Replay',
-    curator: 'Curated by Ayinz',
-    cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67706c0000d72cfa5fd7c023ecef67ceb9957f',
-    url: 'https://open.spotify.com/playlist/1roi8BsP4VlfRSejFm2niq',
-  },
-  {
-    name: 'Global Hip Hop',
-    curator: 'Curated by Ayinz',
-    cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67706c0000d72c23636ac93b84eda3d51e48cb',
-    url: 'https://open.spotify.com/playlist/5lMTJUjITxZr87KOLapYAt',
-  },
-  {
-    name: 'Afrobeat Monsters',
-    curator: 'Partner playlist',
-    cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67706c0000d72cfebffe28d42251c93970a271',
-    url: 'https://open.spotify.com/playlist/6qcDtSppKU2okCLHI6k52d',
-  },
-];
+interface Playlist {
+  _id: string;
+  name: string;
+  curator: string;
+  cover: string;
+  url: string;
+}
 
 const steps = [
   {
@@ -59,7 +42,47 @@ const steps = [
   },
 ];
 
+const inputCls = "w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 focus:border-red-600/50 outline-none transition-all font-medium";
+
 export default function Promote() {
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+
+  const [form, setForm] = useState({ artiste_name: '', spotify_link: '', email: '' });
+  const [attachment, setAttachment] = useState<File | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [status, setStatus] = useState<{ type: '' | 'success' | 'error'; text: string }>({ type: '', text: '' });
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await api.get('/promote/playlists');
+        setPlaylists(res.data.playlists || []);
+      } catch { /* silently hide the section if unavailable */ }
+    })();
+  }, []);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setStatus({ type: '', text: '' });
+    try {
+      const data = new FormData();
+      data.append('artiste_name', form.artiste_name);
+      data.append('spotify_link', form.spotify_link);
+      data.append('email', form.email);
+      if (attachment) data.append('attachment', attachment);
+
+      const res = await api.post('/promote/submit', data, { headers: { 'Content-Type': 'multipart/form-data' } });
+      setStatus({ type: 'success', text: res.data.message || 'Submitted! We\'ll get back to you within 7 days.' });
+      setForm({ artiste_name: '', spotify_link: '', email: '' });
+      setAttachment(null);
+    } catch (err: any) {
+      setStatus({ type: 'error', text: err.response?.data?.error || 'Failed to submit. Please try again.' });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <PageShell
       eyebrow="Promotion"
@@ -83,43 +106,117 @@ export default function Promote() {
       </div>
 
       {/* Featured playlists */}
+      {playlists.length > 0 && (
+        <div className="mb-16">
+          <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            className="mb-6">
+            <p className="text-[9px] uppercase tracking-[0.35em] font-bold text-white/25 mb-2">Get Playlisted</p>
+            <h2 className="text-xl font-black text-white">Playlists actively pulling from Ayinz artists.</h2>
+            <p className="text-xs text-white/35 font-light mt-2 max-w-lg leading-relaxed">
+              These are real, active Spotify playlists. Submitting your release through Ayinz puts it in front of the
+              same people who run these.
+            </p>
+          </motion.div>
+
+          <div className="grid sm:grid-cols-2 gap-4">
+            {playlists.map((p, i) => (
+              <motion.a
+                key={p._id}
+                href={p.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.07 }}
+                whileHover={{ y: -4 }}
+                className="group flex items-center gap-4 p-4 rounded-2xl border border-white/[0.07] bg-white/[0.02] hover:border-white/15 hover:bg-white/[0.04] transition-all duration-300"
+              >
+                <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 border border-white/[0.08]">
+                  <img src={p.cover} alt={p.name} className="w-full h-full object-cover" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-black text-white truncate">{p.name}</p>
+                  <p className="text-[9px] uppercase tracking-[0.2em] font-bold text-white/30 mt-1">{p.curator}</p>
+                </div>
+                <div className="w-8 h-8 rounded-full border border-white/[0.08] bg-white/[0.03] flex items-center justify-center shrink-0 group-hover:border-[#1DB954]/40 group-hover:bg-[#1DB954]/10 transition-all">
+                  <SiSpotify className="w-3.5 h-3.5 text-white/40 group-hover:text-[#1DB954] transition-colors" />
+                </div>
+              </motion.a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Playlist submission form */}
       <div className="mb-16">
-        <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="mb-6">
-          <p className="text-[9px] uppercase tracking-[0.35em] font-bold text-white/25 mb-2">Get Playlisted</p>
-          <h2 className="text-xl font-black text-white">Playlists actively pulling from Ayinz artists.</h2>
-          <p className="text-xs text-white/35 font-light mt-2 max-w-lg leading-relaxed">
-            These are real, active Spotify playlists — three curated in-house, one from a partner curator. Submitting
-            your release through Ayinz puts it in front of the same people who run these.
-          </p>
+        <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-6">
+          <p className="text-[9px] uppercase tracking-[0.35em] font-bold text-white/25 mb-2">Submit for Consideration</p>
+          <h2 className="text-xl font-black text-white">Get your track in front of our curators.</h2>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 gap-4">
-          {playlists.map((p, i) => (
-            <motion.a
-              key={p.name}
-              href={p.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.07 }}
-              whileHover={{ y: -4 }}
-              className="group flex items-center gap-4 p-4 rounded-2xl border border-white/[0.07] bg-white/[0.02] hover:border-white/15 hover:bg-white/[0.04] transition-all duration-300"
-            >
-              <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 border border-white/[0.08]">
-                <img src={p.cover} alt={p.name} className="w-full h-full object-cover" />
+        <div className="p-6 md:p-8 rounded-[2rem] border border-white/[0.07] bg-white/[0.02]">
+          {status.type === 'success' ? (
+            <div className="flex items-start gap-4 p-5 rounded-2xl bg-red-600/10 border border-red-600/20 text-red-400">
+              <CheckCircle className="w-5 h-5 shrink-0 mt-0.5" />
+              <p className="text-sm font-bold">{status.text}</p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {status.type === 'error' && (
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-red-600/10 border border-red-600/20 text-red-400 text-xs font-bold">
+                  <AlertCircle className="w-4 h-4 shrink-0" />{status.text}
+                </div>
+              )}
+              <div className="grid sm:grid-cols-2 gap-5">
+                <div className="space-y-1.5">
+                  <label className="text-[9px] font-black uppercase tracking-widest text-white/40">Artiste Name</label>
+                  <input type="text" required placeholder="Enter your artiste name" className={inputCls}
+                    value={form.artiste_name} onChange={e => setForm({ ...form, artiste_name: e.target.value })} />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[9px] font-black uppercase tracking-widest text-white/40">Email</label>
+                  <input type="email" required placeholder="Enter your email address" className={inputCls}
+                    value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
+                </div>
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-black text-white truncate">{p.name}</p>
-                <p className="text-[9px] uppercase tracking-[0.2em] font-bold text-white/30 mt-1">{p.curator}</p>
+              <div className="space-y-1.5">
+                <label className="text-[9px] font-black uppercase tracking-widest text-white/40">Song Spotify Link</label>
+                <input type="url" required placeholder="Paste your song Spotify link here" className={inputCls}
+                  value={form.spotify_link} onChange={e => setForm({ ...form, spotify_link: e.target.value })} />
               </div>
-              <div className="w-8 h-8 rounded-full border border-white/[0.08] bg-white/[0.03] flex items-center justify-center shrink-0 group-hover:border-[#1DB954]/40 group-hover:bg-[#1DB954]/10 transition-all">
-                <SiSpotify className="w-3.5 h-3.5 text-white/40 group-hover:text-[#1DB954] transition-colors" />
+
+              <div className="space-y-1.5">
+                <label className="text-[9px] font-black uppercase tracking-widest text-white/40">Attach Screenshot (optional)</label>
+                <div
+                  onClick={() => document.getElementById('promo-attachment')?.click()}
+                  className={`py-6 border-2 border-dashed rounded-xl transition-all cursor-pointer flex flex-col items-center justify-center gap-2 ${attachment ? 'border-red-600/30 bg-red-600/5' : 'border-white/10 bg-black/20 hover:border-white/20'}`}
+                >
+                  <Upload className={`w-4 h-4 ${attachment ? 'text-red-500' : 'text-white/30'}`} />
+                  <p className="text-[10px] font-black uppercase tracking-widest text-white/60">
+                    {attachment ? attachment.name : 'Attach the screenshot of the playlist you follow'}
+                  </p>
+                  <input id="promo-attachment" type="file" accept="image/*" className="sr-only"
+                    onChange={e => { if (e.target.files?.[0]) setAttachment(e.target.files[0]); }} />
+                </div>
               </div>
-            </motion.a>
-          ))}
+
+              <div className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                <Info className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
+                <ul className="text-[10px] text-white/40 font-medium leading-relaxed space-y-1 list-disc list-inside">
+                  <li>Share the playlist to at least 2 of your social platforms</li>
+                  <li>Follow the playlist</li>
+                  <li>Screenshot it and attach it above</li>
+                </ul>
+              </div>
+
+              <button type="submit" disabled={submitting}
+                className="w-full bg-red-600 hover:bg-red-500 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all disabled:opacity-50 flex items-center justify-center gap-2.5 active:scale-95">
+                {submitting ? <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" /> : 'Submit for Consideration'}
+              </button>
+              <p className="text-[9px] text-white/25 font-bold text-center">We'll get back to you through your email within 7 days.</p>
+            </form>
+          )}
         </div>
       </div>
 

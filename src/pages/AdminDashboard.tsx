@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Users, Music, DollarSign, CheckCircle, TrendingUp, BarChart3, X, Search, ChevronRight, LayoutDashboard, Wallet, MessageCircle, Send, UserCheck, UserPlus, Eye, Pencil, CreditCard, ArrowUpRight, Shield, AlertCircle } from 'lucide-react';
+import { Users, Music, DollarSign, CheckCircle, TrendingUp, BarChart3, X, Search, ChevronRight, LayoutDashboard, Wallet, MessageCircle, Send, UserCheck, UserPlus, Eye, Pencil, CreditCard, ArrowUpRight, Shield, AlertCircle, ListMusic, Plus, Trash2, ExternalLink, Paperclip } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../utils/api';
@@ -62,6 +62,26 @@ interface Release {
         featured_artist?: string;
         songwriter?: string;
     }[];
+}
+
+interface Playlist {
+    _id: string;
+    name: string;
+    curator: string;
+    cover: string;
+    url: string;
+    order: number;
+    active: boolean;
+}
+
+interface PromoSubmission {
+    _id: string;
+    artiste_name: string;
+    spotify_link: string;
+    email: string;
+    attachment_url?: string;
+    status: 'pending' | 'reviewed';
+    created_at: string;
 }
 
 interface Ticket {
@@ -146,7 +166,7 @@ export default function AdminDashboard() {
     const [paymentsError, setPaymentsError] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'releases' | 'payouts' | 'support' | 'payments'>('overview');
+    const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'releases' | 'payouts' | 'support' | 'payments' | 'promote'>('overview');
     const [selectedUserFilter, setSelectedUserFilter] = useState<User | null>(null);
     const [activeTicket, setActiveTicket] = useState<Ticket | null>(null);
     const [replyMessage, setReplyMessage] = useState('');
@@ -170,15 +190,24 @@ export default function AdminDashboard() {
     const [updatingUser, setUpdatingUser] = useState(false);
     const [editUserForm, setEditUserForm] = useState({ name: '', email: '', password: '', subscription: 'basic' });
 
+    const [promoteSubTab, setPromoteSubTab] = useState<'playlists' | 'submissions'>('playlists');
+    const [playlists, setPlaylists] = useState<Playlist[]>([]);
+    const [promoSubmissions, setPromoSubmissions] = useState<PromoSubmission[]>([]);
+    const [editingPlaylist, setEditingPlaylist] = useState<Playlist | 'new' | null>(null);
+    const [playlistForm, setPlaylistForm] = useState({ name: '', curator: 'Curated by Ayinz', cover: '', url: '', order: 0, active: true });
+    const [savingPlaylist, setSavingPlaylist] = useState(false);
+
     const fetchData = async () => {
         try {
-            const [usersRes, releasesRes, payoutsRes, ticketsRes, paymentsRes, unrecordedRes] = await Promise.all([
+            const [usersRes, releasesRes, payoutsRes, ticketsRes, paymentsRes, unrecordedRes, playlistsRes, promoSubsRes] = await Promise.all([
                 api.get('/admin/users'),
                 api.get('/admin/releases'),
                 api.get('/admin/payouts'),
                 api.get('/support/all'),
                 api.get('/admin/payments').catch((e) => { setPaymentsError('Failed to load payment records: ' + (e.response?.data?.error || e.message)); return { data: { payments: [] } }; }),
                 api.get('/admin/payments/unrecorded').catch(() => ({ data: { users: [] } })),
+                api.get('/admin/playlists').catch(() => ({ data: { playlists: [] } })),
+                api.get('/admin/promo-submissions').catch(() => ({ data: { submissions: [] } })),
             ]);
             setUsers(usersRes.data.users);
             setReleases(releasesRes.data.releases);
@@ -186,6 +215,8 @@ export default function AdminDashboard() {
             setTickets(ticketsRes.data.tickets);
             setPayments(paymentsRes.data.payments || []);
             setUnrecordedPayers(unrecordedRes.data.users || []);
+            setPlaylists(playlistsRes.data.playlists || []);
+            setPromoSubmissions(promoSubsRes.data.submissions || []);
         } catch (err: any) {
             setError(err.response?.data?.error || 'Access denied. You must be an admin.');
         } finally {
@@ -337,6 +368,54 @@ export default function AdminDashboard() {
         } catch { alert('Failed to delete release'); }
     };
 
+    const startNewPlaylist = () => {
+        setPlaylistForm({ name: '', curator: 'Curated by Ayinz', cover: '', url: '', order: playlists.length, active: true });
+        setEditingPlaylist('new');
+    };
+
+    const startEditPlaylist = (p: Playlist) => {
+        setPlaylistForm({ name: p.name, curator: p.curator, cover: p.cover, url: p.url, order: p.order, active: p.active });
+        setEditingPlaylist(p);
+    };
+
+    const handleSavePlaylist = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSavingPlaylist(true);
+        try {
+            if (editingPlaylist === 'new') {
+                const res = await api.post('/admin/playlists', playlistForm);
+                setPlaylists([...playlists, res.data.playlist]);
+            } else if (editingPlaylist) {
+                const res = await api.patch(`/admin/playlists/${editingPlaylist._id}`, playlistForm);
+                setPlaylists(playlists.map(p => p._id === editingPlaylist._id ? res.data.playlist : p));
+            }
+            setEditingPlaylist(null);
+        } catch { alert('Failed to save playlist'); }
+        finally { setSavingPlaylist(false); }
+    };
+
+    const handleTogglePlaylistActive = async (p: Playlist) => {
+        try {
+            const res = await api.patch(`/admin/playlists/${p._id}`, { active: !p.active });
+            setPlaylists(playlists.map(pl => pl._id === p._id ? res.data.playlist : pl));
+        } catch { alert('Failed to update playlist'); }
+    };
+
+    const handleDeletePlaylist = async (id: string, name: string) => {
+        if (!window.confirm(`Delete playlist "${name}"?`)) return;
+        try {
+            await api.delete(`/admin/playlists/${id}`);
+            setPlaylists(playlists.filter(p => p._id !== id));
+        } catch { alert('Failed to delete playlist'); }
+    };
+
+    const handleMarkSubmissionReviewed = async (id: string) => {
+        try {
+            const res = await api.patch(`/admin/promo-submissions/${id}`, { status: 'reviewed' });
+            setPromoSubmissions(promoSubmissions.map(s => s._id === id ? res.data.submission : s));
+        } catch { alert('Failed to update submission'); }
+    };
+
     const handleCreateUser = async (e: React.FormEvent) => {
         e.preventDefault();
         setCreatingUser(true);
@@ -415,6 +494,7 @@ export default function AdminDashboard() {
         { id: 'payouts', name: 'Payouts', icon: Wallet, badge: 0 },
         { id: 'payments', name: 'Payments', icon: CreditCard, badge: 0 },
         { id: 'support', name: 'Support', icon: MessageCircle, badge: unreadCount },
+        { id: 'promote', name: 'Promote', icon: ListMusic, badge: promoSubmissions.filter(s => s.status === 'pending').length },
     ];
 
     const inputCls = "w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:border-white/20 focus:bg-white/[0.06] outline-none transition-all font-medium";
@@ -1107,6 +1187,117 @@ export default function AdminDashboard() {
                         </motion.div>
                     )}
 
+                    {/* PROMOTE */}
+                    {activeTab === 'promote' && (
+                        <motion.div key="promote" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
+                            <div className="flex gap-1 p-1 bg-white/[0.03] border border-white/[0.06] rounded-xl mb-6 w-fit">
+                                {(['playlists', 'submissions'] as const).map(t => (
+                                    <button
+                                        key={t}
+                                        onClick={() => setPromoteSubTab(t)}
+                                        className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${promoteSubTab === t ? 'bg-red-600 text-white' : 'text-white/40 hover:text-white/70'}`}
+                                    >
+                                        {t === 'playlists' ? 'Playlists' : `Submissions ${promoSubmissions.filter(s => s.status === 'pending').length > 0 ? `(${promoSubmissions.filter(s => s.status === 'pending').length})` : ''}`}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {promoteSubTab === 'playlists' && (
+                                <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent overflow-hidden">
+                                    <div className="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between">
+                                        <div>
+                                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-0.5">Promote Page</p>
+                                            <h2 className="text-base font-black uppercase tracking-tight">Playlists <span className="text-white/20 font-bold ml-2">{playlists.length}</span></h2>
+                                        </div>
+                                        <button onClick={startNewPlaylist} className="flex items-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all">
+                                            <Plus className="w-3.5 h-3.5" /> Add Playlist
+                                        </button>
+                                    </div>
+                                    <div className="divide-y divide-white/[0.04]">
+                                        {playlists.map(p => (
+                                            <div key={p._id} className="px-4 sm:px-6 py-4 flex items-center gap-4">
+                                                <div className="w-12 h-12 rounded-lg overflow-hidden bg-white/5 border border-white/10 shrink-0">
+                                                    {p.cover ? <img src={p.cover} alt={p.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-white/10"><ListMusic className="w-5 h-5" /></div>}
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <p className="text-sm font-bold text-white truncate">{p.name}</p>
+                                                    <p className="text-[10px] text-white/30 font-medium truncate">{p.curator}</p>
+                                                </div>
+                                                <span className={`text-[8px] font-black uppercase px-2 py-1 rounded-lg border shrink-0 ${p.active ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-white/5 border-white/10 text-white/30'}`}>
+                                                    {p.active ? 'Live' : 'Hidden'}
+                                                </span>
+                                                <div className="flex items-center gap-1.5 shrink-0">
+                                                    <button onClick={() => handleTogglePlaylistActive(p)} title={p.active ? 'Hide from Promote page' : 'Show on Promote page'} className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-white transition-all">
+                                                        <Eye className="w-3.5 h-3.5" />
+                                                    </button>
+                                                    <a href={p.url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-white transition-all">
+                                                        <ExternalLink className="w-3.5 h-3.5" />
+                                                    </a>
+                                                    <button onClick={() => startEditPlaylist(p)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-blue-400 transition-all">
+                                                        <Pencil className="w-3.5 h-3.5" />
+                                                    </button>
+                                                    <button onClick={() => handleDeletePlaylist(p._id, p.name)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-red-400 transition-all">
+                                                        <Trash2 className="w-3.5 h-3.5" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                        {playlists.length === 0 && (
+                                            <div className="py-24 text-center">
+                                                <ListMusic className="w-12 h-12 mx-auto mb-4 text-white/10" />
+                                                <p className="text-xs font-black uppercase tracking-[0.3em] text-white/20">No playlists yet</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {promoteSubTab === 'submissions' && (
+                                <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent overflow-hidden">
+                                    <div className="px-6 py-5 border-b border-white/[0.06]">
+                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-0.5">Promote Page</p>
+                                        <h2 className="text-base font-black uppercase tracking-tight">Submissions <span className="text-white/20 font-bold ml-2">{promoSubmissions.length}</span></h2>
+                                    </div>
+                                    <div className="divide-y divide-white/[0.04]">
+                                        {promoSubmissions.map(s => (
+                                            <div key={s._id} className="px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                                <div className="min-w-0">
+                                                    <p className="text-sm font-bold text-white truncate">{s.artiste_name}</p>
+                                                    <p className="text-[10px] text-white/30 font-medium truncate">{s.email}</p>
+                                                    <a href={s.spotify_link} target="_blank" rel="noopener noreferrer" className="text-[10px] text-red-400 hover:text-red-300 font-bold inline-flex items-center gap-1 mt-0.5">
+                                                        Spotify Link <ExternalLink className="w-2.5 h-2.5" />
+                                                    </a>
+                                                    {s.attachment_url && (
+                                                        <a href={s.attachment_url} target="_blank" rel="noopener noreferrer" className="text-[10px] text-white/40 hover:text-white font-bold inline-flex items-center gap-1 mt-0.5 ml-3">
+                                                            <Paperclip className="w-2.5 h-2.5" /> Attachment
+                                                        </a>
+                                                    )}
+                                                    <p className="text-[9px] text-white/20 mt-1">{new Date(s.created_at).toLocaleDateString()}</p>
+                                                </div>
+                                                <div className="flex items-center gap-2 shrink-0">
+                                                    <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl border ${s.status === 'reviewed' ? 'bg-white/[0.04] border-white/[0.06] text-white/30' : 'bg-amber-500/10 border-amber-500/20 text-amber-400'}`}>
+                                                        {s.status}
+                                                    </span>
+                                                    {s.status === 'pending' && (
+                                                        <button onClick={() => handleMarkSubmissionReviewed(s._id)} className="text-[9px] font-black uppercase px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white transition-all">
+                                                            Mark Reviewed
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                        {promoSubmissions.length === 0 && (
+                                            <div className="py-24 text-center">
+                                                <Send className="w-12 h-12 mx-auto mb-4 text-white/10" />
+                                                <p className="text-xs font-black uppercase tracking-[0.3em] text-white/20">No submissions yet</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </motion.div>
+                    )}
+
                 </AnimatePresence>
             </div>
 
@@ -1552,6 +1743,59 @@ export default function AdminDashboard() {
                                 </div>
                             </form>
                             </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Create/Edit Playlist Modal */}
+            <AnimatePresence>
+                {editingPlaylist && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-50 p-4">
+                        <motion.div initial={{ scale: 0.96, y: 16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, y: 16 }} className="w-full max-w-md rounded-2xl border border-white/[0.08] bg-[#0a0a0a] overflow-hidden">
+                            <div className="px-6 py-5 border-b border-white/[0.06] flex items-start justify-between gap-4">
+                                <div>
+                                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-red-500 mb-0.5">Promote Page</p>
+                                    <h3 className="text-lg font-display uppercase">{editingPlaylist === 'new' ? 'Add Playlist' : 'Edit Playlist'}</h3>
+                                </div>
+                                <button onClick={() => setEditingPlaylist(null)} className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-white transition-colors">
+                                    <X className="w-4 h-4" />
+                                </button>
+                            </div>
+                            <form onSubmit={handleSavePlaylist} className="p-6 space-y-4">
+                                <div>
+                                    <label className={labelCls}>Playlist Name</label>
+                                    <input type="text" required placeholder="e.g. Afro Replay" className={inputCls} value={playlistForm.name} onChange={e => setPlaylistForm({ ...playlistForm, name: e.target.value })} />
+                                </div>
+                                <div>
+                                    <label className={labelCls}>Curator</label>
+                                    <input type="text" placeholder="Curated by Ayinz" className={inputCls} value={playlistForm.curator} onChange={e => setPlaylistForm({ ...playlistForm, curator: e.target.value })} />
+                                </div>
+                                <div>
+                                    <label className={labelCls}>Cover Image URL</label>
+                                    <input type="text" required placeholder="https://..." className={inputCls} value={playlistForm.cover} onChange={e => setPlaylistForm({ ...playlistForm, cover: e.target.value })} />
+                                </div>
+                                <div>
+                                    <label className={labelCls}>Spotify URL</label>
+                                    <input type="text" required placeholder="https://open.spotify.com/playlist/..." className={inputCls} value={playlistForm.url} onChange={e => setPlaylistForm({ ...playlistForm, url: e.target.value })} />
+                                </div>
+                                <div className="grid grid-cols-2 gap-3 items-end">
+                                    <div>
+                                        <label className={labelCls}>Order</label>
+                                        <input type="number" className={inputCls} value={playlistForm.order} onChange={e => setPlaylistForm({ ...playlistForm, order: parseInt(e.target.value) || 0 })} />
+                                    </div>
+                                    <button type="button" onClick={() => setPlaylistForm({ ...playlistForm, active: !playlistForm.active })}
+                                        className={`h-[46px] rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all ${playlistForm.active ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-white/[0.04] border-white/[0.06] text-white/40'}`}>
+                                        {playlistForm.active ? 'Live on Site' : 'Hidden'}
+                                    </button>
+                                </div>
+                                <div className="flex gap-3 pt-2">
+                                    <button type="button" onClick={() => setEditingPlaylist(null)} className="flex-1 py-3 rounded-xl border border-white/[0.06] text-xs font-black uppercase tracking-wider text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">Cancel</button>
+                                    <button type="submit" disabled={savingPlaylist} className="flex-1 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-red-600/20 disabled:opacity-50">
+                                        {savingPlaylist ? 'Saving…' : 'Save'}
+                                    </button>
+                                </div>
+                            </form>
                         </motion.div>
                     </motion.div>
                 )}

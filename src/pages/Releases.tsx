@@ -208,14 +208,22 @@ export default function Releases() {
                         </h3>
 
                         {release.status === 'rejected' && (
-                          <div className="mb-3 p-2.5 rounded-xl bg-red-600/[0.06] border border-red-600/20 flex items-start gap-2">
-                            <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" />
-                            <div className="min-w-0">
-                              <p className="text-[8px] font-black text-red-500 uppercase tracking-widest mb-0.5">Rejected</p>
-                              <p className="text-[10px] font-medium text-red-300/80 leading-snug">
-                                {release.rejection_reason || 'No reason provided — contact support for details.'}
-                              </p>
+                          <div className="mb-3 p-2.5 rounded-xl bg-red-600/[0.06] border border-red-600/20 space-y-2">
+                            <div className="flex items-start gap-2">
+                              <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" />
+                              <div className="min-w-0">
+                                <p className="text-[8px] font-black text-red-500 uppercase tracking-widest mb-0.5">Rejected</p>
+                                <p className="text-[10px] font-medium text-red-300/80 leading-snug">
+                                  {release.rejection_reason || 'No reason provided — contact support for details.'}
+                                </p>
+                              </div>
                             </div>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); navigate(`/releases/${release.id}/edit`); }}
+                              className="w-full py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white text-[9px] font-black uppercase tracking-widest transition-all active:scale-95"
+                            >
+                              Fix & Resubmit
+                            </button>
                           </div>
                         )}
 

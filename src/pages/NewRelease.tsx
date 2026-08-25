@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Music, Upload, ArrowLeft, Lock, CheckCircle, AlertCircle, Plus, X, User as UserIcon, Settings, Info, Calendar, Hash, Type, ShieldAlert, ArrowUpRight, Clock, Send, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../utils/api';
@@ -14,45 +14,130 @@ const PLAN_TYPES: Record<string, string[]> = {
 const ROLES = ['Main Artist', 'Producer', 'Engineer', 'Remixer', 'Composer'];
 const AI_OPTIONS = ['No AI used', 'AI assisted lyrics', 'AI assisted melody', 'AI generated vocals', 'Full AI generation'];
 const LANGUAGES = ['English', 'Spanish', 'French', 'German', 'Yoruba', 'Igbo', 'Hausa', 'Swahili', 'Portuguese', 'Japanese', 'Chinese'];
+const DRAFT_KEY = 'ayinz_new_release_draft';
+
+const defaultFormData = (user: any) => ({
+    title: '',
+    artist: user.name || '',
+    type: 'Single',
+    genre: '',
+    release_date: '',
+    contact_email: user.email || '',
+    ai_assisted: 'No AI used',
+    is_instrumental: false,
+    language: 'English',
+    explicit: 'No',
+    isrc: '',
+    lyrics: '',
+    label: user.name || '',
+    copyright_date_release: new Date().getFullYear().toString() + ' ' + (user.name || ''),
+    copyright_date_recording: new Date().getFullYear().toString() + ' ' + (user.name || ''),
+});
 
 export default function NewRelease() {
     const navigate = useNavigate();
+    const { id: editId } = useParams();
+    const isEditMode = Boolean(editId);
     const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user') || '{}'));
     const plan: string = user.subscription || 'none';
     const [selectedPlanId, setSelectedPlanId] = useState('basic');
     const [paymentLoading, setPaymentLoading] = useState(false);
     const allowedTypes = ['Single', 'EP', 'Album'];
 
-    const [formData, setFormData] = useState({
-        title: '',
-        artist: user.name || '',
-        type: 'Single',
-        genre: '',
-        release_date: '',
-        contact_email: user.email || '',
-        ai_assisted: 'No AI used',
-        is_instrumental: false,
-        language: 'English',
-        explicit: 'No',
-        isrc: '',
-        lyrics: '',
-        label: user.name || '',
-        copyright_date_release: new Date().getFullYear().toString() + ' ' + (user.name || ''),
-        copyright_date_recording: new Date().getFullYear().toString() + ' ' + (user.name || ''),
-    });
+    // Restore an in-progress draft (create mode only) so a refresh or nav-away doesn't lose work
+    const draft = (!isEditMode && (() => {
+        try {
+            const raw = localStorage.getItem(DRAFT_KEY);
+            return raw ? JSON.parse(raw) : null;
+        } catch { return null; }
+    })()) || null;
+    const [draftRestored, setDraftRestored] = useState(Boolean(draft));
 
-    const [featuredArtists, setFeaturedArtists] = useState<string[]>([]);
-    const [contributors, setContributors] = useState<{ name: string, role: string }[]>([]);
-    const [songwriters, setSongwriters] = useState<string[]>([]);
-    const [musicians, setMusicians] = useState<{ name: string, instrument: string }[]>([]);
-    const [tracks, setTracks] = useState<{ title: string, artist: string, genre: string, featured_artist: string, songwriter: string, file: File | null }[]>([
-        { title: '', artist: user.name || '', genre: '', featured_artist: '', songwriter: '', file: null }
-    ]);
+    const [formData, setFormData] = useState(draft?.formData || defaultFormData(user));
+    const [featuredArtists, setFeaturedArtists] = useState<string[]>(draft?.featuredArtists || []);
+    const [contributors, setContributors] = useState<{ name: string, role: string }[]>(draft?.contributors || []);
+    const [songwriters, setSongwriters] = useState<string[]>(draft?.songwriters || []);
+    const [musicians, setMusicians] = useState<{ name: string, instrument: string }[]>(draft?.musicians || []);
+    const [tracks, setTracks] = useState<{ title: string, artist: string, genre: string, featured_artist: string, songwriter: string, file: File | null, existing_url?: string }[]>(
+        draft?.tracks || [{ title: '', artist: user.name || '', genre: '', featured_artist: '', songwriter: '', file: null }]
+    );
     const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
-    const [step, setStep] = useState(1);
+    const [existingCoverUrl, setExistingCoverUrl] = useState('');
+    const [step, setStep] = useState(draft?.step || 1);
     const [loading, setLoading] = useState(false);
+    const [loadingRelease, setLoadingRelease] = useState(isEditMode);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [rejectionReason, setRejectionReason] = useState('');
+
+    // Edit mode: load the rejected release to fix & resubmit
+    useEffect(() => {
+        if (!isEditMode) return;
+        (async () => {
+            try {
+                const res = await api.get(`/releases/${editId}`);
+                const r = res.data.release;
+                if (r.status !== 'rejected') {
+                    navigate('/releases');
+                    return;
+                }
+                setFormData({
+                    title: r.title || '',
+                    artist: r.artist || '',
+                    type: r.type || 'Single',
+                    genre: r.genre || '',
+                    release_date: r.release_date ? new Date(r.release_date).toISOString().slice(0, 10) : '',
+                    contact_email: r.contact_email || '',
+                    ai_assisted: r.ai_assisted || 'No AI used',
+                    is_instrumental: Boolean(r.is_instrumental),
+                    language: r.language || 'English',
+                    explicit: r.explicit || 'No',
+                    isrc: r.isrc || '',
+                    lyrics: r.lyrics || '',
+                    label: r.label || '',
+                    copyright_date_release: r.copyright_date_release || '',
+                    copyright_date_recording: r.copyright_date_recording || '',
+                });
+                setFeaturedArtists(r.featured_artists || []);
+                setContributors(r.contributors || []);
+                setSongwriters(r.songwriters || []);
+                setMusicians(r.musicians || []);
+                setTracks((r.tracks || []).map((t: any) => ({
+                    title: t.title || '', artist: t.artist || '', genre: t.genre || '',
+                    featured_artist: t.featured_artist || '', songwriter: t.songwriter || '',
+                    file: null, existing_url: t.song_url
+                })));
+                setExistingCoverUrl(r.cover_url || '');
+                setRejectionReason(r.rejection_reason || '');
+            } catch {
+                setError('Could not load this release for editing.');
+            } finally {
+                setLoadingRelease(false);
+            }
+        })();
+    }, [isEditMode, editId, navigate]);
+
+    // Autosave the in-progress draft (create mode only — edit mode always loads from the server)
+    useEffect(() => {
+        if (isEditMode) return;
+        const serializableTracks = tracks.map(({ file, ...rest }) => rest);
+        localStorage.setItem(DRAFT_KEY, JSON.stringify({
+            formData, featuredArtists, contributors, songwriters, musicians, step, tracks: serializableTracks
+        }));
+    }, [isEditMode, formData, featuredArtists, contributors, songwriters, musicians, step, tracks]);
+
+    const discardDraft = () => {
+        localStorage.removeItem(DRAFT_KEY);
+        setFormData(defaultFormData(user));
+        setFeaturedArtists([]);
+        setContributors([]);
+        setSongwriters([]);
+        setMusicians([]);
+        setTracks([{ title: '', artist: user.name || '', genre: '', featured_artist: '', songwriter: '', file: null }]);
+        setCoverImageFile(null);
+        setStep(1);
+        setDraftRestored(false);
+    };
 
     const addFeaturedArtist = () => setFeaturedArtists([...featuredArtists, '']);
     const removeFeaturedArtist = (index: number) => setFeaturedArtists(featuredArtists.filter((_, i) => i !== index));
@@ -135,8 +220,14 @@ export default function NewRelease() {
         data.append('musicians', JSON.stringify(musicians.filter(m => m.name.trim())));
 
         try {
-            await api.post('/releases', data, { headers: { 'Content-Type': 'multipart/form-data' } });
-            setSuccess('Release submitted — we\'ll begin distribution shortly.');
+            if (isEditMode) {
+                await api.patch(`/releases/${editId}`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
+                setSuccess('Release resubmitted — it\'s back in the review queue.');
+            } else {
+                await api.post('/releases', data, { headers: { 'Content-Type': 'multipart/form-data' } });
+                setSuccess('Release submitted — we\'ll begin distribution shortly.');
+            }
+            if (!isEditMode) localStorage.removeItem(DRAFT_KEY);
             setTimeout(() => navigate('/releases'), 2000);
         } catch (err: any) {
             setError(err.response?.data?.error || 'Failed to submit release. Please try again.');
@@ -232,9 +323,38 @@ export default function NewRelease() {
 
     const allTypes = ['Single', 'EP', 'Album'];
 
+    if (loadingRelease) {
+        return (
+            <div className="min-h-screen bg-mesh-main flex items-center justify-center">
+                <div className="w-10 h-10 border-3 border-red-600 border-t-transparent rounded-full animate-spin" />
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-mesh-main">
             <div className="relative z-10 p-5 md:p-10 max-w-7xl mx-auto space-y-12">
+
+                {/* ─── Rejection reason (edit mode) ─── */}
+                {isEditMode && rejectionReason && (
+                    <div className="rounded-2xl border border-red-600/20 bg-red-600/[0.06] p-5 flex items-start gap-4">
+                        <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                        <div>
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-red-500 mb-1">Why this was rejected</p>
+                            <p className="text-sm text-white/70 leading-relaxed">{rejectionReason}</p>
+                        </div>
+                    </div>
+                )}
+
+                {/* ─── Draft restored (create mode) ─── */}
+                {!isEditMode && draftRestored && (
+                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 flex items-center justify-between gap-4">
+                        <p className="text-xs font-bold text-white/60">We restored your in-progress release from where you left off.</p>
+                        <button type="button" onClick={discardDraft} className="text-[10px] font-black uppercase tracking-widest text-red-500 hover:text-white transition-colors shrink-0">
+                            Discard & Start Fresh
+                        </button>
+                    </div>
+                )}
 
                 {/* ─── Back & Progress ─── */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -243,7 +363,7 @@ export default function NewRelease() {
                         className="flex items-center text-white hover:text-white transition-colors text-[10px] font-black uppercase tracking-[0.3em] group"
                     >
                         <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-                        {step > 1 ? 'Previous Phase' : 'Exit Submission'}
+                        {step > 1 ? 'Previous Phase' : (isEditMode ? 'Cancel Edit' : 'Exit Submission')}
                     </button>
 
                     <div className="flex items-center gap-3">
@@ -275,7 +395,7 @@ export default function NewRelease() {
                                 </>
                             ) : (
                                 <>
-                                    <p className="label-caps text-red-500 mb-2">Phase 0{step} of 04</p>
+                                    <p className="label-caps text-red-500 mb-2">{isEditMode ? 'Resubmission — ' : ''}Phase 0{step} of 04</p>
                                     <h1 className="text-4xl md:text-5xl font-display italic tracking-tight text-white uppercase leading-[1.1] mb-6 pb-2">
                                         {step === 1 && <>Release<br /><span className="text-gradient-red px-1">Identity</span></>}
                                         {step === 2 && <>Technical<br /><span className="text-gradient-red px-1">Metadata</span></>}
@@ -679,7 +799,7 @@ export default function NewRelease() {
                                                                     >
                                                                         <Music className={`w-5 h-5 ${t.file ? 'text-red-500' : 'text-white/20'}`} />
                                                                         <p className="text-[10px] font-black uppercase tracking-widest text-white">
-                                                                            {t.file ? t.file.name : 'Choose Audio File'}
+                                                                            {t.file ? t.file.name : (t.existing_url ? 'Re-upload Audio to Confirm Fix' : 'Choose Audio File')}
                                                                         </p>
                                                                         <input id={`track-upload-${i}`} type="file" required className="sr-only" accept=".mp3,.wav"
                                                                             onChange={e => { if (e.target.files?.[0]) updateTrack(i, 'file', e.target.files[0]); }} />
@@ -696,14 +816,16 @@ export default function NewRelease() {
                                                                 onClick={() => document.getElementById('cover-art-upload')?.click()}
                                                                 className="h-64 rounded-[2rem] border-2 border-dashed border-white/5 bg-white/[0.02] hover:bg-red-600/5 hover:border-red-600/30 transition-all cursor-pointer group relative overflow-hidden flex items-center justify-center max-w-lg mx-auto w-full"
                                                             >
-                                                                {coverImageFile ? (
+                                                                {(coverImageFile || existingCoverUrl) ? (
                                                                     <>
-                                                                        <img src={URL.createObjectURL(coverImageFile)} alt="Cover preview" className="absolute inset-0 w-full h-full object-cover opacity-30" />
+                                                                        <img src={coverImageFile ? URL.createObjectURL(coverImageFile) : existingCoverUrl} alt="Cover preview" className="absolute inset-0 w-full h-full object-cover opacity-30" />
                                                                         <div className="relative z-10 flex flex-col items-center gap-3">
                                                                             <div className="w-12 h-12 rounded-xl bg-black/50 backdrop-blur-md flex items-center justify-center">
                                                                                 <Upload className="w-6 h-6 text-white" />
                                                                             </div>
-                                                                            <p className="text-[10px] font-black uppercase text-white tracking-widest">Update Artwork</p>
+                                                                            <p className="text-[10px] font-black uppercase text-white tracking-widest">
+                                                                                {coverImageFile ? 'Update Artwork' : 'Replace Artwork (Optional)'}
+                                                                            </p>
                                                                         </div>
                                                                     </>
                                                                 ) : (
@@ -730,7 +852,7 @@ export default function NewRelease() {
                                                             {loading ? (
                                                                 <div className="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin" />
                                                             ) : (
-                                                                <>Ship to Digital Platforms <Upload className="w-6 h-6 group-hover:-translate-y-1 transition-transform" /></>
+                                                                <>{isEditMode ? 'Resubmit for Review' : 'Ship to Digital Platforms'} <Upload className="w-6 h-6 group-hover:-translate-y-1 transition-transform" /></>
                                                             )}
                                                         </button>
                                                         <p className="text-[10px] font-black text-white uppercase tracking-widest text-center mt-8 px-10 leading-relaxed">

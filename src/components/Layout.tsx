@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, Upload, BarChart3, DollarSign, Settings, X, LogOut, ShieldAlert, HelpCircle } from 'lucide-react';
+import { Home, Upload, BarChart3, DollarSign, Settings, X, LogOut, ShieldAlert, HelpCircle, Bell } from 'lucide-react';
 import api from '../utils/api';
 
 interface LayoutProps {
@@ -32,6 +32,22 @@ export default function Layout({ children }: LayoutProps) {
       if (u.email === 'Ayinzcontact@gmail.com') isAdmin = true;
     } catch (e) {}
   }
+
+  const [unreadTickets, setUnreadTickets] = useState(0);
+
+  useEffect(() => {
+    if (isLandingPage || isAuthPage) return;
+    const fetchUnread = async () => {
+      try {
+        const res = await api.get('/support/my');
+        const tickets = res.data.tickets || [];
+        setUnreadTickets(tickets.filter((t: any) => t.unreadUser).length);
+      } catch (e) {}
+    };
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 30000);
+    return () => clearInterval(interval);
+  }, [location.pathname]);
 
   const handleSignOut = async () => {
     setIsSigningOut(true);
@@ -92,6 +108,11 @@ export default function Layout({ children }: LayoutProps) {
             >
               <HelpCircle className={`mr-3 h-4 w-4 shrink-0 ${location.pathname === '/support' ? 'text-white' : 'text-zinc-500 group-hover:text-white'}`} />
               Support
+              {unreadTickets > 0 && (
+                <span className="ml-auto flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[9px] font-black">
+                  {unreadTickets}
+                </span>
+              )}
             </Link>
 
             {isAdmin && (
@@ -175,6 +196,11 @@ export default function Layout({ children }: LayoutProps) {
                 >
                   <HelpCircle className={`mr-3 h-5 w-5 shrink-0 ${location.pathname === '/support' ? 'text-white' : 'text-zinc-500'}`} />
                   Support
+                  {unreadTickets > 0 && (
+                    <span className="ml-auto flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[9px] font-black">
+                      {unreadTickets}
+                    </span>
+                  )}
                 </Link>
 
                 {isAdmin && (
@@ -239,21 +265,36 @@ export default function Layout({ children }: LayoutProps) {
               <span className="text-lg font-black text-white tracking-tighter">Ayinz</span>
             </div>
 
-            {/* Right: Admin shortcut (only for admins) */}
-            {isAdmin ? (
+            {/* Right: Notifications + Admin shortcut */}
+            <div className="flex items-center gap-2">
               <Link
-                to="/admin"
-                className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all active:scale-90 ${
-                  location.pathname === '/admin'
+                to="/support"
+                className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition-all active:scale-90 ${
+                  location.pathname === '/support'
                     ? 'bg-red-600 shadow-lg shadow-red-600/30'
-                    : 'bg-red-950/40 border border-red-900/40'
+                    : 'bg-zinc-900/60 border border-zinc-800 text-zinc-500'
                 }`}
               >
-                <ShieldAlert className="w-5 h-5 text-red-400" />
+                <Bell className={`w-4 h-4 ${location.pathname === '/support' ? 'text-white' : ''}`} />
+                {unreadTickets > 0 && (
+                  <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[16px] h-[16px] px-1 rounded-full bg-red-500 text-white text-[8px] font-black border-2 border-[#0a0a0a]">
+                    {unreadTickets}
+                  </span>
+                )}
               </Link>
-            ) : (
-              <div className="w-10" />
-            )}
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all active:scale-90 ${
+                    location.pathname === '/admin'
+                      ? 'bg-red-600 shadow-lg shadow-red-600/30'
+                      : 'bg-red-950/40 border border-red-900/40'
+                  }`}
+                >
+                  <ShieldAlert className="w-5 h-5 text-red-400" />
+                </Link>
+              )}
+            </div>
           </div>
         </div>
 
