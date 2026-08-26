@@ -1,9 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Bell, Megaphone, Sparkles, AlertTriangle, Gift, Inbox, MessageCircle, X } from 'lucide-react';
+import { Bell, Megaphone, Sparkles, AlertTriangle, Gift, Inbox, MessageCircle, Trash2, ArrowRight } from 'lucide-react';
 import api from '../utils/api';
 import { linkify } from '../utils/linkify';
+import { getReadIds, markAllRead, getDeletedIds, deleteNotificationForMe } from '../utils/notificationStorage';
 
 interface AyinzNotification {
   _id: string;
@@ -33,12 +35,6 @@ type FeedItem =
   | { kind: 'notification'; id: string; title: string; preview: string; date: string; unread: boolean; template: AyinzNotification['template'] }
   | { kind: 'ticket'; id: string; title: string; preview: string; date: string; unread: boolean; resolved: boolean };
 
-const READ_KEY = 'ayinz_read_notifications';
-
-const getRead = (): string[] => {
-  try { return JSON.parse(localStorage.getItem(READ_KEY) || '[]'); } catch { return []; }
-};
-
 const TEMPLATE_META: Record<AyinzNotification['template'], { icon: any; accent: string }> = {
   announcement: { icon: Megaphone, accent: 'text-red-400' },
   promo: { icon: Gift, accent: 'text-amber-400' },
@@ -62,10 +58,32 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<AyinzNotification[]>([]);
   const [tickets, setTickets] = useState<ITicket[]>([]);
-  const [readIds, setReadIds] = useState<string[]>(getRead());
+  const [readIds, setReadIds] = useState<string[]>(getReadIds());
   const [open, setOpen] = useState(false);
-  const [viewingNotification, setViewingNotification] = useState<AyinzNotification | null>(null);
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const MENU_WIDTH = 320;
+
+  const recomputeMenuPos = useCallback(() => {
+    const rect = buttonRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const left = Math.max(8, Math.min(rect.right - MENU_WIDTH, window.innerWidth - MENU_WIDTH - 8));
+    setMenuPos({ top: rect.bottom + 8, left });
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    recomputeMenuPos();
+    window.addEventListener('resize', recomputeMenuPos);
+    window.addEventListener('scroll', recomputeMenuPos, true);
+    return () => {
+      window.removeEventListener('resize', recomputeMenuPos);
+      window.removeEventListener('scroll', recomputeMenuPos, true);
+    };
+  }, [open, recomputeMenuPos]);
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -74,7 +92,9 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
           api.get('/notifications/mine').catch(() => ({ data: { notifications: [] } })),
           api.get('/support/my').catch(() => ({ data: { tickets: [] } })),
         ]);
-        setNotifications(notifRes.data.notifications || []);
+        const deleted = getDeletedIds();
+        const liveNotifications: AyinzNotification[] = (notifRes.data.notifications || []).filter((n: AyinzNotification) => !deleted.includes(n._id));
+        setNotifications(liveNotifications);
         setTickets((ticketRes.data.tickets || []).filter((t: ITicket) => t.status === 'Open'));
       } catch (e) {}
     };
@@ -85,9 +105,10 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
+      const target = e.target as Node;
+      if (containerRef.current?.contains(target)) return;
+      if (menuRef.current?.contains(target)) return;
+      setOpen(false);
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -126,9 +147,7 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
     const next = !open;
     setOpen(next);
     if (next && notifications.length > 0) {
-      const merged = Array.from(new Set([...readIds, ...notifications.map(n => n._id)]));
-      setReadIds(merged);
-      localStorage.setItem(READ_KEY, JSON.stringify(merged));
+      setReadIds(markAllRead(notifications.map(n => n._id)));
     }
   };
 
@@ -139,10 +158,15 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
   };
 
   const openNotification = (id: string) => {
-    const n = notifications.find(x => x._id === id);
-    if (!n) return;
     setOpen(false);
-    setViewingNotification(n);
+    navigate(`/notifications?id=${id}`);
+  };
+
+  const removeNotification = (e: React.MouseEvent, n: AyinzNotification) => {
+    e.stopPropagation();
+    if (!window.confirm(`Remove "${n.title}" from your notifications?`)) return;
+    deleteNotificationForMe(n._id);
+    setNotifications(prev => prev.filter(x => x._id !== n._id));
   };
 
   const buttonClass = variant === 'mobile'
@@ -151,7 +175,7 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
 
   return (
     <div className="relative" ref={containerRef}>
-      <button onClick={toggleOpen} className={buttonClass}>
+      <button ref={buttonRef} onClick={toggleOpen} className={buttonClass}>
         <Bell className="w-4 h-4" />
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[16px] h-[16px] px-1 rounded-full bg-red-500 text-white text-[8px] font-black border-2 border-[#0a0a0a]">
@@ -160,16 +184,19 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
         )}
       </button>
 
-      <AnimatePresence>
-        {open && (
+      {createPortal(
+        <AnimatePresence>
+        {open && menuPos && (
           <motion.div
+            ref={menuRef}
             initial={{ opacity: 0, y: -8, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.97 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 top-full mt-2 w-80 max-w-[90vw] max-h-[70vh] overflow-y-auto rounded-2xl border border-zinc-800 bg-[#0a0a0a] shadow-2xl z-[60]"
+            style={{ top: menuPos.top, left: menuPos.left, width: MENU_WIDTH }}
+            className="fixed max-w-[90vw] max-h-[70vh] flex flex-col rounded-2xl border border-zinc-800 bg-[#0a0a0a] shadow-2xl z-[10000] overflow-hidden"
           >
-            <div className="px-4 py-3 border-b border-zinc-900 sticky top-0 bg-[#0a0a0a]">
+            <div className="px-4 py-3 border-b border-zinc-900 shrink-0">
               <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Notifications</span>
             </div>
 
@@ -179,7 +206,7 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
                 <p className="text-xs text-zinc-500 font-bold">No notifications yet</p>
               </div>
             ) : (
-              <div className="divide-y divide-zinc-900">
+              <div className="divide-y divide-zinc-900 overflow-y-auto">
                 {feed.map(item => {
                   const isTicket = item.kind === 'ticket';
                   const meta = isTicket ? null : TEMPLATE_META[item.template] || TEMPLATE_META.announcement;
@@ -207,6 +234,15 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
                         </p>
                       </div>
                       {item.unread && <span className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1.5 shrink-0" />}
+                      {!isTicket && (
+                        <button
+                          onClick={e => { const n = notifications.find(x => x._id === item.id); if (n) removeNotification(e, n); }}
+                          title="Remove"
+                          className="shrink-0 p-1.5 rounded-lg text-zinc-700 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   );
                   return isTicket ? (
@@ -232,62 +268,18 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
                 })}
               </div>
             )}
-          </motion.div>
-        )}
-      </AnimatePresence>
 
-      <AnimatePresence>
-        {viewingNotification && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setViewingNotification(null)}
-            className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[10000] p-4"
-          >
-            <motion.div
-              initial={{ scale: 0.94, opacity: 0, y: 16 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.94, opacity: 0, y: 16 }}
-              onClick={e => e.stopPropagation()}
-              className="w-full max-w-md rounded-[2rem] border border-white/10 bg-[#0a0a0a] overflow-hidden shadow-2xl relative"
+            <button
+              onClick={() => { setOpen(false); navigate('/notifications'); }}
+              className="shrink-0 flex items-center justify-center gap-1.5 px-4 py-3 border-t border-zinc-900 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white hover:bg-zinc-900/40 transition-colors"
             >
-              <button
-                onClick={() => setViewingNotification(null)}
-                className="absolute top-4 right-4 z-10 p-2 rounded-xl bg-black/40 backdrop-blur-md border border-white/10 text-white/50 hover:text-white transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
-
-              {viewingNotification.image_url && (
-                <div className="w-full aspect-video">
-                  <img src={viewingNotification.image_url} alt={viewingNotification.title} className="w-full h-full object-cover" />
-                </div>
-              )}
-
-              <div className="p-7 md:p-8">
-                {(() => {
-                  const meta = TEMPLATE_META[viewingNotification.template] || TEMPLATE_META.announcement;
-                  const Icon = meta.icon;
-                  return (
-                    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03] mb-5`}>
-                      <Icon className={`w-3.5 h-3.5 ${meta.accent}`} />
-                      <span className={`text-[9px] font-black uppercase tracking-[0.25em] ${meta.accent}`}>{viewingNotification.template}</span>
-                    </div>
-                  );
-                })()}
-
-                <h2 className="text-2xl font-display italic uppercase tracking-tight text-white leading-[1.05] mb-4">
-                  {viewingNotification.title}
-                </h2>
-                <p className="text-sm text-white/60 leading-relaxed font-medium whitespace-pre-wrap">
-                  {linkify(viewingNotification.message, 'text-white underline underline-offset-2 decoration-1 hover:opacity-80 transition-opacity break-all')}
-                </p>
-              </div>
-            </motion.div>
+              View all <ArrowRight className="w-3 h-3" />
+            </button>
           </motion.div>
         )}
-      </AnimatePresence>
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 }

@@ -13,6 +13,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import Revenue from './pages/Revenue';
 import Settings from './pages/Settings';
 import Support from './pages/Support';
+import Notifications from './pages/Notifications';
 import About from './pages/About';
 import Help from './pages/Help';
 import Promote from './pages/Promote';
@@ -85,6 +86,13 @@ function App() {
           <ProtectedRoute>
             <Layout>
               <Support />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        <Route path="/notifications" element={
+          <ProtectedRoute>
+            <Layout>
+              <Notifications />
             </Layout>
           </ProtectedRoute>
         } />

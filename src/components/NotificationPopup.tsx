@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Megaphone, Sparkles, AlertTriangle, Gift, ArrowRight } from 'lucide-react';
 import { linkify } from '../utils/linkify';
@@ -55,7 +56,7 @@ export default function NotificationPopup({ notifications }: { notifications: Ay
   const Icon = meta.icon;
   const isPromo = current.template === 'promo';
 
-  return (
+  return createPortal(
     <AnimatePresence>
       <motion.div
         key="notification-backdrop"
@@ -115,6 +116,7 @@ export default function NotificationPopup({ notifications }: { notifications: Ay
           </div>
         </motion.div>
       </motion.div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
