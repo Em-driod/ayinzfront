@@ -303,9 +303,9 @@ export default function Support() {
                 <h3 className="label-caps opacity-50">Knowledge Clusters</h3>
                 <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/5" />
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                 {CATEGORIES.map(category => (
-                    <motion.div 
+                    <motion.div
                         key={category.id}
                         whileHover={{ y: -5 }}
                         className="glass-card-premium p-6 md:p-8 rounded-[2rem] border-white/5 hover:border-red-600/30 transition-all cursor-pointer group"
@@ -378,24 +378,24 @@ export default function Support() {
                       <div className="absolute top-0 right-0 w-96 h-96 bg-red-600/5 blur-[120px] pointer-events-none" />
 
                       {/* Chat Header */}
-                      <div className="p-8 border-b border-white/5 flex justify-between items-center relative z-10">
-                          <div>
-                              <div className="flex items-center gap-4 mb-2">
-                                  <h3 className="text-2xl font-black uppercase tracking-tight text-white">{activeTicket.subject}</h3>
-                                  <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border shadow-2xl ${
+                      <div className="p-5 sm:p-8 border-b border-white/5 flex flex-row justify-between items-start sm:items-center gap-3 relative z-10">
+                          <div className="min-w-0">
+                              <div className="flex items-center gap-3 sm:gap-4 mb-2 min-w-0">
+                                  <h3 className="text-base sm:text-2xl font-black uppercase tracking-tight text-white truncate">{activeTicket.subject}</h3>
+                                  <span className={`shrink-0 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] border shadow-2xl ${
                                       activeTicket.status === 'Resolved' ? 'bg-zinc-900 text-white border-zinc-800' : 'bg-red-600/10 border-red-600/20 text-red-500'
                                   }`}>
                                       {activeTicket.status}
                                   </span>
                               </div>
-                              <p className="label-caps opacity-50 flex items-center gap-3 text-[10px]">
+                              <p className="label-caps opacity-50 flex flex-wrap items-center gap-2 sm:gap-3 text-[10px]">
                                   Ticket ID: <span className="font-mono text-white/40">{activeTicket._id.toUpperCase()}</span>
-                                  <span className="w-1 h-1 rounded-full bg-zinc-800" />
+                                  <span className="hidden sm:inline w-1 h-1 rounded-full bg-zinc-800" />
                                   Updated {new Date(activeTicket.updatedAt).toLocaleString()}
                               </p>
                           </div>
-                          <button onClick={() => setActiveTicket(null)} className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center text-white hover:text-white hover:bg-red-600 hover:border-red-600 transition-all active:scale-90 group">
-                              <X className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
+                          <button onClick={() => setActiveTicket(null)} className="w-10 h-10 sm:w-14 sm:h-14 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center text-white hover:text-white hover:bg-red-600 hover:border-red-600 transition-all active:scale-90 group shrink-0">
+                              <X className="w-5 h-5 sm:w-6 sm:h-6 group-hover:rotate-90 transition-transform duration-300" />
                           </button>
                       </div>
 

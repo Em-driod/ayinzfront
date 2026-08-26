@@ -121,7 +121,7 @@ export default function Register() {
                   value={formData.artisteName} onChange={e => setFormData({ ...formData, artisteName: e.target.value })} />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label htmlFor="phone" className={labelClass}>Phone Number</label>
                   <input id="phone" type="tel" placeholder="+234 800 000 0000" className={inputClass}
@@ -134,7 +134,7 @@ export default function Register() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label htmlFor="stateOfOrigin" className={labelClass}>State of Origin</label>
                   <input id="stateOfOrigin" type="text" placeholder="Lagos" className={inputClass}

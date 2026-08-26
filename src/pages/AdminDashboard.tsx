@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Users, Music, DollarSign, CheckCircle, TrendingUp, BarChart3, X, Search, ChevronRight, LayoutDashboard, Wallet, MessageCircle, Send, UserCheck, UserPlus, Eye, Pencil, CreditCard, ArrowUpRight, Shield, AlertCircle, ListMusic, Plus, Trash2, ExternalLink, Paperclip, Bell, Megaphone, Sparkles, AlertTriangle, Gift, Upload } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -193,6 +193,18 @@ export default function AdminDashboard() {
     const [error, setError] = useState('');
     const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'releases' | 'payouts' | 'support' | 'payments' | 'promote' | 'notifications'>('overview');
     const [selectedUserFilter, setSelectedUserFilter] = useState<User | null>(null);
+    const [userSearchQuery, setUserSearchQuery] = useState('');
+    const filteredUsers = useMemo(() => {
+        const q = userSearchQuery.trim().toLowerCase();
+        if (!q) return users;
+        return users.filter(u =>
+            u.name?.toLowerCase().includes(q)
+            || u.email?.toLowerCase().includes(q)
+            || u.artisteName?.toLowerCase().includes(q)
+            || u.referralCode?.toLowerCase().includes(q)
+            || u.myReferralCode?.toLowerCase().includes(q)
+        );
+    }, [users, userSearchQuery]);
     const [activeTicket, setActiveTicket] = useState<Ticket | null>(null);
     const [replyMessage, setReplyMessage] = useState('');
     const [replying, setReplying] = useState(false);
@@ -735,7 +747,7 @@ export default function AdminDashboard() {
                             </div>
 
                             {/* Quick stats row */}
-                            <div className="grid grid-cols-3 gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 {[
                                     { label: 'Total Releases', value: releases.length, icon: Music },
                                     { label: 'Open Tickets', value: tickets.filter(t => t.status === 'Open').length, icon: MessageCircle },
@@ -758,25 +770,36 @@ export default function AdminDashboard() {
                         <motion.div key="users" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
                             <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent overflow-hidden">
                                 {/* Header */}
-                                <div className="px-4 sm:px-8 py-5 border-b border-white/[0.06] flex items-center justify-between gap-4">
-                                    <div>
-                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-0.5">Registered</p>
-                                        <h2 className="text-base font-black uppercase tracking-tight">All Artists <span className="text-white/20 font-bold ml-2 text-sm">{users.length}</span></h2>
+                                <div className="px-4 sm:px-8 py-5 border-b border-white/[0.06] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                                    <div className="flex items-center justify-between sm:block gap-4">
+                                        <div>
+                                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-0.5">Registered</p>
+                                            <h2 className="text-base font-black uppercase tracking-tight">All Artists <span className="text-white/20 font-bold ml-2 text-sm">{users.length}</span></h2>
+                                        </div>
+                                        <button onClick={() => setShowCreateUser(true)} className="sm:hidden flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-blue-600/20 shrink-0">
+                                            <UserPlus className="w-3.5 h-3.5" />
+                                        </button>
                                     </div>
                                     <div className="flex items-center gap-2 shrink-0">
-                                        <div className="hidden md:flex items-center gap-2 bg-white/[0.04] border border-white/[0.06] px-4 py-2.5 rounded-xl">
-                                            <Search className="w-3.5 h-3.5 text-white/20" />
-                                            <input type="text" placeholder="Search artists…" className="bg-transparent text-xs text-white placeholder-white/20 outline-none w-40 font-medium" />
+                                        <div className="flex flex-1 sm:flex-none items-center gap-2 bg-white/[0.04] border border-white/[0.06] px-4 py-2.5 rounded-xl">
+                                            <Search className="w-3.5 h-3.5 text-white/20 shrink-0" />
+                                            <input
+                                                type="text"
+                                                placeholder="Search artists…"
+                                                value={userSearchQuery}
+                                                onChange={e => setUserSearchQuery(e.target.value)}
+                                                className="bg-transparent text-xs text-white placeholder-white/20 outline-none w-full sm:w-40 font-medium"
+                                            />
                                         </div>
-                                        <button onClick={() => setShowCreateUser(true)} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-blue-600/20">
-                                            <UserPlus className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Create</span>
+                                        <button onClick={() => setShowCreateUser(true)} className="hidden sm:flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-blue-600/20">
+                                            <UserPlus className="w-3.5 h-3.5" /> Create
                                         </button>
                                     </div>
                                 </div>
 
                                 {/* User rows */}
                                 <div className="divide-y divide-white/[0.04]">
-                                    {users.map((u, i) => (
+                                    {filteredUsers.map((u, i) => (
                                         <motion.div
                                             key={u._id}
                                             initial={{ opacity: 0, x: -8 }}
@@ -805,6 +828,9 @@ export default function AdminDashboard() {
                                                                 Code: {u.myReferralCode}
                                                             </span>
                                                         )}
+                                                        <span className="text-[8px] text-white/20 font-medium tabular-nums ml-auto">
+                                                            {new Date(u.created_at).toLocaleDateString()}
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -845,10 +871,12 @@ export default function AdminDashboard() {
                                             </div>
                                         </motion.div>
                                     ))}
-                                    {users.length === 0 && (
+                                    {filteredUsers.length === 0 && (
                                         <div className="py-24 text-center">
                                             <Users className="w-12 h-12 mx-auto mb-4 text-white/10" />
-                                            <p className="text-xs font-black uppercase tracking-[0.3em] text-white/20">No artists registered</p>
+                                            <p className="text-xs font-black uppercase tracking-[0.3em] text-white/20">
+                                                {users.length === 0 ? 'No artists registered' : 'No artists match your search'}
+                                            </p>
                                         </div>
                                     )}
                                 </div>
@@ -1829,9 +1857,9 @@ export default function AdminDashboard() {
                                 {(editingUser?.artisteName || editingUser?.phone || editingUser?.whatsapp || editingUser?.stateOfOrigin || editingUser?.nationality || editingUser?.socialLink) && (
                                     <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 space-y-3">
                                         <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30">Artist Profile</p>
-                                        <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
                                             {editingUser.artisteName && (
-                                                <div className="col-span-2">
+                                                <div className="sm:col-span-2">
                                                     <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-0.5">Artiste Name</p>
                                                     <p className="text-sm font-bold text-white">{editingUser.artisteName}</p>
                                                 </div>

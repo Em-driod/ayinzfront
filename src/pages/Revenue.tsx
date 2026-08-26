@@ -370,7 +370,7 @@ export default function Revenue() {
                     value={payoutForm.bankName} onChange={e => setPayoutForm({ ...payoutForm, bankName: e.target.value })} />
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className={labelClass}>Account Number</label>
                     <input type="text" required placeholder="10 digits" maxLength={10} className={`${inputClass} font-mono`}

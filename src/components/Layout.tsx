@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, Upload, BarChart3, DollarSign, Settings, X, LogOut, ShieldAlert, HelpCircle, Bell } from 'lucide-react';
+import { Home, Upload, BarChart3, DollarSign, Settings, X, LogOut, ShieldAlert, HelpCircle } from 'lucide-react';
 import api from '../utils/api';
+import NotificationBell from './NotificationBell';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -72,9 +73,12 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* ── Desktop Sidebar ── */}
       <div className="hidden lg:flex flex-col fixed inset-y-0 left-0 z-50 w-64 bg-[#0a0a0a] border-r border-zinc-900 overflow-y-auto">
-        <div className="flex items-center h-16 px-5 border-b border-zinc-900 shrink-0">
-          <img src="/ayinz.jpeg" alt="Ayinz" className="w-9 h-9 rounded-xl object-cover border border-zinc-800" />
-          <span className="ml-3 text-2xl font-black text-white tracking-tighter">Ayinz</span>
+        <div className="flex items-center justify-between h-16 px-5 border-b border-zinc-900 shrink-0">
+          <div className="flex items-center">
+            <img src="/ayinz.jpeg" alt="Ayinz" className="w-9 h-9 rounded-xl object-cover border border-zinc-800" />
+            <span className="ml-3 text-2xl font-black text-white tracking-tighter">Ayinz</span>
+          </div>
+          <NotificationBell variant="desktop" />
         </div>
 
         <nav className="flex-1 mt-6 px-3">
@@ -267,21 +271,7 @@ export default function Layout({ children }: LayoutProps) {
 
             {/* Right: Notifications + Admin shortcut */}
             <div className="flex items-center gap-2">
-              <Link
-                to="/support"
-                className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition-all active:scale-90 ${
-                  location.pathname === '/support'
-                    ? 'bg-red-600 shadow-lg shadow-red-600/30'
-                    : 'bg-zinc-900/60 border border-zinc-800 text-zinc-500'
-                }`}
-              >
-                <Bell className={`w-4 h-4 ${location.pathname === '/support' ? 'text-white' : ''}`} />
-                {unreadTickets > 0 && (
-                  <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[16px] h-[16px] px-1 rounded-full bg-red-500 text-white text-[8px] font-black border-2 border-[#0a0a0a]">
-                    {unreadTickets}
-                  </span>
-                )}
-              </Link>
+              <NotificationBell variant="mobile" />
               {isAdmin && (
                 <Link
                   to="/admin"
