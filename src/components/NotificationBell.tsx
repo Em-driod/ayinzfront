@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Bell, Megaphone, Sparkles, AlertTriangle, Gift, Inbox, MessageCircle } from 'lucide-react';
+import { Bell, Megaphone, Sparkles, AlertTriangle, Gift, Inbox, MessageCircle, X } from 'lucide-react';
 import api from '../utils/api';
 import { linkify } from '../utils/linkify';
 
@@ -64,6 +64,7 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
   const [tickets, setTickets] = useState<ITicket[]>([]);
   const [readIds, setReadIds] = useState<string[]>(getRead());
   const [open, setOpen] = useState(false);
+  const [viewingNotification, setViewingNotification] = useState<AyinzNotification | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -135,6 +136,13 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
     setOpen(false);
     try { await api.patch(`/support/${id}/read`); } catch (e) {}
     navigate('/support');
+  };
+
+  const openNotification = (id: string) => {
+    const n = notifications.find(x => x._id === id);
+    if (!n) return;
+    setOpen(false);
+    setViewingNotification(n);
   };
 
   const buttonClass = variant === 'mobile'
@@ -210,13 +218,73 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
                       {content}
                     </button>
                   ) : (
-                    <div key={`notif-${item.id}`} className="px-4 py-3 hover:bg-zinc-900/40 transition-colors">
+                    <div
+                      key={`notif-${item.id}`}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => openNotification(item.id)}
+                      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') openNotification(item.id); }}
+                      className="px-4 py-3 hover:bg-zinc-900/40 transition-colors cursor-pointer"
+                    >
                       {content}
                     </div>
                   );
                 })}
               </div>
             )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {viewingNotification && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setViewingNotification(null)}
+            className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[10000] p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.94, opacity: 0, y: 16 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.94, opacity: 0, y: 16 }}
+              onClick={e => e.stopPropagation()}
+              className="w-full max-w-md rounded-[2rem] border border-white/10 bg-[#0a0a0a] overflow-hidden shadow-2xl relative"
+            >
+              <button
+                onClick={() => setViewingNotification(null)}
+                className="absolute top-4 right-4 z-10 p-2 rounded-xl bg-black/40 backdrop-blur-md border border-white/10 text-white/50 hover:text-white transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              {viewingNotification.image_url && (
+                <div className="w-full aspect-video">
+                  <img src={viewingNotification.image_url} alt={viewingNotification.title} className="w-full h-full object-cover" />
+                </div>
+              )}
+
+              <div className="p-7 md:p-8">
+                {(() => {
+                  const meta = TEMPLATE_META[viewingNotification.template] || TEMPLATE_META.announcement;
+                  const Icon = meta.icon;
+                  return (
+                    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03] mb-5`}>
+                      <Icon className={`w-3.5 h-3.5 ${meta.accent}`} />
+                      <span className={`text-[9px] font-black uppercase tracking-[0.25em] ${meta.accent}`}>{viewingNotification.template}</span>
+                    </div>
+                  );
+                })()}
+
+                <h2 className="text-2xl font-display italic uppercase tracking-tight text-white leading-[1.05] mb-4">
+                  {viewingNotification.title}
+                </h2>
+                <p className="text-sm text-white/60 leading-relaxed font-medium whitespace-pre-wrap">
+                  {linkify(viewingNotification.message, 'text-white underline underline-offset-2 decoration-1 hover:opacity-80 transition-opacity break-all')}
+                </p>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
