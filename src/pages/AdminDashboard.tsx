@@ -1,6 +1,7 @@
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { Users, Music, DollarSign, CheckCircle, TrendingUp, BarChart3, X, Search, ChevronRight, LayoutDashboard, Wallet, MessageCircle, Send, UserCheck, UserPlus, Eye, Pencil, CreditCard, ArrowUpRight, Shield, AlertCircle, ListMusic, Plus, Trash2, ExternalLink, Paperclip, Bell, Megaphone, Sparkles, AlertTriangle, Gift, Upload } from 'lucide-react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import { Users, Music, DollarSign, CheckCircle, TrendingUp, BarChart3, X, Search, ChevronRight, ChevronDown, LayoutDashboard, Wallet, MessageCircle, Send, UserCheck, UserPlus, Eye, Pencil, CreditCard, ArrowUpRight, Shield, AlertCircle, ListMusic, Plus, Trash2, ExternalLink, Paperclip, Bell, Megaphone, Sparkles, AlertTriangle, Gift, Upload } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../utils/api';
@@ -242,6 +243,44 @@ export default function AdminDashboard() {
     });
     const [notificationImage, setNotificationImage] = useState<File | null>(null);
     const [savingNotification, setSavingNotification] = useState(false);
+    const [artistPickerOpen, setArtistPickerOpen] = useState(false);
+    const [artistSearchQuery, setArtistSearchQuery] = useState('');
+    const [artistMenuPos, setArtistMenuPos] = useState<{ top: number; left: number; width: number } | null>(null);
+    const artistButtonRef = useRef<HTMLButtonElement>(null);
+    const artistMenuRef = useRef<HTMLDivElement>(null);
+    const artistPickerResults = useMemo(() => {
+        const q = artistSearchQuery.trim().toLowerCase();
+        if (!q) return users;
+        return users.filter(u => u.name?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q) || u.artisteName?.toLowerCase().includes(q));
+    }, [users, artistSearchQuery]);
+
+    useEffect(() => {
+        if (!artistPickerOpen) return;
+        const recompute = () => {
+            const rect = artistButtonRef.current?.getBoundingClientRect();
+            if (!rect) return;
+            setArtistMenuPos({ top: rect.bottom + 6, left: rect.left, width: rect.width });
+        };
+        recompute();
+        window.addEventListener('resize', recompute);
+        window.addEventListener('scroll', recompute, true);
+        return () => {
+            window.removeEventListener('resize', recompute);
+            window.removeEventListener('scroll', recompute, true);
+        };
+    }, [artistPickerOpen]);
+
+    useEffect(() => {
+        if (!artistPickerOpen) return;
+        const handleClickOutside = (e: MouseEvent) => {
+            const target = e.target as Node;
+            if (artistButtonRef.current?.contains(target)) return;
+            if (artistMenuRef.current?.contains(target)) return;
+            setArtistPickerOpen(false);
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [artistPickerOpen]);
 
     const fetchData = async () => {
         try {
@@ -483,6 +522,8 @@ export default function AdminDashboard() {
     const resetNotificationForm = () => {
         setNotificationForm({ title: '', message: '', template: 'announcement', audience: 'all_users', target_user: '' });
         setNotificationImage(null);
+        setArtistSearchQuery('');
+        setArtistPickerOpen(false);
     };
 
     const handleCreateNotification = async (e: React.FormEvent) => {
@@ -2027,15 +2068,69 @@ export default function AdminDashboard() {
                                     </p>
                                 </div>
 
-                                {notificationForm.audience === 'individual' && (
-                                    <div>
-                                        <label className={labelCls}>Artist</label>
-                                        <select className={inputCls} value={notificationForm.target_user} onChange={e => setNotificationForm({ ...notificationForm, target_user: e.target.value })}>
-                                            <option value="">Select an artist…</option>
-                                            {users.map(u => <option key={u._id} value={u._id}>{u.name} — {u.email}</option>)}
-                                        </select>
-                                    </div>
-                                )}
+                                {notificationForm.audience === 'individual' && (() => {
+                                    const selectedArtist = users.find(u => u._id === notificationForm.target_user);
+                                    return (
+                                        <div>
+                                            <label className={labelCls}>Artist</label>
+                                            <button
+                                                type="button"
+                                                ref={artistButtonRef}
+                                                onClick={() => setArtistPickerOpen(o => !o)}
+                                                className={`${inputCls} flex items-center justify-between gap-2 text-left`}
+                                            >
+                                                <span className={`truncate ${selectedArtist ? 'text-white' : 'text-white/30'}`}>
+                                                    {selectedArtist ? `${selectedArtist.name} — ${selectedArtist.email}` : 'Select an artist…'}
+                                                </span>
+                                                <ChevronDown className={`w-3.5 h-3.5 text-white/30 shrink-0 transition-transform ${artistPickerOpen ? 'rotate-180' : ''}`} />
+                                            </button>
+
+                                            {createPortal(
+                                                artistPickerOpen && artistMenuPos && (
+                                                    <div
+                                                        ref={artistMenuRef}
+                                                        style={{ top: artistMenuPos.top, left: artistMenuPos.left, width: artistMenuPos.width }}
+                                                        className="fixed z-[10000] rounded-xl border border-white/[0.08] bg-[#111] shadow-2xl overflow-hidden"
+                                                    >
+                                                        <div className="p-2 border-b border-white/[0.06]">
+                                                            <div className="flex items-center gap-2 bg-white/[0.04] border border-white/[0.06] px-3 py-2 rounded-lg">
+                                                                <Search className="w-3.5 h-3.5 text-white/20 shrink-0" />
+                                                                <input
+                                                                    autoFocus
+                                                                    type="text"
+                                                                    placeholder="Search artists…"
+                                                                    value={artistSearchQuery}
+                                                                    onChange={e => setArtistSearchQuery(e.target.value)}
+                                                                    className="bg-transparent text-xs text-white placeholder-white/20 outline-none w-full font-medium"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="max-h-56 overflow-y-auto">
+                                                            {artistPickerResults.length === 0 ? (
+                                                                <p className="px-3 py-4 text-[10px] text-white/25 text-center font-bold uppercase tracking-widest">No matches</p>
+                                                            ) : artistPickerResults.map(u => (
+                                                                <button
+                                                                    type="button"
+                                                                    key={u._id}
+                                                                    onClick={() => {
+                                                                        setNotificationForm({ ...notificationForm, target_user: u._id });
+                                                                        setArtistPickerOpen(false);
+                                                                        setArtistSearchQuery('');
+                                                                    }}
+                                                                    className={`w-full text-left px-3 py-2.5 text-xs font-medium transition-colors ${u._id === notificationForm.target_user ? 'bg-red-600/15 text-red-400' : 'text-white/70 hover:bg-white/[0.04]'}`}
+                                                                >
+                                                                    <span className="font-bold text-white">{u.name}</span>
+                                                                    <span className="text-white/30"> — {u.email}</span>
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                ),
+                                                document.body
+                                            )}
+                                        </div>
+                                    );
+                                })()}
 
                                 <div>
                                     <label className={labelCls}>Template</label>
