@@ -46,6 +46,7 @@ const inputCls = "w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 
 
 export default function Promote() {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [brokenCovers, setBrokenCovers] = useState<Record<string, boolean>>({});
 
   const [form, setForm] = useState({ artiste_name: '', spotify_link: '', email: '' });
   const [attachment, setAttachment] = useState<File | null>(null);
@@ -132,8 +133,17 @@ export default function Promote() {
                 whileHover={{ y: -4 }}
                 className="group flex items-center gap-4 p-4 rounded-2xl border border-white/[0.07] bg-white/[0.02] hover:border-white/15 hover:bg-white/[0.04] transition-all duration-300"
               >
-                <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 border border-white/[0.08]">
-                  <img src={p.cover} alt={p.name} className="w-full h-full object-cover" />
+                <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 border border-white/[0.08] bg-white/[0.03] flex items-center justify-center">
+                  {p.cover && !brokenCovers[p._id] ? (
+                    <img
+                      src={p.cover}
+                      alt={p.name}
+                      className="w-full h-full object-cover"
+                      onError={() => setBrokenCovers(prev => ({ ...prev, [p._id]: true }))}
+                    />
+                  ) : (
+                    <ListMusic className="w-5 h-5 text-white/15" />
+                  )}
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-black text-white truncate">{p.name}</p>

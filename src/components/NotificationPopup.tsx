@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Megaphone, Sparkles, AlertTriangle, Gift, ArrowRight } from 'lucide-react';
+import { linkify } from '../utils/linkify';
 
 export interface AyinzNotification {
   _id: string;
@@ -96,7 +97,7 @@ export default function NotificationPopup({ notifications }: { notifications: Ay
               {current.title}
             </h2>
             <p className="text-sm text-white/60 leading-relaxed font-medium mb-7 whitespace-pre-wrap">
-              {current.message}
+              {linkify(current.message, `${accent.text} underline underline-offset-2 decoration-1 hover:opacity-80 transition-opacity break-all`)}
             </p>
 
             <button

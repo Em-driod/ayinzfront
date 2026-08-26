@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Bell, Megaphone, Sparkles, AlertTriangle, Gift, Inbox, MessageCircle } from 'lucide-react';
 import api from '../utils/api';
+import { linkify } from '../utils/linkify';
 
 interface AyinzNotification {
   _id: string;
@@ -193,7 +194,9 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
                           </p>
                           <span className="text-[9px] text-zinc-600 font-bold shrink-0">{timeAgo(item.date)}</span>
                         </div>
-                        <p className="text-[11px] text-zinc-400 font-medium mt-0.5 line-clamp-2">{item.preview}</p>
+                        <p className="text-[11px] text-zinc-400 font-medium mt-0.5 line-clamp-2">
+                          {isTicket ? item.preview : linkify(item.preview, 'text-zinc-300 underline underline-offset-2 decoration-1')}
+                        </p>
                       </div>
                       {item.unread && <span className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1.5 shrink-0" />}
                     </div>

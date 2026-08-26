@@ -232,6 +232,7 @@ export default function AdminDashboard() {
     const [promoSubmissions, setPromoSubmissions] = useState<PromoSubmission[]>([]);
     const [editingPlaylist, setEditingPlaylist] = useState<Playlist | 'new' | null>(null);
     const [playlistForm, setPlaylistForm] = useState({ name: '', curator: 'Curated by Ayinz', cover: '', url: '', order: 0, active: true });
+    const [playlistCoverFile, setPlaylistCoverFile] = useState<File | null>(null);
     const [savingPlaylist, setSavingPlaylist] = useState(false);
 
     const [notifications, setNotifications] = useState<AdminNotification[]>([]);
@@ -417,26 +418,42 @@ export default function AdminDashboard() {
 
     const startNewPlaylist = () => {
         setPlaylistForm({ name: '', curator: 'Curated by Ayinz', cover: '', url: '', order: playlists.length, active: true });
+        setPlaylistCoverFile(null);
         setEditingPlaylist('new');
     };
 
     const startEditPlaylist = (p: Playlist) => {
         setPlaylistForm({ name: p.name, curator: p.curator, cover: p.cover, url: p.url, order: p.order, active: p.active });
+        setPlaylistCoverFile(null);
         setEditingPlaylist(p);
     };
 
     const handleSavePlaylist = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!playlistCoverFile && !playlistForm.cover.trim()) {
+            alert('Upload a cover image or paste a cover image URL.');
+            return;
+        }
         setSavingPlaylist(true);
         try {
+            const data = new FormData();
+            data.append('name', playlistForm.name);
+            data.append('curator', playlistForm.curator);
+            data.append('url', playlistForm.url);
+            data.append('order', String(playlistForm.order));
+            data.append('active', String(playlistForm.active));
+            if (playlistForm.cover.trim()) data.append('cover', playlistForm.cover.trim());
+            if (playlistCoverFile) data.append('cover_image', playlistCoverFile);
+
             if (editingPlaylist === 'new') {
-                const res = await api.post('/admin/playlists', playlistForm);
+                const res = await api.post('/admin/playlists', data, { headers: { 'Content-Type': 'multipart/form-data' } });
                 setPlaylists([...playlists, res.data.playlist]);
             } else if (editingPlaylist) {
-                const res = await api.patch(`/admin/playlists/${editingPlaylist._id}`, playlistForm);
+                const res = await api.patch(`/admin/playlists/${editingPlaylist._id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
                 setPlaylists(playlists.map(p => p._id === editingPlaylist._id ? res.data.playlist : p));
             }
             setEditingPlaylist(null);
+            setPlaylistCoverFile(null);
         } catch { alert('Failed to save playlist'); }
         finally { setSavingPlaylist(false); }
     };
@@ -1935,8 +1952,24 @@ export default function AdminDashboard() {
                                     <input type="text" placeholder="Curated by Ayinz" className={inputCls} value={playlistForm.curator} onChange={e => setPlaylistForm({ ...playlistForm, curator: e.target.value })} />
                                 </div>
                                 <div>
-                                    <label className={labelCls}>Cover Image URL</label>
-                                    <input type="text" required placeholder="https://..." className={inputCls} value={playlistForm.cover} onChange={e => setPlaylistForm({ ...playlistForm, cover: e.target.value })} />
+                                    <label className={labelCls}>Cover Image</label>
+                                    <label htmlFor="playlist-cover-upload"
+                                        className={`py-6 border-2 border-dashed rounded-xl transition-all cursor-pointer flex flex-col items-center justify-center gap-2 ${playlistCoverFile || playlistForm.cover ? 'border-red-600/30 bg-red-600/5' : 'border-white/10 bg-black/20 hover:border-white/20'}`}>
+                                        {playlistCoverFile ? (
+                                            <img src={URL.createObjectURL(playlistCoverFile)} alt="Cover preview" className="w-16 h-16 rounded-lg object-cover" />
+                                        ) : playlistForm.cover ? (
+                                            <img src={playlistForm.cover} alt="Cover preview" className="w-16 h-16 rounded-lg object-cover" />
+                                        ) : (
+                                            <Upload className="w-4 h-4 text-white/30" />
+                                        )}
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-white/60">
+                                            {playlistCoverFile ? playlistCoverFile.name : playlistForm.cover ? 'Replace cover image' : 'Upload a cover image'}
+                                        </p>
+                                        <input id="playlist-cover-upload" type="file" accept="image/*" className="sr-only"
+                                            onChange={e => { if (e.target.files?.[0]) setPlaylistCoverFile(e.target.files[0]); }} />
+                                    </label>
+                                    <input type="text" placeholder="…or paste a cover image URL instead" className={`${inputCls} mt-2`}
+                                        value={playlistForm.cover} onChange={e => { setPlaylistForm({ ...playlistForm, cover: e.target.value }); setPlaylistCoverFile(null); }} />
                                 </div>
                                 <div>
                                     <label className={labelCls}>Spotify URL</label>
