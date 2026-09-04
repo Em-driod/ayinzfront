@@ -139,12 +139,12 @@ const PLAN_LABELS: Record<string, string> = {
 };
 
 const SUBSCRIPTION_STYLE: Record<string, string> = {
-    plus: 'bg-amber-500/10 border-amber-500/20 text-amber-400',
-    premium: 'bg-blue-500/10 border-blue-500/20 text-blue-400',
+    plus: 'bg-amber-500/10 border-amber-500/20 text-[var(--amber-fg)]',
+    premium: 'bg-blue-500/10 border-blue-500/20 text-[var(--blue-fg)]',
     standard: 'bg-purple-500/10 border-purple-500/20 text-purple-400',
-    basic: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
+    basic: 'bg-emerald-500/10 border-emerald-500/20 text-[var(--emerald-fg)]',
     plan500: 'bg-orange-500/10 border-orange-500/20 text-orange-400',
-    none: 'bg-white/5 border-white/10 text-white/30'
+    none: 'bg-[var(--surface)] border-[var(--line-2)] text-[var(--fg3)]'
 };
 
 const AVATAR_BG: Record<string, string> = {
@@ -153,7 +153,7 @@ const AVATAR_BG: Record<string, string> = {
     standard: 'bg-purple-500/20 text-purple-300 border-purple-500/20',
     basic: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/20',
     plan500: 'bg-orange-500/20 text-orange-300 border-orange-500/20',
-    none: 'bg-white/5 text-white/40 border-white/10'
+    none: 'bg-[var(--surface)] text-[var(--fg2)] border-[var(--line-2)]'
 };
 
 const PLATFORM_COLORS: Record<string, string> = {
@@ -163,10 +163,10 @@ const PLATFORM_COLORS: Record<string, string> = {
 };
 
 const NOTIFICATION_TEMPLATES: { id: AdminNotification['template']; label: string; icon: any; accent: string }[] = [
-    { id: 'announcement', label: 'Announcement', icon: Megaphone, accent: 'text-red-400 bg-red-500/10 border-red-500/20' },
-    { id: 'promo', label: 'Promo / Offer', icon: Gift, accent: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
-    { id: 'alert', label: 'Alert', icon: AlertTriangle, accent: 'text-red-400 bg-red-500/10 border-red-500/20' },
-    { id: 'update', label: "What's New", icon: Sparkles, accent: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
+    { id: 'announcement', label: 'Announcement', icon: Megaphone, accent: 'text-[var(--accent-fg)] bg-red-500/10 border-red-500/20' },
+    { id: 'promo', label: 'Promo / Offer', icon: Gift, accent: 'text-[var(--amber-fg)] bg-amber-500/10 border-amber-500/20' },
+    { id: 'alert', label: 'Alert', icon: AlertTriangle, accent: 'text-[var(--accent-fg)] bg-red-500/10 border-red-500/20' },
+    { id: 'update', label: "What's New", icon: Sparkles, accent: 'text-[var(--blue-fg)] bg-blue-500/10 border-blue-500/20' },
 ];
 
 const AUDIENCE_LABELS: Record<string, string> = {
@@ -176,10 +176,10 @@ const AUDIENCE_LABELS: Record<string, string> = {
 };
 
 const STATUS_COLORS: Record<string, string> = {
-    approved: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
-    uploaded: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
-    pending: 'bg-blue-500/10 border-blue-500/20 text-blue-400',
-    rejected: 'bg-red-500/10 border-red-500/20 text-red-400',
+    approved: 'bg-emerald-500/10 border-emerald-500/20 text-[var(--emerald-fg)]',
+    uploaded: 'bg-emerald-500/10 border-emerald-500/20 text-[var(--emerald-fg)]',
+    pending: 'bg-blue-500/10 border-blue-500/20 text-[var(--blue-fg)]',
+    rejected: 'bg-red-500/10 border-red-500/20 text-[var(--accent-fg)]',
 };
 
 export default function AdminDashboard() {
@@ -598,23 +598,23 @@ export default function AdminDashboard() {
     };
 
     if (loading) return (
-        <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+        <div className="min-h-screen bg-[var(--bg0)] flex items-center justify-center">
             <div className="flex flex-col items-center gap-4">
                 <div className="w-10 h-10 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20">Loading Dashboard</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--fg4)]">Loading Dashboard</p>
             </div>
         </div>
     );
 
     if (error) return (
-        <div className="min-h-screen bg-[#050505] flex items-center justify-center p-6">
+        <div className="min-h-screen bg-[var(--bg0)] flex items-center justify-center p-6">
             <div className="text-center max-w-sm">
                 <div className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-6">
-                    <Shield className="w-8 h-8 text-red-500" />
+                    <Shield className="w-8 h-8 text-[var(--accent-fg)]" />
                 </div>
                 <h2 className="text-2xl font-display uppercase mb-2">Access Denied</h2>
-                <p className="text-white/40 text-sm mb-8">{error}</p>
-                <button onClick={() => window.location.href = '/'} className="px-8 py-3 bg-white text-black text-xs font-black uppercase tracking-widest rounded-xl hover:bg-zinc-100 transition-colors">Return Home</button>
+                <p className="text-[var(--fg2)] text-sm mb-8">{error}</p>
+                <button onClick={() => window.location.href = '/'} className="px-8 py-3 bg-[var(--invert-bg)] text-[var(--invert-fg)] text-xs font-black uppercase tracking-widest rounded-xl hover:bg-[var(--invert-hover)] transition-colors">Return Home</button>
             </div>
         </div>
     );
@@ -623,15 +623,15 @@ export default function AdminDashboard() {
     const pendingCount = releases.filter(r => r.status === 'pending').length;
 
     const StatCard = ({ title, value, icon: Icon, color, sub }: any) => (
-        <motion.div whileHover={{ y: -3 }} className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.04] to-transparent p-5 sm:p-6 group cursor-default transition-all duration-300 hover:border-white/10">
+        <motion.div whileHover={{ y: -3 }} className="relative overflow-hidden rounded-2xl border border-[var(--line)] bg-gradient-to-b from-[var(--surface-hover)] to-transparent p-5 sm:p-6 group cursor-default transition-all duration-300 hover:border-[var(--line-2)]">
             <div className={`absolute -top-12 -right-12 w-36 h-36 rounded-full bg-${color}-500/5 blur-3xl transition-all duration-700 group-hover:bg-${color}-500/12`} />
             <div className="relative">
                 <div className={`w-9 h-9 rounded-xl bg-${color}-500/10 border border-${color}-500/15 flex items-center justify-center mb-4`}>
                     <Icon className={`w-4.5 h-4.5 text-${color}-400`} />
                 </div>
-                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-1">{title}</p>
-                <p className="text-3xl font-display text-white leading-none mb-1">{value}</p>
-                {sub && <p className="text-[10px] text-white/25 font-bold">{sub}</p>}
+                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--fg3)] mb-1">{title}</p>
+                <p className="text-3xl font-display text-[var(--fg0)] leading-none mb-1">{value}</p>
+                {sub && <p className="text-[10px] text-[var(--fg4)] font-bold">{sub}</p>}
             </div>
         </motion.div>
     );
@@ -647,26 +647,26 @@ export default function AdminDashboard() {
         { id: 'notifications', name: 'Notify', icon: Bell, badge: 0 },
     ];
 
-    const inputCls = "w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:border-white/20 focus:bg-white/[0.06] outline-none transition-all font-medium";
-    const labelCls = "text-[9px] font-black uppercase tracking-[0.25em] text-white/30 mb-1.5 block";
+    const inputCls = "w-full bg-[var(--surface-hover)] border border-[var(--line-2)] rounded-xl px-4 py-3 text-sm text-[var(--fg0)] placeholder-[var(--placeholder)] focus:border-[var(--line-2)] focus:bg-[var(--line)] outline-none transition-all font-medium";
+    const labelCls = "text-[9px] font-black uppercase tracking-[0.25em] text-[var(--fg3)] mb-1.5 block";
 
     return (
-        <div className="min-h-screen bg-[#050505] text-white">
+        <div className="min-h-screen bg-[var(--bg0)] text-[var(--fg0)]">
             {/* Top glow line */}
             <div className="h-px bg-gradient-to-r from-transparent via-red-600/60 to-transparent" />
 
             {/* Sticky top bar */}
-            <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-[#050505]/90 backdrop-blur-2xl">
+            <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--bg0)]/90 backdrop-blur-2xl">
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 h-14 flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                         <div className="w-6 h-6 rounded-md bg-red-600 flex items-center justify-center shrink-0">
                             <LayoutDashboard className="w-3.5 h-3.5 text-white" />
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white/60">Sonic Distro</span>
-                        <span className="text-white/15">/</span>
-                        <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white">Admin</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.25em] text-[var(--fg1)]">Sonic Distro</span>
+                        <span className="text-[var(--fg5)]">/</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.25em] text-[var(--fg0)]">Admin</span>
                     </div>
-                    <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-white/25">
+                    <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-[var(--fg4)]">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                         Live
                     </div>
@@ -677,7 +677,7 @@ export default function AdminDashboard() {
 
                 {/* Page heading */}
                 <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-                    <p className="text-[9px] font-black uppercase tracking-[0.5em] text-red-500 mb-3">System Control</p>
+                    <p className="text-[9px] font-black uppercase tracking-[0.5em] text-[var(--accent-fg)] mb-3">System Control</p>
                     <h1 className="text-4xl sm:text-6xl md:text-7xl font-display uppercase leading-none tracking-tight">
                         Admin<br />
                         <span className="bg-gradient-to-r from-red-500 to-red-700 bg-clip-text text-transparent">Dashboard</span>
@@ -685,7 +685,7 @@ export default function AdminDashboard() {
                 </motion.div>
 
                 {/* Tab bar */}
-                <div className="flex gap-1 p-1 bg-white/[0.03] border border-white/[0.06] rounded-2xl mb-8 overflow-x-auto no-scrollbar">
+                <div className="flex gap-1 p-1 bg-[var(--surface)] border border-[var(--line)] rounded-2xl mb-8 overflow-x-auto no-scrollbar">
                     {TABS.map(tab => (
                         <button
                             key={tab.id}
@@ -693,7 +693,7 @@ export default function AdminDashboard() {
                             className={`relative flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider whitespace-nowrap flex-1 transition-all duration-200 ${
                                 activeTab === tab.id
                                     ? 'bg-red-600 text-white shadow-lg shadow-red-600/25'
-                                    : 'text-white/35 hover:text-white/70 hover:bg-white/[0.04]'
+                                    : 'text-[var(--fg2)] hover:text-[var(--fg1)] hover:bg-[var(--surface-hover)]'
                             }`}
                         >
                             <tab.icon className="w-3.5 h-3.5 shrink-0" />
@@ -726,26 +726,26 @@ export default function AdminDashboard() {
                             <div className="grid lg:grid-cols-2 gap-6">
 
                                 {/* Recent users */}
-                                <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent overflow-hidden">
-                                    <div className="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between">
+                                <div className="rounded-2xl border border-[var(--line)] bg-gradient-to-b from-[var(--surface)] to-transparent overflow-hidden">
+                                    <div className="px-6 py-5 border-b border-[var(--line)] flex items-center justify-between">
                                         <div>
-                                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-0.5">Artists</p>
+                                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--fg3)] mb-0.5">Artists</p>
                                             <h3 className="text-sm font-black uppercase tracking-tight">Recent Signups</h3>
                                         </div>
-                                        <button onClick={() => setActiveTab('users')} className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-white/30 hover:text-red-500 transition-colors">
+                                        <button onClick={() => setActiveTab('users')} className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-[var(--fg3)] hover:text-[var(--accent-fg)] transition-colors">
                                             View All <ArrowUpRight className="w-3 h-3" />
                                         </button>
                                     </div>
-                                    <div className="divide-y divide-white/[0.04]">
+                                    <div className="divide-y divide-[var(--line)]">
                                         {users.slice(0, 5).map(u => (
-                                            <div key={u._id} className="px-6 py-4 flex items-center justify-between hover:bg-white/[0.02] transition-colors">
+                                            <div key={u._id} className="px-6 py-4 flex items-center justify-between hover:bg-[var(--surface-2)] transition-colors">
                                                 <div className="flex items-center gap-3">
                                                     <div className={`w-9 h-9 rounded-xl border font-black text-sm flex items-center justify-center shrink-0 ${AVATAR_BG[u.subscription] || AVATAR_BG['none']}`}>
                                                         {u.name[0].toUpperCase()}
                                                     </div>
                                                     <div>
-                                                        <p className="text-sm font-bold text-white leading-none mb-0.5">{u.name}</p>
-                                                        <p className="text-[10px] text-white/30 font-medium">{u.email}</p>
+                                                        <p className="text-sm font-bold text-[var(--fg0)] leading-none mb-0.5">{u.name}</p>
+                                                        <p className="text-[10px] text-[var(--fg3)] font-medium">{u.email}</p>
                                                     </div>
                                                 </div>
                                                 <span className={`text-[9px] font-black uppercase px-2.5 py-1 rounded-lg border ${SUBSCRIPTION_STYLE[u.subscription] || SUBSCRIPTION_STYLE['none']}`}>
@@ -754,7 +754,7 @@ export default function AdminDashboard() {
                                             </div>
                                         ))}
                                         {users.length === 0 && (
-                                            <div className="py-16 text-center text-white/20">
+                                            <div className="py-16 text-center text-[var(--fg4)]">
                                                 <Users className="w-8 h-8 mx-auto mb-3 opacity-30" />
                                                 <p className="text-xs font-black uppercase tracking-widest">No artists yet</p>
                                             </div>
@@ -763,38 +763,38 @@ export default function AdminDashboard() {
                                 </div>
 
                                 {/* Pending releases */}
-                                <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent overflow-hidden">
-                                    <div className="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between">
+                                <div className="rounded-2xl border border-[var(--line)] bg-gradient-to-b from-[var(--surface)] to-transparent overflow-hidden">
+                                    <div className="px-6 py-5 border-b border-[var(--line)] flex items-center justify-between">
                                         <div>
-                                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-0.5">Queue</p>
+                                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--fg3)] mb-0.5">Queue</p>
                                             <h3 className="text-sm font-black uppercase tracking-tight">Pending Review</h3>
                                         </div>
                                         {pendingCount > 0 && (
-                                            <button onClick={() => { setActiveTab('releases'); setSelectedUserFilter(null); }} className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-white/30 hover:text-red-500 transition-colors">
+                                            <button onClick={() => { setActiveTab('releases'); setSelectedUserFilter(null); }} className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-[var(--fg3)] hover:text-[var(--accent-fg)] transition-colors">
                                                 Manage <ArrowUpRight className="w-3 h-3" />
                                             </button>
                                         )}
                                     </div>
-                                    <div className="divide-y divide-white/[0.04]">
+                                    <div className="divide-y divide-[var(--line)]">
                                         {releases.filter(r => r.status === 'pending').slice(0, 5).map(r => (
-                                            <div key={r.id} className="px-6 py-4 flex items-center justify-between hover:bg-white/[0.02] transition-colors">
+                                            <div key={r.id} className="px-6 py-4 flex items-center justify-between hover:bg-[var(--surface-2)] transition-colors">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 overflow-hidden shrink-0">
+                                                    <div className="w-9 h-9 rounded-xl bg-[var(--surface)] border border-[var(--line-2)] overflow-hidden shrink-0">
                                                         {r.cover_url
                                                             ? <img src={r.cover_url} alt={r.title} className="w-full h-full object-cover" />
-                                                            : <div className="w-full h-full flex items-center justify-center"><Music className="w-4 h-4 text-white/20" /></div>
+                                                            : <div className="w-full h-full flex items-center justify-center"><Music className="w-4 h-4 text-[var(--fg5)]" /></div>
                                                         }
                                                     </div>
                                                     <div>
-                                                        <p className="text-sm font-bold text-white leading-none mb-0.5 truncate max-w-[160px]">{r.title}</p>
-                                                        <p className="text-[10px] text-white/30 font-medium">{r.artist}</p>
+                                                        <p className="text-sm font-bold text-[var(--fg0)] leading-none mb-0.5 truncate max-w-[160px]">{r.title}</p>
+                                                        <p className="text-[10px] text-[var(--fg3)] font-medium">{r.artist}</p>
                                                     </div>
                                                 </div>
-                                                <span className="text-[9px] font-black uppercase px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400">Review</span>
+                                                <span className="text-[9px] font-black uppercase px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-[var(--blue-fg)]">Review</span>
                                             </div>
                                         ))}
                                         {pendingCount === 0 && (
-                                            <div className="py-16 text-center text-white/20">
+                                            <div className="py-16 text-center text-[var(--fg4)]">
                                                 <CheckCircle className="w-8 h-8 mx-auto mb-3 opacity-30" />
                                                 <p className="text-xs font-black uppercase tracking-widest">All clear</p>
                                                 <p className="text-[10px] mt-1 opacity-60">No pending releases</p>
@@ -811,11 +811,11 @@ export default function AdminDashboard() {
                                     { label: 'Open Tickets', value: tickets.filter(t => t.status === 'Open').length, icon: MessageCircle },
                                     { label: 'Pending Payouts', value: payouts.filter(p => p.status === 'Pending').length, icon: Wallet },
                                 ].map(item => (
-                                    <div key={item.label} className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4 sm:p-5 flex items-center gap-4">
-                                        <item.icon className="w-5 h-5 text-white/20 shrink-0" />
+                                    <div key={item.label} className="rounded-2xl border border-[var(--line)] bg-[var(--surface-2)] p-4 sm:p-5 flex items-center gap-4">
+                                        <item.icon className="w-5 h-5 text-[var(--fg5)] shrink-0" />
                                         <div>
-                                            <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/25 mb-0.5">{item.label}</p>
-                                            <p className="text-xl font-display text-white">{item.value}</p>
+                                            <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[var(--fg4)] mb-0.5">{item.label}</p>
+                                            <p className="text-xl font-display text-[var(--fg0)]">{item.value}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -826,27 +826,27 @@ export default function AdminDashboard() {
                     {/* USERS */}
                     {activeTab === 'users' && (
                         <motion.div key="users" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
-                            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent overflow-hidden">
+                            <div className="rounded-2xl border border-[var(--line)] bg-gradient-to-b from-[var(--surface)] to-transparent overflow-hidden">
                                 {/* Header */}
-                                <div className="px-4 sm:px-8 py-5 border-b border-white/[0.06] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                                <div className="px-4 sm:px-8 py-5 border-b border-[var(--line)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                                     <div className="flex items-center justify-between sm:block gap-4">
                                         <div>
-                                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-0.5">Registered</p>
-                                            <h2 className="text-base font-black uppercase tracking-tight">All Artists <span className="text-white/20 font-bold ml-2 text-sm">{users.length}</span></h2>
+                                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--fg3)] mb-0.5">Registered</p>
+                                            <h2 className="text-base font-black uppercase tracking-tight">All Artists <span className="text-[var(--fg4)] font-bold ml-2 text-sm">{users.length}</span></h2>
                                         </div>
                                         <button onClick={() => setShowCreateUser(true)} className="sm:hidden flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-blue-600/20 shrink-0">
                                             <UserPlus className="w-3.5 h-3.5" />
                                         </button>
                                     </div>
                                     <div className="flex items-center gap-2 shrink-0">
-                                        <div className="flex flex-1 sm:flex-none items-center gap-2 bg-white/[0.04] border border-white/[0.06] px-4 py-2.5 rounded-xl">
-                                            <Search className="w-3.5 h-3.5 text-white/20 shrink-0" />
+                                        <div className="flex flex-1 sm:flex-none items-center gap-2 bg-[var(--surface-hover)] border border-[var(--line)] px-4 py-2.5 rounded-xl">
+                                            <Search className="w-3.5 h-3.5 text-[var(--fg5)] shrink-0" />
                                             <input
                                                 type="text"
                                                 placeholder="Search artists…"
                                                 value={userSearchQuery}
                                                 onChange={e => setUserSearchQuery(e.target.value)}
-                                                className="bg-transparent text-xs text-white placeholder-white/20 outline-none w-full sm:w-40 font-medium"
+                                                className="bg-transparent text-xs text-[var(--fg0)] placeholder-[var(--placeholder)] outline-none w-full sm:w-40 font-medium"
                                             />
                                         </div>
                                         <button onClick={() => setShowCreateUser(true)} className="hidden sm:flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-blue-600/20">
@@ -856,28 +856,28 @@ export default function AdminDashboard() {
                                 </div>
 
                                 {/* User rows */}
-                                <div className="divide-y divide-white/[0.04]">
+                                <div className="divide-y divide-[var(--line)]">
                                     {filteredUsers.map((u, i) => (
                                         <motion.div
                                             key={u._id}
                                             initial={{ opacity: 0, x: -8 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: i * 0.03 }}
-                                            className="px-4 sm:px-8 py-4 sm:py-5 flex items-center justify-between gap-4 hover:bg-white/[0.02] transition-colors group"
+                                            className="px-4 sm:px-8 py-4 sm:py-5 flex items-center justify-between gap-4 hover:bg-[var(--surface-2)] transition-colors group"
                                         >
                                             <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                                                 <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl border font-black text-base flex items-center justify-center shrink-0 transition-all group-hover:scale-105 ${AVATAR_BG[u.subscription] || AVATAR_BG['none']}`}>
                                                     {u.name[0].toUpperCase()}
                                                 </div>
                                                 <div className="min-w-0">
-                                                    <p className="text-sm font-bold text-white truncate mb-0.5">{u.name}{u.artisteName ? <span className="text-white/30 font-medium ml-1.5">· {u.artisteName}</span> : null}</p>
-                                                    <p className="text-[10px] text-white/30 font-medium truncate">{u.email}{u.phone ? <span className="ml-2 text-white/20">{u.phone}</span> : null}</p>
+                                                    <p className="text-sm font-bold text-[var(--fg0)] truncate mb-0.5">{u.name}{u.artisteName ? <span className="text-[var(--fg3)] font-medium ml-1.5">· {u.artisteName}</span> : null}</p>
+                                                    <p className="text-[10px] text-[var(--fg3)] font-medium truncate">{u.email}{u.phone ? <span className="ml-2 text-[var(--fg4)]">{u.phone}</span> : null}</p>
                                                     <div className="flex items-center gap-2 mt-1 sm:hidden">
                                                         <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded border ${SUBSCRIPTION_STYLE[u.subscription] || SUBSCRIPTION_STYLE['none']}`}>
                                                             {PLAN_LABELS[u.subscription] || u.subscription}
                                                         </span>
                                                         {u.referralCode && (
-                                                            <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded border border-amber-500/30 bg-amber-500/10 text-amber-400">
+                                                            <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded border border-amber-500/30 bg-amber-500/10 text-[var(--amber-fg)]">
                                                                 Ref: {u.referralCode}
                                                             </span>
                                                         )}
@@ -886,7 +886,7 @@ export default function AdminDashboard() {
                                                                 Code: {u.myReferralCode}
                                                             </span>
                                                         )}
-                                                        <span className="text-[8px] text-white/20 font-medium tabular-nums ml-auto">
+                                                        <span className="text-[8px] text-[var(--fg4)] font-medium tabular-nums ml-auto">
                                                             {new Date(u.created_at).toLocaleDateString()}
                                                         </span>
                                                     </div>
@@ -898,11 +898,11 @@ export default function AdminDashboard() {
                                                     <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl border ${SUBSCRIPTION_STYLE[u.subscription] || SUBSCRIPTION_STYLE['none']}`}>
                                                         {PLAN_LABELS[u.subscription] || u.subscription}
                                                     </span>
-                                                    <span className={`text-[8px] font-black uppercase tracking-widest ${u.subscription !== 'none' ? 'text-emerald-400' : 'text-white/20'}`}>
+                                                    <span className={`text-[8px] font-black uppercase tracking-widest ${u.subscription !== 'none' ? 'text-[var(--emerald-fg)]' : 'text-[var(--fg4)]'}`}>
                                                         {u.subscription !== 'none' ? '✓ paid' : 'free'}
                                                     </span>
                                                     {u.referralCode && (
-                                                        <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded border border-amber-500/30 bg-amber-500/10 text-amber-400 tracking-widest">
+                                                        <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded border border-amber-500/30 bg-amber-500/10 text-[var(--amber-fg)] tracking-widest">
                                                             Ref: {u.referralCode}
                                                         </span>
                                                     )}
@@ -912,17 +912,17 @@ export default function AdminDashboard() {
                                                         </span>
                                                     )}
                                                 </div>
-                                                <p className="hidden lg:block text-[10px] text-white/20 font-medium tabular-nums">
+                                                <p className="hidden lg:block text-[10px] text-[var(--fg4)] font-medium tabular-nums">
                                                     {new Date(u.created_at).toLocaleDateString()}
                                                 </p>
                                                 <div className="flex items-center gap-1.5">
-                                                    <button onClick={() => { setSelectedUserFilter(u); setActiveTab('releases'); }} title="Releases" className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:bg-purple-500/15 hover:border-purple-500/30 hover:text-purple-400 transition-all">
+                                                    <button onClick={() => { setSelectedUserFilter(u); setActiveTab('releases'); }} title="Releases" className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg3)] hover:bg-purple-500/15 hover:border-purple-500/30 hover:text-purple-400 transition-all">
                                                         <Music className="w-3.5 h-3.5" />
                                                     </button>
-                                                    <button onClick={() => openEditUser(u)} title="Edit" className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:bg-blue-500/15 hover:border-blue-500/30 hover:text-blue-400 transition-all">
+                                                    <button onClick={() => openEditUser(u)} title="Edit" className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg3)] hover:bg-blue-500/15 hover:border-blue-500/30 hover:text-[var(--blue-fg)] transition-all">
                                                         <Pencil className="w-3.5 h-3.5" />
                                                     </button>
-                                                    <button onClick={() => handleDeleteUser(u._id, u.name)} title="Delete" className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:bg-red-500/15 hover:border-red-500/30 hover:text-red-400 transition-all">
+                                                    <button onClick={() => handleDeleteUser(u._id, u.name)} title="Delete" className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg3)] hover:bg-red-500/15 hover:border-red-500/30 hover:text-[var(--accent-fg)] transition-all">
                                                         <X className="w-3.5 h-3.5" />
                                                     </button>
                                                 </div>
@@ -931,8 +931,8 @@ export default function AdminDashboard() {
                                     ))}
                                     {filteredUsers.length === 0 && (
                                         <div className="py-24 text-center">
-                                            <Users className="w-12 h-12 mx-auto mb-4 text-white/10" />
-                                            <p className="text-xs font-black uppercase tracking-[0.3em] text-white/20">
+                                            <Users className="w-12 h-12 mx-auto mb-4 text-[var(--fg5)]" />
+                                            <p className="text-xs font-black uppercase tracking-[0.3em] text-[var(--fg4)]">
                                                 {users.length === 0 ? 'No artists registered' : 'No artists match your search'}
                                             </p>
                                         </div>
@@ -950,12 +950,12 @@ export default function AdminDashboard() {
                         return (
                             <motion.div key="releases" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="space-y-5">
                                 {selectedUserFilter && (
-                                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-6 py-4">
+                                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-2xl border border-[var(--line)] bg-[var(--surface-2)] px-6 py-4">
                                         <div>
                                             <p className="text-[9px] font-black uppercase tracking-[0.3em] text-purple-400 mb-0.5">Filtered by artist</p>
-                                            <p className="text-sm font-bold text-white">{selectedUserFilter.name}</p>
+                                            <p className="text-sm font-bold text-[var(--fg0)]">{selectedUserFilter.name}</p>
                                         </div>
-                                        <button onClick={() => setSelectedUserFilter(null)} className="text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/40 hover:text-white hover:bg-white/[0.08] transition-all">
+                                        <button onClick={() => setSelectedUserFilter(null)} className="text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-xl bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg2)] hover:text-[var(--fg0)] hover:bg-[var(--line-2)] transition-all">
                                             Show All
                                         </button>
                                     </div>
@@ -964,8 +964,8 @@ export default function AdminDashboard() {
                                 <div className="grid lg:grid-cols-2 gap-4">
                                     {displayReleases.length === 0 ? (
                                         <div className="col-span-2 py-24 text-center">
-                                            <Music className="w-12 h-12 mx-auto mb-4 text-white/10" />
-                                            <p className="text-xs font-black uppercase tracking-[0.3em] text-white/20">
+                                            <Music className="w-12 h-12 mx-auto mb-4 text-[var(--fg5)]" />
+                                            <p className="text-xs font-black uppercase tracking-[0.3em] text-[var(--fg4)]">
                                                 {selectedUserFilter ? 'No releases by this artist' : 'No releases found'}
                                             </p>
                                         </div>
@@ -975,26 +975,26 @@ export default function AdminDashboard() {
                                             initial={{ opacity: 0, y: 12 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: i * 0.04 }}
-                                            className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.04] to-transparent overflow-hidden hover:border-white/10 transition-all group"
+                                            className="rounded-2xl border border-[var(--line)] bg-gradient-to-b from-[var(--surface-hover)] to-transparent overflow-hidden hover:border-[var(--line-2)] transition-all group"
                                         >
                                             {/* Card header */}
                                             <div className="p-5 pb-4 flex items-start gap-4">
-                                                <div className="w-16 h-16 rounded-xl overflow-hidden bg-white/5 border border-white/10 shrink-0 group-hover:scale-105 transition-transform duration-300">
+                                                <div className="w-16 h-16 rounded-xl overflow-hidden bg-[var(--surface)] border border-[var(--line-2)] shrink-0 group-hover:scale-105 transition-transform duration-300">
                                                     {r.cover_url
                                                         ? <img src={r.cover_url} alt={r.title} className="w-full h-full object-cover" />
-                                                        : <div className="w-full h-full flex items-center justify-center text-white/10"><Music className="w-6 h-6" /></div>
+                                                        : <div className="w-full h-full flex items-center justify-center text-[var(--fg5)]"><Music className="w-6 h-6" /></div>
                                                     }
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex items-start justify-between gap-2 mb-1">
                                                         <div className="min-w-0">
-                                                            <h3 className="font-bold text-base text-white leading-tight truncate">{r.title}</h3>
-                                                            <p className="text-[10px] text-white/40 font-medium mt-0.5">{r.artist}</p>
+                                                            <h3 className="font-bold text-base text-[var(--fg0)] leading-tight truncate">{r.title}</h3>
+                                                            <p className="text-[10px] text-[var(--fg2)] font-medium mt-0.5">{r.artist}</p>
                                                         </div>
                                                         <select
                                                             value={r.status}
                                                             onChange={e => e.target.value === 'rejected' ? startRejectingRelease(r) : handleStatusChange(r.id, e.target.value)}
-                                                            className={`text-[9px] font-black uppercase rounded-xl px-3 py-1.5 border outline-none cursor-pointer shrink-0 transition-all ${STATUS_COLORS[r.status] || 'bg-white/5 border-white/10 text-white/40'}`}
+                                                            className={`text-[9px] font-black uppercase rounded-xl px-3 py-1.5 border outline-none cursor-pointer shrink-0 transition-all ${STATUS_COLORS[r.status] || 'bg-[var(--surface)] border-[var(--line-2)] text-[var(--fg2)]'}`}
                                                         >
                                                             <option value="pending">Reviewing</option>
                                                             <option value="approved">Approved</option>
@@ -1003,13 +1003,13 @@ export default function AdminDashboard() {
                                                         </select>
                                                     </div>
                                                     <div className="flex items-center gap-1.5 mt-2">
-                                                        <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/30">{r.type}</span>
-                                                        <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/30">{r.genre}</span>
-                                                        {r.explicit === 'Yes' && <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded-md bg-red-500/10 border border-red-500/20 text-red-400">E</span>}
+                                                        <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded-md bg-[var(--surface)] border border-[var(--line-2)] text-[var(--fg3)]">{r.type}</span>
+                                                        <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded-md bg-[var(--surface)] border border-[var(--line-2)] text-[var(--fg3)]">{r.genre}</span>
+                                                        {r.explicit === 'Yes' && <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded-md bg-red-500/10 border border-red-500/20 text-[var(--accent-fg)]">E</span>}
                                                     </div>
                                                     {r.status === 'rejected' && (
                                                         <button onClick={() => startRejectingRelease(r)} className="mt-2 w-full flex items-start gap-1.5 text-left p-2 rounded-lg bg-red-500/5 border border-red-500/15 hover:border-red-500/30 transition-colors">
-                                                            <span className="text-[8px] font-black uppercase text-red-400/60 shrink-0 mt-px">Reason</span>
+                                                            <span className="text-[8px] font-black uppercase text-[var(--accent-fg)]/60 shrink-0 mt-px">Reason</span>
                                                             <span className="text-[9px] font-medium text-red-300/80 line-clamp-2">{r.rejection_reason || 'No reason given — click to add one'}</span>
                                                         </button>
                                                     )}
@@ -1020,8 +1020,8 @@ export default function AdminDashboard() {
                                             {r.tracks && r.tracks.length > 0 ? (
                                                 <div className="px-5 pb-4 space-y-2 max-h-48 overflow-y-auto">
                                                     {r.tracks.map((track, idx) => (
-                                                        <div key={idx} className="rounded-xl bg-white/[0.03] border border-white/[0.05] p-3">
-                                                            <p className="text-[10px] font-bold text-white mb-1 truncate">{idx + 1}. {track.title} <span className="text-white/30">— {track.artist}</span></p>
+                                                        <div key={idx} className="rounded-xl bg-[var(--surface)] border border-[var(--line)] p-3">
+                                                            <p className="text-[10px] font-bold text-[var(--fg0)] mb-1 truncate">{idx + 1}. {track.title} <span className="text-[var(--fg3)]">— {track.artist}</span></p>
                                                             <audio controls src={track.song_url} className="w-full h-7 invert opacity-30 hover:opacity-70 transition-opacity" />
                                                         </div>
                                                     ))}
@@ -1034,20 +1034,20 @@ export default function AdminDashboard() {
 
                                             {/* Stats row */}
                                             <div className="px-5 pb-4">
-                                                <div className="grid grid-cols-3 gap-2 rounded-xl bg-white/[0.02] border border-white/[0.05] p-3">
+                                                <div className="grid grid-cols-3 gap-2 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] p-3">
                                                     <div>
-                                                        <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-0.5">Streams</p>
-                                                        <p className="text-sm font-display text-white">{r.streams.toLocaleString()}</p>
+                                                        <p className="text-[8px] font-black uppercase tracking-widest text-[var(--fg4)] mb-0.5">Streams</p>
+                                                        <p className="text-sm font-display text-[var(--fg0)]">{r.streams.toLocaleString()}</p>
                                                     </div>
                                                     <div>
-                                                        <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-0.5">Revenue</p>
-                                                        <p className="text-sm font-display text-emerald-400">₦{r.revenue.toLocaleString()}</p>
+                                                        <p className="text-[8px] font-black uppercase tracking-widest text-[var(--fg4)] mb-0.5">Revenue</p>
+                                                        <p className="text-sm font-display text-[var(--emerald-fg)]">₦{r.revenue.toLocaleString()}</p>
                                                     </div>
                                                     <div>
-                                                        <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-0.5">Price</p>
+                                                        <p className="text-[8px] font-black uppercase tracking-widest text-[var(--fg4)] mb-0.5">Price</p>
                                                         <input
                                                             type="number"
-                                                            className="w-full bg-transparent border-none p-0 text-sm font-display text-blue-400 focus:ring-0 outline-none"
+                                                            className="w-full bg-transparent border-none p-0 text-sm font-display text-[var(--blue-fg)] focus:ring-0 outline-none"
                                                             defaultValue={r.price || 0}
                                                             onBlur={e => handleUpdatePrice(r.id, Number(e.target.value))}
                                                         />
@@ -1057,16 +1057,16 @@ export default function AdminDashboard() {
 
                                             {/* Action buttons */}
                                             <div className="px-5 pb-5 flex gap-2">
-                                                <button onClick={() => handleViewStats(r)} className="flex-1 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] text-[9px] font-black uppercase tracking-widest text-white/40 hover:text-white transition-all flex items-center justify-center gap-1.5">
+                                                <button onClick={() => handleViewStats(r)} className="flex-1 py-2.5 rounded-xl bg-[var(--surface-hover)] hover:bg-[var(--line-2)] border border-[var(--line)] text-[9px] font-black uppercase tracking-widest text-[var(--fg2)] hover:text-[var(--fg0)] transition-all flex items-center justify-center gap-1.5">
                                                     <TrendingUp className="w-3 h-3" /> Graph
                                                 </button>
-                                                <button onClick={() => setSelectedRelease(r)} className="flex-1 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] text-[9px] font-black uppercase tracking-widest text-white/40 hover:text-white transition-all flex items-center justify-center gap-1.5">
+                                                <button onClick={() => setSelectedRelease(r)} className="flex-1 py-2.5 rounded-xl bg-[var(--surface-hover)] hover:bg-[var(--line-2)] border border-[var(--line)] text-[9px] font-black uppercase tracking-widest text-[var(--fg2)] hover:text-[var(--fg0)] transition-all flex items-center justify-center gap-1.5">
                                                     <Eye className="w-3 h-3" /> Details
                                                 </button>
-                                                <button onClick={() => setEditingRelease(r)} className="flex-1 py-2.5 rounded-xl bg-red-500/8 hover:bg-red-600 border border-red-500/15 hover:border-red-600 text-[9px] font-black uppercase tracking-widest text-red-500 hover:text-white transition-all flex items-center justify-center gap-1.5">
+                                                <button onClick={() => setEditingRelease(r)} className="flex-1 py-2.5 rounded-xl bg-red-500/8 hover:bg-red-600 border border-red-500/15 hover:border-red-600 text-[9px] font-black uppercase tracking-widest text-[var(--accent-fg)] hover:text-white transition-all flex items-center justify-center gap-1.5">
                                                     + Stats
                                                 </button>
-                                                <button onClick={() => handleDeleteRelease(r.id, r.title)} className="py-2.5 px-3 rounded-xl bg-white/[0.04] hover:bg-red-500/15 border border-white/[0.06] hover:border-red-500/20 text-white/25 hover:text-red-400 transition-all flex items-center justify-center">
+                                                <button onClick={() => handleDeleteRelease(r.id, r.title)} className="py-2.5 px-3 rounded-xl bg-[var(--surface-hover)] hover:bg-red-500/15 border border-[var(--line)] hover:border-red-500/20 text-[var(--fg4)] hover:text-[var(--accent-fg)] transition-all flex items-center justify-center">
                                                     <X className="w-3.5 h-3.5" />
                                                 </button>
                                             </div>
@@ -1085,48 +1085,48 @@ export default function AdminDashboard() {
                             {(() => {
                                 const subscribers = users.filter(u => u.subscription && u.subscription !== 'none');
                                 return (
-                                    <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent overflow-hidden">
-                                        <div className="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between gap-4 flex-wrap">
+                                    <div className="rounded-2xl border border-[var(--line)] bg-gradient-to-b from-[var(--surface)] to-transparent overflow-hidden">
+                                        <div className="px-6 py-5 border-b border-[var(--line)] flex items-center justify-between gap-4 flex-wrap">
                                             <div>
-                                                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-0.5">All Time</p>
+                                                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--fg3)] mb-0.5">All Time</p>
                                                 <h2 className="text-base font-black uppercase tracking-tight">Active Subscribers</h2>
-                                                <p className="text-[10px] text-white/30 mt-0.5 font-medium">Every user with a paid plan — the complete record regardless of when they subscribed</p>
+                                                <p className="text-[10px] text-[var(--fg3)] mt-0.5 font-medium">Every user with a paid plan — the complete record regardless of when they subscribed</p>
                                             </div>
-                                            <span className="text-[9px] font-black uppercase px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                                            <span className="text-[9px] font-black uppercase px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[var(--emerald-fg)]">
                                                 {subscribers.length} subscriber{subscribers.length !== 1 ? 's' : ''}
                                             </span>
                                         </div>
                                         {subscribers.length === 0 ? (
                                             <div className="py-16 text-center">
-                                                <Users className="w-10 h-10 mx-auto mb-3 text-white/10" />
-                                                <p className="text-xs font-black uppercase tracking-[0.3em] text-white/20">No active subscribers yet</p>
+                                                <Users className="w-10 h-10 mx-auto mb-3 text-[var(--fg5)]" />
+                                                <p className="text-xs font-black uppercase tracking-[0.3em] text-[var(--fg4)]">No active subscribers yet</p>
                                             </div>
                                         ) : (
-                                            <div className="divide-y divide-white/[0.04]">
+                                            <div className="divide-y divide-[var(--line)]">
                                                 {subscribers.map((u, i) => (
                                                     <motion.div
                                                         key={u._id}
                                                         initial={{ opacity: 0, x: -8 }}
                                                         animate={{ opacity: 1, x: 0 }}
                                                         transition={{ delay: i * 0.03 }}
-                                                        className="px-4 sm:px-6 py-3.5 flex items-center gap-4 hover:bg-white/[0.02] transition-colors"
+                                                        className="px-4 sm:px-6 py-3.5 flex items-center gap-4 hover:bg-[var(--surface-2)] transition-colors"
                                                     >
                                                         <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-sm shrink-0 border ${AVATAR_BG[u.subscription] || AVATAR_BG['none']}`}>
                                                             {u.name?.[0]?.toUpperCase()}
                                                         </div>
                                                         <div className="flex-1 min-w-0">
-                                                            <p className="text-sm font-bold text-white truncate">{u.name}{u.artisteName ? <span className="text-white/30 font-medium ml-1.5">· {u.artisteName}</span> : null}</p>
-                                                            <p className="text-[10px] text-white/30 truncate">{u.email}{u.phone ? <span className="ml-2 text-white/20">{u.phone}</span> : null}</p>
+                                                            <p className="text-sm font-bold text-[var(--fg0)] truncate">{u.name}{u.artisteName ? <span className="text-[var(--fg3)] font-medium ml-1.5">· {u.artisteName}</span> : null}</p>
+                                                            <p className="text-[10px] text-[var(--fg3)] truncate">{u.email}{u.phone ? <span className="ml-2 text-[var(--fg4)]">{u.phone}</span> : null}</p>
                                                         </div>
                                                         <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl border shrink-0 ${SUBSCRIPTION_STYLE[u.subscription] || SUBSCRIPTION_STYLE['none']}`}>
                                                             {PLAN_LABELS[u.subscription] || u.subscription}
                                                         </span>
                                                         <div className="text-right shrink-0">
-                                                            <p className="text-[9px] text-white/25 font-medium">
+                                                            <p className="text-[9px] text-[var(--fg4)] font-medium">
                                                                 {new Date(u.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                                                             </p>
                                                             {unrecordedPayers.some(up => up._id === u._id) && (
-                                                                <span className="text-[8px] font-black text-amber-400 uppercase tracking-wide">no log</span>
+                                                                <span className="text-[8px] font-black text-[var(--amber-fg)] uppercase tracking-wide">no log</span>
                                                             )}
                                                         </div>
                                                     </motion.div>
@@ -1139,7 +1139,7 @@ export default function AdminDashboard() {
 
                             {/* Error banner */}
                             {paymentsError && (
-                                <div className="flex items-center gap-3 px-5 py-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold">
+                                <div className="flex items-center gap-3 px-5 py-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-[var(--accent-fg)] text-xs font-bold">
                                     <AlertCircle className="w-4 h-4 shrink-0" />
                                     {paymentsError}
                                 </div>
@@ -1149,21 +1149,21 @@ export default function AdminDashboard() {
                             {unrecordedPayers.length > 0 && (
                                 <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 overflow-hidden">
                                     <div className="px-6 py-4 border-b border-amber-500/10 flex items-center gap-3">
-                                        <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+                                        <AlertCircle className="w-4 h-4 text-[var(--amber-fg)] shrink-0" />
                                         <div className="flex-1">
-                                            <h3 className="text-sm font-black uppercase text-amber-400 tracking-tight">Missing Payment Records — {unrecordedPayers.length} user{unrecordedPayers.length > 1 ? 's' : ''}</h3>
-                                            <p className="text-[10px] text-amber-400/60 font-medium mt-0.5">These users have an active subscription but no Paystack payment log. They may have paid before payment tracking was enabled, or their payment record failed to save.</p>
+                                            <h3 className="text-sm font-black uppercase text-[var(--amber-fg)] tracking-tight">Missing Payment Records — {unrecordedPayers.length} user{unrecordedPayers.length > 1 ? 's' : ''}</h3>
+                                            <p className="text-[10px] text-[var(--amber-fg)]/60 font-medium mt-0.5">These users have an active subscription but no Paystack payment log. They may have paid before payment tracking was enabled, or their payment record failed to save.</p>
                                         </div>
                                     </div>
                                     <div className="divide-y divide-amber-500/10">
                                         {unrecordedPayers.map((u) => (
                                             <div key={u._id} className="px-6 py-4 flex items-center gap-4">
-                                                <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center font-black text-amber-400 text-sm shrink-0">
+                                                <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center font-black text-[var(--amber-fg)] text-sm shrink-0">
                                                     {u.name?.[0]?.toUpperCase()}
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-bold text-white truncate">{u.name}</p>
-                                                    <p className="text-[10px] text-white/30 truncate">{u.email}</p>
+                                                    <p className="text-sm font-bold text-[var(--fg0)] truncate">{u.name}</p>
+                                                    <p className="text-[10px] text-[var(--fg3)] truncate">{u.email}</p>
                                                 </div>
                                                 <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl border shrink-0 ${SUBSCRIPTION_STYLE[u.subscription] || SUBSCRIPTION_STYLE['none']}`}>
                                                     {PLAN_LABELS[u.subscription] || u.subscription}
@@ -1175,55 +1175,55 @@ export default function AdminDashboard() {
                             )}
 
                             {/* Verified payment records */}
-                            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent overflow-hidden">
-                                <div className="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between gap-4 flex-wrap">
+                            <div className="rounded-2xl border border-[var(--line)] bg-gradient-to-b from-[var(--surface)] to-transparent overflow-hidden">
+                                <div className="px-6 py-5 border-b border-[var(--line)] flex items-center justify-between gap-4 flex-wrap">
                                     <div>
-                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-0.5">Finance</p>
+                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--fg3)] mb-0.5">Finance</p>
                                         <h2 className="text-base font-black uppercase tracking-tight">Verified Payments</h2>
                                     </div>
                                     <div className="flex items-center gap-3">
-                                        <span className="text-[9px] font-black uppercase tracking-widest text-white/25">{payments.length} records</span>
-                                        <span className="text-[9px] font-black uppercase px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                                        <span className="text-[9px] font-black uppercase tracking-widest text-[var(--fg4)]">{payments.length} records</span>
+                                        <span className="text-[9px] font-black uppercase px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[var(--emerald-fg)]">
                                             ₦{payments.reduce((s, p) => s + p.amount, 0).toLocaleString()} total
                                         </span>
                                     </div>
                                 </div>
-                                <div className="divide-y divide-white/[0.04]">
+                                <div className="divide-y divide-[var(--line)]">
                                     {payments.map((p, i) => (
                                         <motion.div
                                             key={p._id}
                                             initial={{ opacity: 0, x: -8 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: i * 0.04 }}
-                                            className="px-4 sm:px-6 py-4 sm:py-5 flex flex-col sm:flex-row sm:items-center gap-4 hover:bg-white/[0.02] transition-colors"
+                                            className="px-4 sm:px-6 py-4 sm:py-5 flex flex-col sm:flex-row sm:items-center gap-4 hover:bg-[var(--surface-2)] transition-colors"
                                         >
                                             <div className="flex items-center gap-4 sm:flex-1">
-                                                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center font-black text-emerald-400 shrink-0">
+                                                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center font-black text-[var(--emerald-fg)] shrink-0">
                                                     {p.user?.name?.[0]?.toUpperCase() ?? '?'}
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-bold text-white">{p.user?.name}</p>
-                                                    <p className="text-[10px] text-white/30 font-medium">{p.user?.email}</p>
+                                                    <p className="text-sm font-bold text-[var(--fg0)]">{p.user?.name}</p>
+                                                    <p className="text-[10px] text-[var(--fg3)] font-medium">{p.user?.email}</p>
                                                 </div>
                                             </div>
                                             <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl border w-fit ${SUBSCRIPTION_STYLE[p.plan] || SUBSCRIPTION_STYLE['none']}`}>
                                                 {PLAN_LABELS[p.plan] || p.plan}
                                             </span>
                                             <div className="sm:text-right">
-                                                <p className="text-xl font-display text-emerald-400 leading-none">₦{p.amount.toLocaleString()}</p>
-                                                <p className="text-[9px] text-white/25 font-medium mt-0.5">{new Date(p.paid_at).toLocaleDateString()}</p>
+                                                <p className="text-xl font-display text-[var(--emerald-fg)] leading-none">₦{p.amount.toLocaleString()}</p>
+                                                <p className="text-[9px] text-[var(--fg4)] font-medium mt-0.5">{new Date(p.paid_at).toLocaleDateString()}</p>
                                             </div>
                                             <div className="flex flex-col items-start sm:items-end gap-1">
-                                                <span className="text-[8px] font-black uppercase px-2 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">{p.status}</span>
-                                                <p className="text-[8px] font-mono text-white/20 truncate max-w-[140px]">{p.reference}</p>
+                                                <span className="text-[8px] font-black uppercase px-2 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[var(--emerald-fg)]">{p.status}</span>
+                                                <p className="text-[8px] font-mono text-[var(--fg4)] truncate max-w-[140px]">{p.reference}</p>
                                             </div>
                                         </motion.div>
                                     ))}
                                     {payments.length === 0 && !paymentsError && (
                                         <div className="py-20 text-center">
-                                            <CreditCard className="w-10 h-10 mx-auto mb-4 text-white/10" />
-                                            <p className="text-xs font-black uppercase tracking-[0.3em] text-white/20">No verified payment records</p>
-                                            <p className="text-[10px] text-white/15 mt-1">Paystack-verified payments appear here</p>
+                                            <CreditCard className="w-10 h-10 mx-auto mb-4 text-[var(--fg5)]" />
+                                            <p className="text-xs font-black uppercase tracking-[0.3em] text-[var(--fg4)]">No verified payment records</p>
+                                            <p className="text-[10px] text-[var(--fg5)] mt-1">Paystack-verified payments appear here</p>
                                         </div>
                                     )}
                                 </div>
@@ -1234,49 +1234,49 @@ export default function AdminDashboard() {
                     {/* PAYOUTS */}
                     {activeTab === 'payouts' && (
                         <motion.div key="payouts" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
-                            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent overflow-hidden">
-                                <div className="px-6 py-5 border-b border-white/[0.06]">
-                                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-0.5">Withdrawals</p>
-                                    <h2 className="text-base font-black uppercase tracking-tight">Payout Requests <span className="text-white/20 font-bold ml-2">{payouts.length}</span></h2>
+                            <div className="rounded-2xl border border-[var(--line)] bg-gradient-to-b from-[var(--surface)] to-transparent overflow-hidden">
+                                <div className="px-6 py-5 border-b border-[var(--line)]">
+                                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--fg3)] mb-0.5">Withdrawals</p>
+                                    <h2 className="text-base font-black uppercase tracking-tight">Payout Requests <span className="text-[var(--fg4)] font-bold ml-2">{payouts.length}</span></h2>
                                 </div>
-                                <div className="divide-y divide-white/[0.04]">
+                                <div className="divide-y divide-[var(--line)]">
                                     {payouts.map((p, i) => (
                                         <motion.div
                                             key={p._id}
                                             initial={{ opacity: 0, x: -8 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: i * 0.04 }}
-                                            className="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-5 hover:bg-white/[0.02] transition-colors"
+                                            className="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-5 hover:bg-[var(--surface-2)] transition-colors"
                                         >
                                             <div className="flex items-center gap-4 sm:flex-1">
-                                                <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center font-black text-red-400 shrink-0">
+                                                <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center font-black text-[var(--accent-fg)] shrink-0">
                                                     {p.user?.name[0]}
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-bold text-white">{p.user?.name}</p>
-                                                    <p className="text-[10px] text-white/30">{p.user?.email}</p>
+                                                    <p className="text-sm font-bold text-[var(--fg0)]">{p.user?.name}</p>
+                                                    <p className="text-[10px] text-[var(--fg3)]">{p.user?.email}</p>
                                                 </div>
                                             </div>
 
                                             <div className="sm:text-right">
-                                                <p className="text-2xl font-display text-red-500 leading-none">₦{p.amount.toLocaleString()}</p>
-                                                <p className="text-[9px] text-white/25 mt-0.5">{new Date(p.created_at).toLocaleDateString()}</p>
+                                                <p className="text-2xl font-display text-[var(--accent-fg)] leading-none">₦{p.amount.toLocaleString()}</p>
+                                                <p className="text-[9px] text-[var(--fg4)] mt-0.5">{new Date(p.created_at).toLocaleDateString()}</p>
                                             </div>
 
-                                            <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3 sm:min-w-[180px]">
-                                                <p className="text-[8px] font-black uppercase tracking-widest text-red-500/70 mb-1">{p.bankName}</p>
-                                                <p className="text-sm font-mono tracking-widest text-white/80">{p.accountNumber}</p>
-                                                <p className="text-[9px] text-white/30 uppercase font-bold mt-0.5">{p.accountName}</p>
+                                            <div className="rounded-xl bg-[var(--surface)] border border-[var(--line)] p-3 sm:min-w-[180px]">
+                                                <p className="text-[8px] font-black uppercase tracking-widest text-[var(--accent-fg)]/70 mb-1">{p.bankName}</p>
+                                                <p className="text-sm font-mono tracking-widest text-[var(--fg1)]">{p.accountNumber}</p>
+                                                <p className="text-[9px] text-[var(--fg3)] uppercase font-bold mt-0.5">{p.accountName}</p>
                                             </div>
 
                                             <select
                                                 value={p.status}
                                                 onChange={e => handlePayoutStatus(p._id, e.target.value)}
                                                 className={`text-[9px] font-black uppercase rounded-xl px-4 py-3 border outline-none cursor-pointer transition-all ${
-                                                    p.status === 'Completed' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
-                                                    p.status === 'Rejected' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
-                                                    p.status === 'Processing' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
-                                                    'bg-white/[0.04] text-white/40 border-white/[0.06]'
+                                                    p.status === 'Completed' ? 'bg-emerald-500/10 text-[var(--emerald-fg)] border-emerald-500/20' :
+                                                    p.status === 'Rejected' ? 'bg-red-500/10 text-[var(--accent-fg)] border-red-500/20' :
+                                                    p.status === 'Processing' ? 'bg-blue-500/10 text-[var(--blue-fg)] border-blue-500/20' :
+                                                    'bg-[var(--surface-hover)] text-[var(--fg2)] border-[var(--line)]'
                                                 }`}
                                             >
                                                 <option value="Pending">Pending</option>
@@ -1288,8 +1288,8 @@ export default function AdminDashboard() {
                                     ))}
                                     {payouts.length === 0 && (
                                         <div className="py-24 text-center">
-                                            <Wallet className="w-12 h-12 mx-auto mb-4 text-white/10" />
-                                            <p className="text-xs font-black uppercase tracking-[0.3em] text-white/20">No payout requests</p>
+                                            <Wallet className="w-12 h-12 mx-auto mb-4 text-[var(--fg5)]" />
+                                            <p className="text-xs font-black uppercase tracking-[0.3em] text-[var(--fg4)]">No payout requests</p>
                                         </div>
                                     )}
                                 </div>
@@ -1300,19 +1300,19 @@ export default function AdminDashboard() {
                     {/* SUPPORT */}
                     {activeTab === 'support' && (
                         <motion.div key="support" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
-                            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent overflow-hidden">
-                                <div className="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between">
+                            <div className="rounded-2xl border border-[var(--line)] bg-gradient-to-b from-[var(--surface)] to-transparent overflow-hidden">
+                                <div className="px-6 py-5 border-b border-[var(--line)] flex items-center justify-between">
                                     <div>
-                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-0.5">Inbox</p>
-                                        <h2 className="text-base font-black uppercase tracking-tight">Support Tickets <span className="text-white/20 font-bold ml-2">{tickets.length}</span></h2>
+                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--fg3)] mb-0.5">Inbox</p>
+                                        <h2 className="text-base font-black uppercase tracking-tight">Support Tickets <span className="text-[var(--fg4)] font-bold ml-2">{tickets.length}</span></h2>
                                     </div>
                                     {unreadCount > 0 && (
-                                        <span className="text-[9px] font-black uppercase px-3 py-1.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400">
+                                        <span className="text-[9px] font-black uppercase px-3 py-1.5 rounded-xl bg-red-500/10 border border-red-500/20 text-[var(--accent-fg)]">
                                             {unreadCount} unread
                                         </span>
                                     )}
                                 </div>
-                                <div className="divide-y divide-white/[0.04]">
+                                <div className="divide-y divide-[var(--line)]">
                                     {tickets.map((t, i) => (
                                         <motion.div
                                             key={t._id}
@@ -1320,32 +1320,32 @@ export default function AdminDashboard() {
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: i * 0.03 }}
                                             onClick={() => handleOpenAdminTicket(t)}
-                                            className="px-4 sm:px-6 py-4 sm:py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-white/[0.02] cursor-pointer transition-colors group"
+                                            className="px-4 sm:px-6 py-4 sm:py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-[var(--surface-2)] cursor-pointer transition-colors group"
                                         >
                                             <div className="flex items-start gap-3">
                                                 {t.unreadAdmin && <div className="w-2 h-2 rounded-full bg-red-500 mt-1.5 shrink-0 animate-pulse" />}
                                                 <div>
-                                                    <p className={`text-sm font-bold mb-0.5 ${t.unreadAdmin ? 'text-white' : 'text-white/70'}`}>{t.subject}</p>
-                                                    <p className="text-[10px] text-white/30 font-medium">{t.user?.name} · {t.user?.email}</p>
-                                                    <p className="text-[9px] text-white/20 mt-1">{new Date(t.updatedAt).toLocaleDateString()}</p>
+                                                    <p className={`text-sm font-bold mb-0.5 ${t.unreadAdmin ? 'text-[var(--fg0)]' : 'text-[var(--fg1)]'}`}>{t.subject}</p>
+                                                    <p className="text-[10px] text-[var(--fg3)] font-medium">{t.user?.name} · {t.user?.email}</p>
+                                                    <p className="text-[9px] text-[var(--fg4)] mt-1">{new Date(t.updatedAt).toLocaleDateString()}</p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-3 shrink-0">
                                                 <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl border ${
                                                     t.status === 'Resolved'
-                                                        ? 'bg-white/[0.04] border-white/[0.06] text-white/30'
-                                                        : 'bg-red-500/10 border-red-500/20 text-red-400'
+                                                        ? 'bg-[var(--surface-hover)] border-[var(--line)] text-[var(--fg3)]'
+                                                        : 'bg-red-500/10 border-red-500/20 text-[var(--accent-fg)]'
                                                 }`}>
                                                     {t.status}
                                                 </span>
-                                                <ChevronRight className="w-4 h-4 text-white/20 group-hover:text-white/60 transition-colors" />
+                                                <ChevronRight className="w-4 h-4 text-[var(--fg5)] group-hover:text-[var(--fg1)] transition-colors" />
                                             </div>
                                         </motion.div>
                                     ))}
                                     {tickets.length === 0 && (
                                         <div className="py-24 text-center">
-                                            <CheckCircle className="w-12 h-12 mx-auto mb-4 text-white/10" />
-                                            <p className="text-xs font-black uppercase tracking-[0.3em] text-white/20">No tickets</p>
+                                            <CheckCircle className="w-12 h-12 mx-auto mb-4 text-[var(--fg5)]" />
+                                            <p className="text-xs font-black uppercase tracking-[0.3em] text-[var(--fg4)]">No tickets</p>
                                         </div>
                                     )}
                                 </div>
@@ -1356,12 +1356,12 @@ export default function AdminDashboard() {
                     {/* PROMOTE */}
                     {activeTab === 'promote' && (
                         <motion.div key="promote" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
-                            <div className="flex gap-1 p-1 bg-white/[0.03] border border-white/[0.06] rounded-xl mb-6 w-fit">
+                            <div className="flex gap-1 p-1 bg-[var(--surface)] border border-[var(--line)] rounded-xl mb-6 w-fit">
                                 {(['playlists', 'submissions'] as const).map(t => (
                                     <button
                                         key={t}
                                         onClick={() => setPromoteSubTab(t)}
-                                        className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${promoteSubTab === t ? 'bg-red-600 text-white' : 'text-white/40 hover:text-white/70'}`}
+                                        className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${promoteSubTab === t ? 'bg-red-600 text-white' : 'text-[var(--fg2)] hover:text-[var(--fg1)]'}`}
                                     >
                                         {t === 'playlists' ? 'Playlists' : `Submissions ${promoSubmissions.filter(s => s.status === 'pending').length > 0 ? `(${promoSubmissions.filter(s => s.status === 'pending').length})` : ''}`}
                                     </button>
@@ -1369,40 +1369,40 @@ export default function AdminDashboard() {
                             </div>
 
                             {promoteSubTab === 'playlists' && (
-                                <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent overflow-hidden">
-                                    <div className="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between">
+                                <div className="rounded-2xl border border-[var(--line)] bg-gradient-to-b from-[var(--surface)] to-transparent overflow-hidden">
+                                    <div className="px-6 py-5 border-b border-[var(--line)] flex items-center justify-between">
                                         <div>
-                                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-0.5">Promote Page</p>
-                                            <h2 className="text-base font-black uppercase tracking-tight">Playlists <span className="text-white/20 font-bold ml-2">{playlists.length}</span></h2>
+                                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--fg3)] mb-0.5">Promote Page</p>
+                                            <h2 className="text-base font-black uppercase tracking-tight">Playlists <span className="text-[var(--fg4)] font-bold ml-2">{playlists.length}</span></h2>
                                         </div>
                                         <button onClick={startNewPlaylist} className="flex items-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all">
                                             <Plus className="w-3.5 h-3.5" /> Add Playlist
                                         </button>
                                     </div>
-                                    <div className="divide-y divide-white/[0.04]">
+                                    <div className="divide-y divide-[var(--line)]">
                                         {playlists.map(p => (
                                             <div key={p._id} className="px-4 sm:px-6 py-4 flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-lg overflow-hidden bg-white/5 border border-white/10 shrink-0">
-                                                    {p.cover ? <img src={p.cover} alt={p.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-white/10"><ListMusic className="w-5 h-5" /></div>}
+                                                <div className="w-12 h-12 rounded-lg overflow-hidden bg-[var(--surface)] border border-[var(--line-2)] shrink-0">
+                                                    {p.cover ? <img src={p.cover} alt={p.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-[var(--fg5)]"><ListMusic className="w-5 h-5" /></div>}
                                                 </div>
                                                 <div className="min-w-0 flex-1">
-                                                    <p className="text-sm font-bold text-white truncate">{p.name}</p>
-                                                    <p className="text-[10px] text-white/30 font-medium truncate">{p.curator}</p>
+                                                    <p className="text-sm font-bold text-[var(--fg0)] truncate">{p.name}</p>
+                                                    <p className="text-[10px] text-[var(--fg3)] font-medium truncate">{p.curator}</p>
                                                 </div>
-                                                <span className={`text-[8px] font-black uppercase px-2 py-1 rounded-lg border shrink-0 ${p.active ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-white/5 border-white/10 text-white/30'}`}>
+                                                <span className={`text-[8px] font-black uppercase px-2 py-1 rounded-lg border shrink-0 ${p.active ? 'bg-emerald-500/10 border-emerald-500/20 text-[var(--emerald-fg)]' : 'bg-[var(--surface)] border-[var(--line-2)] text-[var(--fg3)]'}`}>
                                                     {p.active ? 'Live' : 'Hidden'}
                                                 </span>
                                                 <div className="flex items-center gap-1.5 shrink-0">
-                                                    <button onClick={() => handleTogglePlaylistActive(p)} title={p.active ? 'Hide from Promote page' : 'Show on Promote page'} className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-white transition-all">
+                                                    <button onClick={() => handleTogglePlaylistActive(p)} title={p.active ? 'Hide from Promote page' : 'Show on Promote page'} className="w-8 h-8 flex items-center justify-center rounded-lg bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg3)] hover:text-[var(--fg0)] transition-all">
                                                         <Eye className="w-3.5 h-3.5" />
                                                     </button>
-                                                    <a href={p.url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-white transition-all">
+                                                    <a href={p.url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-lg bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg3)] hover:text-[var(--fg0)] transition-all">
                                                         <ExternalLink className="w-3.5 h-3.5" />
                                                     </a>
-                                                    <button onClick={() => startEditPlaylist(p)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-blue-400 transition-all">
+                                                    <button onClick={() => startEditPlaylist(p)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg3)] hover:text-[var(--blue-fg)] transition-all">
                                                         <Pencil className="w-3.5 h-3.5" />
                                                     </button>
-                                                    <button onClick={() => handleDeletePlaylist(p._id, p.name)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-red-400 transition-all">
+                                                    <button onClick={() => handleDeletePlaylist(p._id, p.name)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg3)] hover:text-[var(--accent-fg)] transition-all">
                                                         <Trash2 className="w-3.5 h-3.5" />
                                                     </button>
                                                 </div>
@@ -1410,8 +1410,8 @@ export default function AdminDashboard() {
                                         ))}
                                         {playlists.length === 0 && (
                                             <div className="py-24 text-center">
-                                                <ListMusic className="w-12 h-12 mx-auto mb-4 text-white/10" />
-                                                <p className="text-xs font-black uppercase tracking-[0.3em] text-white/20">No playlists yet</p>
+                                                <ListMusic className="w-12 h-12 mx-auto mb-4 text-[var(--fg5)]" />
+                                                <p className="text-xs font-black uppercase tracking-[0.3em] text-[var(--fg4)]">No playlists yet</p>
                                             </div>
                                         )}
                                     </div>
@@ -1419,29 +1419,29 @@ export default function AdminDashboard() {
                             )}
 
                             {promoteSubTab === 'submissions' && (
-                                <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent overflow-hidden">
-                                    <div className="px-6 py-5 border-b border-white/[0.06]">
-                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-0.5">Promote Page</p>
-                                        <h2 className="text-base font-black uppercase tracking-tight">Submissions <span className="text-white/20 font-bold ml-2">{promoSubmissions.length}</span></h2>
+                                <div className="rounded-2xl border border-[var(--line)] bg-gradient-to-b from-[var(--surface)] to-transparent overflow-hidden">
+                                    <div className="px-6 py-5 border-b border-[var(--line)]">
+                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--fg3)] mb-0.5">Promote Page</p>
+                                        <h2 className="text-base font-black uppercase tracking-tight">Submissions <span className="text-[var(--fg4)] font-bold ml-2">{promoSubmissions.length}</span></h2>
                                     </div>
-                                    <div className="divide-y divide-white/[0.04]">
+                                    <div className="divide-y divide-[var(--line)]">
                                         {promoSubmissions.map(s => (
                                             <div key={s._id} className="px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                                 <div className="min-w-0">
-                                                    <p className="text-sm font-bold text-white truncate">{s.artiste_name}</p>
-                                                    <p className="text-[10px] text-white/30 font-medium truncate">{s.email}</p>
-                                                    <a href={s.spotify_link} target="_blank" rel="noopener noreferrer" className="text-[10px] text-red-400 hover:text-red-300 font-bold inline-flex items-center gap-1 mt-0.5">
+                                                    <p className="text-sm font-bold text-[var(--fg0)] truncate">{s.artiste_name}</p>
+                                                    <p className="text-[10px] text-[var(--fg3)] font-medium truncate">{s.email}</p>
+                                                    <a href={s.spotify_link} target="_blank" rel="noopener noreferrer" className="text-[10px] text-[var(--accent-fg)] hover:text-red-300 font-bold inline-flex items-center gap-1 mt-0.5">
                                                         Spotify Link <ExternalLink className="w-2.5 h-2.5" />
                                                     </a>
                                                     {s.attachment_url && (
-                                                        <a href={s.attachment_url} target="_blank" rel="noopener noreferrer" className="text-[10px] text-white/40 hover:text-white font-bold inline-flex items-center gap-1 mt-0.5 ml-3">
+                                                        <a href={s.attachment_url} target="_blank" rel="noopener noreferrer" className="text-[10px] text-[var(--fg2)] hover:text-[var(--fg0)] font-bold inline-flex items-center gap-1 mt-0.5 ml-3">
                                                             <Paperclip className="w-2.5 h-2.5" /> Attachment
                                                         </a>
                                                     )}
-                                                    <p className="text-[9px] text-white/20 mt-1">{new Date(s.created_at).toLocaleDateString()}</p>
+                                                    <p className="text-[9px] text-[var(--fg4)] mt-1">{new Date(s.created_at).toLocaleDateString()}</p>
                                                 </div>
                                                 <div className="flex items-center gap-2 shrink-0">
-                                                    <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl border ${s.status === 'reviewed' ? 'bg-white/[0.04] border-white/[0.06] text-white/30' : 'bg-amber-500/10 border-amber-500/20 text-amber-400'}`}>
+                                                    <span className={`text-[9px] font-black uppercase px-3 py-1.5 rounded-xl border ${s.status === 'reviewed' ? 'bg-[var(--surface-hover)] border-[var(--line)] text-[var(--fg3)]' : 'bg-amber-500/10 border-amber-500/20 text-[var(--amber-fg)]'}`}>
                                                         {s.status}
                                                     </span>
                                                     {s.status === 'pending' && (
@@ -1454,8 +1454,8 @@ export default function AdminDashboard() {
                                         ))}
                                         {promoSubmissions.length === 0 && (
                                             <div className="py-24 text-center">
-                                                <Send className="w-12 h-12 mx-auto mb-4 text-white/10" />
-                                                <p className="text-xs font-black uppercase tracking-[0.3em] text-white/20">No submissions yet</p>
+                                                <Send className="w-12 h-12 mx-auto mb-4 text-[var(--fg5)]" />
+                                                <p className="text-xs font-black uppercase tracking-[0.3em] text-[var(--fg4)]">No submissions yet</p>
                                             </div>
                                         )}
                                     </div>
@@ -1467,17 +1467,17 @@ export default function AdminDashboard() {
                     {/* NOTIFICATIONS */}
                     {activeTab === 'notifications' && (
                         <motion.div key="notifications" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
-                            <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent overflow-hidden">
-                                <div className="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between">
+                            <div className="rounded-2xl border border-[var(--line)] bg-gradient-to-b from-[var(--surface)] to-transparent overflow-hidden">
+                                <div className="px-6 py-5 border-b border-[var(--line)] flex items-center justify-between">
                                     <div>
-                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-0.5">Broadcast Center</p>
-                                        <h2 className="text-base font-black uppercase tracking-tight">Notifications <span className="text-white/20 font-bold ml-2">{notifications.length}</span></h2>
+                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--fg3)] mb-0.5">Broadcast Center</p>
+                                        <h2 className="text-base font-black uppercase tracking-tight">Notifications <span className="text-[var(--fg4)] font-bold ml-2">{notifications.length}</span></h2>
                                     </div>
                                     <button onClick={() => { resetNotificationForm(); setShowNewNotification(true); }} className="flex items-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all">
                                         <Plus className="w-3.5 h-3.5" /> New Notification
                                     </button>
                                 </div>
-                                <div className="divide-y divide-white/[0.04]">
+                                <div className="divide-y divide-[var(--line)]">
                                     {notifications.map(n => {
                                         const tmpl = NOTIFICATION_TEMPLATES.find(t => t.id === n.template) || NOTIFICATION_TEMPLATES[0];
                                         const TmplIcon = tmpl.icon;
@@ -1487,21 +1487,21 @@ export default function AdminDashboard() {
                                                     <TmplIcon className="w-4 h-4" />
                                                 </div>
                                                 <div className="min-w-0 flex-1">
-                                                    <p className="text-sm font-bold text-white truncate">{n.title}</p>
-                                                    <p className="text-[10px] text-white/30 font-medium truncate mt-0.5">{n.message}</p>
+                                                    <p className="text-sm font-bold text-[var(--fg0)] truncate">{n.title}</p>
+                                                    <p className="text-[10px] text-[var(--fg3)] font-medium truncate mt-0.5">{n.message}</p>
                                                     <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-                                                        <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/40">
+                                                        <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded-md bg-[var(--surface)] border border-[var(--line-2)] text-[var(--fg2)]">
                                                             {n.audience === 'individual' ? `${n.target_user?.name || 'Artist'}` : AUDIENCE_LABELS[n.audience]}
                                                         </span>
-                                                        <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/40">{tmpl.label}</span>
-                                                        <span className="text-[8px] text-white/20">{new Date(n.created_at).toLocaleDateString()}</span>
+                                                        <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded-md bg-[var(--surface)] border border-[var(--line-2)] text-[var(--fg2)]">{tmpl.label}</span>
+                                                        <span className="text-[8px] text-[var(--fg4)]">{new Date(n.created_at).toLocaleDateString()}</span>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-2 shrink-0">
-                                                    <button onClick={() => handleToggleNotificationActive(n)} className={`text-[8px] font-black uppercase px-2.5 py-1.5 rounded-lg border transition-all ${n.active ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-white/5 border-white/10 text-white/30'}`}>
+                                                    <button onClick={() => handleToggleNotificationActive(n)} className={`text-[8px] font-black uppercase px-2.5 py-1.5 rounded-lg border transition-all ${n.active ? 'bg-emerald-500/10 border-emerald-500/20 text-[var(--emerald-fg)]' : 'bg-[var(--surface)] border-[var(--line-2)] text-[var(--fg3)]'}`}>
                                                         {n.active ? 'Live' : 'Hidden'}
                                                     </button>
-                                                    <button onClick={() => handleDeleteNotification(n._id, n.title)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-red-400 transition-all">
+                                                    <button onClick={() => handleDeleteNotification(n._id, n.title)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg3)] hover:text-[var(--accent-fg)] transition-all">
                                                         <Trash2 className="w-3.5 h-3.5" />
                                                     </button>
                                                 </div>
@@ -1510,8 +1510,8 @@ export default function AdminDashboard() {
                                     })}
                                     {notifications.length === 0 && (
                                         <div className="py-24 text-center">
-                                            <Bell className="w-12 h-12 mx-auto mb-4 text-white/10" />
-                                            <p className="text-xs font-black uppercase tracking-[0.3em] text-white/20">No notifications sent yet</p>
+                                            <Bell className="w-12 h-12 mx-auto mb-4 text-[var(--fg5)]" />
+                                            <p className="text-xs font-black uppercase tracking-[0.3em] text-[var(--fg4)]">No notifications sent yet</p>
                                         </div>
                                     )}
                                 </div>
@@ -1528,14 +1528,14 @@ export default function AdminDashboard() {
             <AnimatePresence>
                 {editingRelease && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-50 p-4">
-                        <motion.div initial={{ scale: 0.96, y: 16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, y: 16 }} className="w-full max-w-md rounded-2xl border border-white/[0.08] bg-[#0a0a0a] overflow-hidden">
-                            <div className="px-6 py-5 border-b border-white/[0.06] flex items-start justify-between gap-4">
+                        <motion.div initial={{ scale: 0.96, y: 16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, y: 16 }} className="w-full max-w-md rounded-2xl border border-[var(--line-2)] bg-[var(--bg1)] overflow-hidden">
+                            <div className="px-6 py-5 border-b border-[var(--line)] flex items-start justify-between gap-4">
                                 <div>
-                                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-red-500 mb-0.5">Admin Action</p>
+                                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--accent-fg)] mb-0.5">Admin Action</p>
                                     <h3 className="text-lg font-display uppercase">Update Stats</h3>
-                                    <p className="text-[10px] text-white/30 mt-0.5">{editingRelease.title} — {editingRelease.artist}</p>
+                                    <p className="text-[10px] text-[var(--fg3)] mt-0.5">{editingRelease.title} — {editingRelease.artist}</p>
                                 </div>
-                                <button onClick={() => setEditingRelease(null)} className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-white transition-colors">
+                                <button onClick={() => setEditingRelease(null)} className="p-2 rounded-xl bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg3)] hover:text-[var(--fg0)] transition-colors">
                                     <X className="w-4 h-4" />
                                 </button>
                             </div>
@@ -1561,7 +1561,7 @@ export default function AdminDashboard() {
                                     </div>
                                 </div>
                                 <div className="flex gap-3 pt-2">
-                                    <button type="button" onClick={() => setEditingRelease(null)} className="flex-1 py-3 rounded-xl border border-white/[0.06] text-xs font-black uppercase tracking-wider text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">Cancel</button>
+                                    <button type="button" onClick={() => setEditingRelease(null)} className="flex-1 py-3 rounded-xl border border-[var(--line)] text-xs font-black uppercase tracking-wider text-[var(--fg2)] hover:text-[var(--fg0)] hover:bg-[var(--surface-hover)] transition-all">Cancel</button>
                                     <button type="submit" className="flex-1 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-red-600/20">Submit</button>
                                 </div>
                             </form>
@@ -1572,14 +1572,14 @@ export default function AdminDashboard() {
                 {/* Reject Release Modal */}
                 {rejectingRelease && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-50 p-4">
-                        <motion.div initial={{ scale: 0.96, y: 16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, y: 16 }} className="w-full max-w-md rounded-2xl border border-white/[0.08] bg-[#0a0a0a] overflow-hidden">
-                            <div className="px-6 py-5 border-b border-white/[0.06] flex items-start justify-between gap-4">
+                        <motion.div initial={{ scale: 0.96, y: 16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, y: 16 }} className="w-full max-w-md rounded-2xl border border-[var(--line-2)] bg-[var(--bg1)] overflow-hidden">
+                            <div className="px-6 py-5 border-b border-[var(--line)] flex items-start justify-between gap-4">
                                 <div>
-                                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-red-500 mb-0.5">Admin Action</p>
+                                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--accent-fg)] mb-0.5">Admin Action</p>
                                     <h3 className="text-lg font-display uppercase">Reject Release</h3>
-                                    <p className="text-[10px] text-white/30 mt-0.5">{rejectingRelease.title} — {rejectingRelease.artist}</p>
+                                    <p className="text-[10px] text-[var(--fg3)] mt-0.5">{rejectingRelease.title} — {rejectingRelease.artist}</p>
                                 </div>
-                                <button onClick={() => setRejectingRelease(null)} className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-white transition-colors">
+                                <button onClick={() => setRejectingRelease(null)} className="p-2 rounded-xl bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg3)] hover:text-[var(--fg0)] transition-colors">
                                     <X className="w-4 h-4" />
                                 </button>
                             </div>
@@ -1594,10 +1594,10 @@ export default function AdminDashboard() {
                                         value={rejectionReasonInput}
                                         onChange={e => setRejectionReasonInput(e.target.value)}
                                     />
-                                    <p className="text-[9px] text-white/25 mt-1.5">The artist will see this message on their release.</p>
+                                    <p className="text-[9px] text-[var(--fg4)] mt-1.5">The artist will see this message on their release.</p>
                                 </div>
                                 <div className="flex gap-3 pt-2">
-                                    <button type="button" onClick={() => setRejectingRelease(null)} className="flex-1 py-3 rounded-xl border border-white/[0.06] text-xs font-black uppercase tracking-wider text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">Cancel</button>
+                                    <button type="button" onClick={() => setRejectingRelease(null)} className="flex-1 py-3 rounded-xl border border-[var(--line)] text-xs font-black uppercase tracking-wider text-[var(--fg2)] hover:text-[var(--fg0)] hover:bg-[var(--surface-hover)] transition-all">Cancel</button>
                                     <button type="submit" disabled={savingRejection} className="flex-1 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-red-600/20 disabled:opacity-50">
                                         {savingRejection ? 'Saving…' : 'Confirm Rejection'}
                                     </button>
@@ -1610,14 +1610,14 @@ export default function AdminDashboard() {
                 {/* Growth Graph Modal */}
                 {viewingRelease && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/85 backdrop-blur-2xl flex items-center justify-center z-50 p-4">
-                        <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.96, opacity: 0 }} className="w-full max-w-4xl rounded-2xl border border-white/[0.08] bg-[#0a0a0a] overflow-hidden">
-                            <div className="px-6 py-5 border-b border-white/[0.06] flex items-start justify-between gap-4">
+                        <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.96, opacity: 0 }} className="w-full max-w-4xl rounded-2xl border border-[var(--line-2)] bg-[var(--bg1)] overflow-hidden">
+                            <div className="px-6 py-5 border-b border-[var(--line)] flex items-start justify-between gap-4">
                                 <div>
-                                    <p className="text-[9px] font-black uppercase tracking-[0.4em] text-red-500 mb-1">Performance Graph</p>
+                                    <p className="text-[9px] font-black uppercase tracking-[0.4em] text-[var(--accent-fg)] mb-1">Performance Graph</p>
                                     <h3 className="text-xl font-display uppercase leading-none">{viewingRelease.title}</h3>
-                                    <p className="text-[10px] text-white/30 mt-1 font-medium">by {viewingRelease.artist}</p>
+                                    <p className="text-[10px] text-[var(--fg3)] mt-1 font-medium">by {viewingRelease.artist}</p>
                                 </div>
-                                <button onClick={() => setViewingRelease(null)} className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-white transition-colors shrink-0">
+                                <button onClick={() => setViewingRelease(null)} className="p-2 rounded-xl bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg3)] hover:text-[var(--fg0)] transition-colors shrink-0">
                                     <X className="w-4 h-4" />
                                 </button>
                             </div>
@@ -1627,9 +1627,9 @@ export default function AdminDashboard() {
                                         <div className="w-8 h-8 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
                                     </div>
                                 ) : history.length === 0 ? (
-                                    <div className="flex flex-col items-center justify-center h-full rounded-xl border border-white/[0.05] bg-white/[0.02]">
-                                        <TrendingUp className="w-10 h-10 text-white/10 mb-3" />
-                                        <p className="text-xs font-black uppercase tracking-widest text-white/20">No history data yet</p>
+                                    <div className="flex flex-col items-center justify-center h-full rounded-xl border border-[var(--line)] bg-[var(--surface-2)]">
+                                        <TrendingUp className="w-10 h-10 text-[var(--fg5)] mb-3" />
+                                        <p className="text-xs font-black uppercase tracking-widest text-[var(--fg4)]">No history data yet</p>
                                     </div>
                                 ) : (
                                     <ResponsiveContainer width="100%" height="100%">
@@ -1657,29 +1657,29 @@ export default function AdminDashboard() {
                 {/* Release Details Modal */}
                 {selectedRelease && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/90 backdrop-blur-2xl flex items-center justify-center z-50 p-4">
-                        <motion.div initial={{ scale: 0.96, opacity: 0, y: 12 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.96, opacity: 0, y: 12 }} className="w-full max-w-5xl rounded-2xl border border-white/[0.08] bg-[#080808] flex flex-col h-[92vh]">
+                        <motion.div initial={{ scale: 0.96, opacity: 0, y: 12 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.96, opacity: 0, y: 12 }} className="w-full max-w-5xl rounded-2xl border border-[var(--line-2)] bg-[var(--bg1)] flex flex-col h-[92vh]">
                             {/* Modal Header */}
-                            <div className="p-4 sm:p-6 border-b border-white/[0.06] flex items-start justify-between gap-4 bg-white/[0.02]">
+                            <div className="p-4 sm:p-6 border-b border-[var(--line)] flex items-start justify-between gap-4 bg-[var(--surface-2)]">
                                 <div className="flex gap-4 sm:gap-6 min-w-0">
-                                    <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl overflow-hidden bg-zinc-900 border border-white/10 shrink-0">
+                                    <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl overflow-hidden bg-[var(--bg1)] border border-[var(--line-2)] shrink-0">
                                         {selectedRelease.cover_url
                                             ? <img src={selectedRelease.cover_url} alt={selectedRelease.title} className="w-full h-full object-cover" />
-                                            : <div className="w-full h-full flex items-center justify-center text-white/10"><Music className="w-8 h-8" /></div>
+                                            : <div className="w-full h-full flex items-center justify-center text-[var(--fg5)]"><Music className="w-8 h-8" /></div>
                                         }
                                     </div>
                                     <div className="pt-1 min-w-0">
                                         <div className="flex items-center gap-2 mb-2 flex-wrap">
-                                            <span className={`text-[8px] font-black uppercase px-2 py-1 rounded-lg border ${STATUS_COLORS[selectedRelease.status] || 'bg-white/5 border-white/10 text-white/30'}`}>{selectedRelease.status}</span>
-                                            <span className="text-[8px] font-black uppercase text-white/25">{selectedRelease.type} · {selectedRelease.genre}</span>
+                                            <span className={`text-[8px] font-black uppercase px-2 py-1 rounded-lg border ${STATUS_COLORS[selectedRelease.status] || 'bg-[var(--surface)] border-[var(--line-2)] text-[var(--fg3)]'}`}>{selectedRelease.status}</span>
+                                            <span className="text-[8px] font-black uppercase text-[var(--fg4)]">{selectedRelease.type} · {selectedRelease.genre}</span>
                                         </div>
-                                        <h2 className="text-xl sm:text-3xl font-display uppercase italic tracking-tight text-white leading-none truncate">{selectedRelease.title}</h2>
-                                        <p className="text-xs font-bold text-white/40 mt-1.5 uppercase tracking-widest">by {selectedRelease.artist}</p>
+                                        <h2 className="text-xl sm:text-3xl font-display uppercase italic tracking-tight text-[var(--fg0)] leading-none truncate">{selectedRelease.title}</h2>
+                                        <p className="text-xs font-bold text-[var(--fg2)] mt-1.5 uppercase tracking-widest">by {selectedRelease.artist}</p>
                                         {selectedRelease.featured_artists && selectedRelease.featured_artists.length > 0 && (
-                                            <p className="text-[10px] text-white/25 italic mt-0.5">ft. {selectedRelease.featured_artists.join(', ')}</p>
+                                            <p className="text-[10px] text-[var(--fg4)] italic mt-0.5">ft. {selectedRelease.featured_artists.join(', ')}</p>
                                         )}
                                     </div>
                                 </div>
-                                <button onClick={closeReleaseModal} className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-white transition-colors shrink-0">
+                                <button onClick={closeReleaseModal} className="p-2.5 rounded-xl bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg3)] hover:text-[var(--fg0)] transition-colors shrink-0">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
@@ -1689,10 +1689,10 @@ export default function AdminDashboard() {
                                 {selectedRelease.status === 'rejected' && (
                                     <div className="rounded-2xl border border-red-500/20 bg-red-500/[0.04] p-5 flex items-start justify-between gap-4">
                                         <div>
-                                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-red-500 mb-1.5">Rejection Reason</p>
-                                            <p className="text-sm text-white/70 leading-relaxed">{selectedRelease.rejection_reason || 'No reason given yet.'}</p>
+                                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--accent-fg)] mb-1.5">Rejection Reason</p>
+                                            <p className="text-sm text-[var(--fg1)] leading-relaxed">{selectedRelease.rejection_reason || 'No reason given yet.'}</p>
                                         </div>
-                                        <button onClick={() => startRejectingRelease(selectedRelease)} className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-red-500 transition-colors shrink-0">
+                                        <button onClick={() => startRejectingRelease(selectedRelease)} className="p-2 rounded-xl bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg3)] hover:text-[var(--accent-fg)] transition-colors shrink-0">
                                             <Pencil className="w-3.5 h-3.5" />
                                         </button>
                                     </div>
@@ -1700,9 +1700,9 @@ export default function AdminDashboard() {
                                 <div className="grid sm:grid-cols-3 gap-6">
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between border-b border-red-500/15 pb-2">
-                                            <h4 className="text-[9px] font-black uppercase tracking-[0.4em] text-red-500">Identification</h4>
+                                            <h4 className="text-[9px] font-black uppercase tracking-[0.4em] text-[var(--accent-fg)]">Identification</h4>
                                             {!editingIdentifiers && (
-                                                <button onClick={startEditingIdentifiers} className="text-white/30 hover:text-red-500 transition-colors">
+                                                <button onClick={startEditingIdentifiers} className="text-[var(--fg3)] hover:text-[var(--accent-fg)] transition-colors">
                                                     <Pencil className="w-3 h-3" />
                                                 </button>
                                             )}
@@ -1722,7 +1722,7 @@ export default function AdminDashboard() {
                                                     <input type="text" placeholder="Indie / None" className={inputCls} value={identifierForm.label} onChange={e => setIdentifierForm({ ...identifierForm, label: e.target.value })} />
                                                 </div>
                                                 <div className="flex gap-2 pt-1">
-                                                    <button type="button" onClick={() => setEditingIdentifiers(false)} className="flex-1 py-2.5 rounded-xl border border-white/[0.06] text-[10px] font-black uppercase tracking-wider text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">Cancel</button>
+                                                    <button type="button" onClick={() => setEditingIdentifiers(false)} className="flex-1 py-2.5 rounded-xl border border-[var(--line)] text-[10px] font-black uppercase tracking-wider text-[var(--fg2)] hover:text-[var(--fg0)] hover:bg-[var(--surface-hover)] transition-all">Cancel</button>
                                                     <button type="submit" disabled={savingIdentifiers} className="flex-1 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all disabled:opacity-50">
                                                         {savingIdentifiers ? 'Saving…' : 'Save'}
                                                     </button>
@@ -1735,14 +1735,14 @@ export default function AdminDashboard() {
                                                 { label: 'Label', value: selectedRelease.label || 'Indie / None' },
                                             ].map(item => (
                                                 <div key={item.label}>
-                                                    <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-1">{item.label}</p>
-                                                    <p className="text-xs font-mono tracking-wider text-white/70">{item.value}</p>
+                                                    <p className="text-[8px] font-black uppercase tracking-widest text-[var(--fg4)] mb-1">{item.label}</p>
+                                                    <p className="text-xs font-mono tracking-wider text-[var(--fg1)]">{item.value}</p>
                                                 </div>
                                             ))
                                         )}
                                     </div>
                                     <div className="space-y-4">
-                                        <h4 className="text-[9px] font-black uppercase tracking-[0.4em] text-blue-500 border-b border-blue-500/15 pb-2">Technical Specs</h4>
+                                        <h4 className="text-[9px] font-black uppercase tracking-[0.4em] text-[var(--blue-fg)] border-b border-blue-500/15 pb-2">Technical Specs</h4>
                                         <div className="grid grid-cols-2 gap-3">
                                             {[
                                                 { label: 'Language', value: selectedRelease.language || 'English' },
@@ -1751,8 +1751,8 @@ export default function AdminDashboard() {
                                                 { label: 'Instrumental', value: selectedRelease.is_instrumental ? 'Yes' : 'No' },
                                             ].map(item => (
                                                 <div key={item.label}>
-                                                    <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-0.5">{item.label}</p>
-                                                    <p className={`text-xs font-bold uppercase ${item.label === 'Explicit' && item.value === 'Yes' ? 'text-red-400' : 'text-white/60'}`}>{item.value}</p>
+                                                    <p className="text-[8px] font-black uppercase tracking-widest text-[var(--fg4)] mb-0.5">{item.label}</p>
+                                                    <p className={`text-xs font-bold uppercase ${item.label === 'Explicit' && item.value === 'Yes' ? 'text-[var(--accent-fg)]' : 'text-[var(--fg1)]'}`}>{item.value}</p>
                                                 </div>
                                             ))}
                                         </div>
@@ -1765,8 +1765,8 @@ export default function AdminDashboard() {
                                             { label: 'Copyright (Composition)', value: `℗ ${selectedRelease.copyright_date_release || 'N/A'}` },
                                         ].map(item => (
                                             <div key={item.label}>
-                                                <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-0.5">{item.label}</p>
-                                                <p className="text-xs font-bold text-white/60">{item.value}</p>
+                                                <p className="text-[8px] font-black uppercase tracking-widest text-[var(--fg4)] mb-0.5">{item.label}</p>
+                                                <p className="text-xs font-bold text-[var(--fg1)]">{item.value}</p>
                                             </div>
                                         ))}
                                     </div>
@@ -1774,24 +1774,24 @@ export default function AdminDashboard() {
 
                                 <div className="grid sm:grid-cols-2 gap-6">
                                     <div>
-                                        <h4 className="text-[9px] font-black uppercase tracking-[0.4em] text-white/30 border-b border-white/[0.06] pb-2 mb-4">Production Team</h4>
+                                        <h4 className="text-[9px] font-black uppercase tracking-[0.4em] text-[var(--fg3)] border-b border-[var(--line)] pb-2 mb-4">Production Team</h4>
                                         {selectedRelease.contributors && selectedRelease.contributors.length > 0 ? (
                                             <div className="space-y-2">
                                                 {selectedRelease.contributors.map((c: any, idx: number) => (
-                                                    <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-                                                        <span className="text-sm font-bold text-white">{c.name}</span>
-                                                        <span className="text-[8px] font-black uppercase text-red-400 bg-red-500/10 px-2 py-0.5 rounded border border-red-500/15">{c.role}</span>
+                                                    <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-[var(--surface)] border border-[var(--line)]">
+                                                        <span className="text-sm font-bold text-[var(--fg0)]">{c.name}</span>
+                                                        <span className="text-[8px] font-black uppercase text-[var(--accent-fg)] bg-red-500/10 px-2 py-0.5 rounded border border-red-500/15">{c.role}</span>
                                                     </div>
                                                 ))}
                                             </div>
-                                        ) : <p className="text-xs text-white/20 italic">No contributors listed</p>}
+                                        ) : <p className="text-xs text-[var(--fg4)] italic">No contributors listed</p>}
                                     </div>
                                     <div>
-                                        <h4 className="text-[9px] font-black uppercase tracking-[0.4em] text-white/30 border-b border-white/[0.06] pb-2 mb-4">Songwriters & Musicians</h4>
+                                        <h4 className="text-[9px] font-black uppercase tracking-[0.4em] text-[var(--fg3)] border-b border-[var(--line)] pb-2 mb-4">Songwriters & Musicians</h4>
                                         {selectedRelease.songwriters && selectedRelease.songwriters.length > 0 && (
                                             <div className="flex flex-wrap gap-2 mb-3">
                                                 {selectedRelease.songwriters.map((s: string, idx: number) => (
-                                                    <span key={idx} className="text-xs font-bold text-white/60 bg-white/[0.04] border border-white/[0.06] px-3 py-1.5 rounded-xl">{s}</span>
+                                                    <span key={idx} className="text-xs font-bold text-[var(--fg1)] bg-[var(--surface-hover)] border border-[var(--line)] px-3 py-1.5 rounded-xl">{s}</span>
                                                 ))}
                                             </div>
                                         )}
@@ -1799,26 +1799,26 @@ export default function AdminDashboard() {
                                             <div className="space-y-1.5">
                                                 {selectedRelease.musicians.map((m: any, idx: number) => (
                                                     <div key={idx} className="flex justify-between text-xs">
-                                                        <span className="text-white/60 font-bold">{m.name}</span>
-                                                        <span className="text-white/25 uppercase font-bold">{m.instrument}</span>
+                                                        <span className="text-[var(--fg1)] font-bold">{m.name}</span>
+                                                        <span className="text-[var(--fg4)] uppercase font-bold">{m.instrument}</span>
                                                     </div>
                                                 ))}
                                             </div>
-                                        ) : (!selectedRelease.songwriters?.length && <p className="text-xs text-white/20 italic">None listed</p>)}
+                                        ) : (!selectedRelease.songwriters?.length && <p className="text-xs text-[var(--fg4)] italic">None listed</p>)}
                                     </div>
                                 </div>
 
                                 <div className="grid sm:grid-cols-2 gap-6">
                                     <div>
-                                        <h4 className="text-[9px] font-black uppercase tracking-[0.4em] text-white/30 border-b border-white/[0.06] pb-2 mb-4">Audio</h4>
+                                        <h4 className="text-[9px] font-black uppercase tracking-[0.4em] text-[var(--fg3)] border-b border-[var(--line)] pb-2 mb-4">Audio</h4>
                                         {selectedRelease.song_file
-                                            ? <div className="rounded-xl bg-white/[0.03] border border-white/[0.05] p-4"><audio controls src={selectedRelease.song_file} className="w-full h-10 invert" /></div>
-                                            : <div className="rounded-xl border border-dashed border-white/[0.06] p-8 text-center text-white/20 text-xs font-bold">No audio file</div>
+                                            ? <div className="rounded-xl bg-[var(--surface)] border border-[var(--line)] p-4"><audio controls src={selectedRelease.song_file} className="w-full h-10 invert" /></div>
+                                            : <div className="rounded-xl border border-dashed border-[var(--line)] p-8 text-center text-[var(--fg4)] text-xs font-bold">No audio file</div>
                                         }
                                     </div>
                                     <div>
-                                        <h4 className="text-[9px] font-black uppercase tracking-[0.4em] text-white/30 border-b border-white/[0.06] pb-2 mb-4">Lyrics</h4>
-                                        <div className="rounded-xl bg-white/[0.03] border border-white/[0.05] p-4 max-h-40 overflow-y-auto text-xs text-white/40 italic leading-relaxed whitespace-pre-wrap">
+                                        <h4 className="text-[9px] font-black uppercase tracking-[0.4em] text-[var(--fg3)] border-b border-[var(--line)] pb-2 mb-4">Lyrics</h4>
+                                        <div className="rounded-xl bg-[var(--surface)] border border-[var(--line)] p-4 max-h-40 overflow-y-auto text-xs text-[var(--fg2)] italic leading-relaxed whitespace-pre-wrap">
                                             {selectedRelease.lyrics || 'No lyrics provided.'}
                                         </div>
                                     </div>
@@ -1826,18 +1826,18 @@ export default function AdminDashboard() {
                             </div>
 
                             {/* Modal Footer */}
-                            <div className="p-4 sm:p-6 border-t border-white/[0.06] bg-black/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div className="p-4 sm:p-6 border-t border-[var(--line)] bg-[var(--surface)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                                 <div className="flex flex-wrap gap-4">
                                     <div>
-                                        <p className="text-[8px] font-black uppercase tracking-widest text-white/20 mb-0.5">Contact</p>
-                                        <p className="text-xs font-bold text-white/50 break-all">{selectedRelease.contact_email}</p>
+                                        <p className="text-[8px] font-black uppercase tracking-widest text-[var(--fg4)] mb-0.5">Contact</p>
+                                        <p className="text-xs font-bold text-[var(--fg2)] break-all">{selectedRelease.contact_email}</p>
                                     </div>
                                     <div>
-                                        <p className="text-[8px] font-black uppercase tracking-widest text-white/20 mb-0.5">Artist Email</p>
-                                        <p className="text-xs font-bold text-white/50 break-all">{selectedRelease.user?.email}</p>
+                                        <p className="text-[8px] font-black uppercase tracking-widest text-[var(--fg4)] mb-0.5">Artist Email</p>
+                                        <p className="text-xs font-bold text-[var(--fg2)] break-all">{selectedRelease.user?.email}</p>
                                     </div>
                                 </div>
-                                <button onClick={closeReleaseModal} className="w-full sm:w-auto px-8 py-3 bg-white text-black rounded-xl text-xs font-black uppercase tracking-wider hover:bg-zinc-100 transition-colors">Dismiss</button>
+                                <button onClick={closeReleaseModal} className="w-full sm:w-auto px-8 py-3 bg-[var(--invert-bg)] text-[var(--invert-fg)] rounded-xl text-xs font-black uppercase tracking-wider hover:bg-[var(--invert-hover)] transition-colors">Dismiss</button>
                             </div>
                         </motion.div>
                     </motion.div>
@@ -1848,13 +1848,13 @@ export default function AdminDashboard() {
             <AnimatePresence>
                 {showCreateUser && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-50 p-4" onClick={() => setShowCreateUser(false)}>
-                        <motion.div initial={{ scale: 0.96, y: 16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, y: 16 }} className="w-full max-w-md rounded-2xl border border-white/[0.08] bg-[#0a0a0a] overflow-hidden" onClick={e => e.stopPropagation()}>
-                            <div className="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between">
+                        <motion.div initial={{ scale: 0.96, y: 16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, y: 16 }} className="w-full max-w-md rounded-2xl border border-[var(--line-2)] bg-[var(--bg1)] overflow-hidden" onClick={e => e.stopPropagation()}>
+                            <div className="px-6 py-5 border-b border-[var(--line)] flex items-center justify-between">
                                 <div>
-                                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-blue-500 mb-0.5">Admin Action</p>
+                                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--blue-fg)] mb-0.5">Admin Action</p>
                                     <h3 className="text-lg font-display uppercase">Create Artist</h3>
                                 </div>
-                                <button onClick={() => setShowCreateUser(false)} className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-white transition-colors"><X className="w-4 h-4" /></button>
+                                <button onClick={() => setShowCreateUser(false)} className="p-2 rounded-xl bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg3)] hover:text-[var(--fg0)] transition-colors"><X className="w-4 h-4" /></button>
                             </div>
                             <form onSubmit={handleCreateUser} className="p-6 space-y-4">
                                 <div><label className={labelCls}>Full Name</label><input type="text" required placeholder="Artist or Band Name" className={inputCls} value={createUserForm.name} onChange={e => setCreateUserForm({ ...createUserForm, name: e.target.value })} /></div>
@@ -1871,7 +1871,7 @@ export default function AdminDashboard() {
                                     </select>
                                 </div>
                                 <div className="flex gap-3 pt-2">
-                                    <button type="button" onClick={() => setShowCreateUser(false)} className="flex-1 py-3 rounded-xl border border-white/[0.06] text-xs font-black uppercase tracking-wider text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">Cancel</button>
+                                    <button type="button" onClick={() => setShowCreateUser(false)} className="flex-1 py-3 rounded-xl border border-[var(--line)] text-xs font-black uppercase tracking-wider text-[var(--fg2)] hover:text-[var(--fg0)] hover:bg-[var(--surface-hover)] transition-all">Cancel</button>
                                     <button type="submit" disabled={creatingUser} className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-blue-600/20 disabled:opacity-50 flex items-center justify-center gap-2">
                                         {creatingUser ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <><UserPlus className="w-4 h-4" /> Create</>}
                                     </button>
@@ -1886,20 +1886,20 @@ export default function AdminDashboard() {
             <AnimatePresence>
                 {editingUser && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-50 p-4" onClick={() => setEditingUser(null)}>
-                        <motion.div initial={{ scale: 0.96, y: 16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, y: 16 }} className="w-full max-w-md rounded-2xl border border-white/[0.08] bg-[#0a0a0a] overflow-hidden" onClick={e => e.stopPropagation()}>
-                            <div className="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between">
+                        <motion.div initial={{ scale: 0.96, y: 16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, y: 16 }} className="w-full max-w-md rounded-2xl border border-[var(--line-2)] bg-[var(--bg1)] overflow-hidden" onClick={e => e.stopPropagation()}>
+                            <div className="px-6 py-5 border-b border-[var(--line)] flex items-center justify-between">
                                 <div>
-                                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-blue-500 mb-0.5">Admin Action</p>
+                                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--blue-fg)] mb-0.5">Admin Action</p>
                                     <h3 className="text-lg font-display uppercase">Edit Artist</h3>
-                                    <p className="text-[10px] text-white/30 mt-0.5">{editingUser.email}</p>
+                                    <p className="text-[10px] text-[var(--fg3)] mt-0.5">{editingUser.email}</p>
                                 </div>
-                                <button onClick={() => setEditingUser(null)} className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-white transition-colors"><X className="w-4 h-4" /></button>
+                                <button onClick={() => setEditingUser(null)} className="p-2 rounded-xl bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg3)] hover:text-[var(--fg0)] transition-colors"><X className="w-4 h-4" /></button>
                             </div>
                             <div className="overflow-y-auto max-h-[75vh]">
                             <form onSubmit={handleUpdateUser} className="p-6 space-y-4">
                                 <div><label className={labelCls}>Full Name</label><input type="text" required placeholder="Artist or Band Name" className={inputCls} value={editUserForm.name} onChange={e => setEditUserForm({ ...editUserForm, name: e.target.value })} /></div>
                                 <div><label className={labelCls}>Email Address</label><input type="email" required className={inputCls} value={editUserForm.email} onChange={e => setEditUserForm({ ...editUserForm, email: e.target.value })} /></div>
-                                <div><label className={labelCls}>New Password <span className="text-white/20 normal-case font-medium">(leave blank to keep)</span></label><input type="password" placeholder="New password" className={inputCls} value={editUserForm.password} onChange={e => setEditUserForm({ ...editUserForm, password: e.target.value })} /></div>
+                                <div><label className={labelCls}>New Password <span className="text-[var(--fg4)] normal-case font-medium">(leave blank to keep)</span></label><input type="password" placeholder="New password" className={inputCls} value={editUserForm.password} onChange={e => setEditUserForm({ ...editUserForm, password: e.target.value })} /></div>
                                 <div>
                                     <label className={labelCls}>Subscription Tier</label>
                                     <select className={inputCls} value={editUserForm.subscription} onChange={e => setEditUserForm({ ...editUserForm, subscription: e.target.value })}>
@@ -1913,43 +1913,43 @@ export default function AdminDashboard() {
 
                                 {/* Read-only artist profile info */}
                                 {(editingUser?.artisteName || editingUser?.phone || editingUser?.whatsapp || editingUser?.stateOfOrigin || editingUser?.nationality || editingUser?.socialLink) && (
-                                    <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 space-y-3">
-                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30">Artist Profile</p>
+                                    <div className="rounded-xl border border-[var(--line)] bg-[var(--surface-2)] p-4 space-y-3">
+                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--fg3)]">Artist Profile</p>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
                                             {editingUser.artisteName && (
                                                 <div className="sm:col-span-2">
-                                                    <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-0.5">Artiste Name</p>
-                                                    <p className="text-sm font-bold text-white">{editingUser.artisteName}</p>
+                                                    <p className="text-[8px] font-black uppercase tracking-widest text-[var(--fg4)] mb-0.5">Artiste Name</p>
+                                                    <p className="text-sm font-bold text-[var(--fg0)]">{editingUser.artisteName}</p>
                                                 </div>
                                             )}
                                             {editingUser.phone && (
                                                 <div>
-                                                    <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-0.5">Phone</p>
-                                                    <p className="text-xs font-medium text-white/70">{editingUser.phone}</p>
+                                                    <p className="text-[8px] font-black uppercase tracking-widest text-[var(--fg4)] mb-0.5">Phone</p>
+                                                    <p className="text-xs font-medium text-[var(--fg1)]">{editingUser.phone}</p>
                                                 </div>
                                             )}
                                             {editingUser.whatsapp && (
                                                 <div>
-                                                    <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-0.5">WhatsApp</p>
-                                                    <p className="text-xs font-medium text-white/70">{editingUser.whatsapp}</p>
+                                                    <p className="text-[8px] font-black uppercase tracking-widest text-[var(--fg4)] mb-0.5">WhatsApp</p>
+                                                    <p className="text-xs font-medium text-[var(--fg1)]">{editingUser.whatsapp}</p>
                                                 </div>
                                             )}
                                             {editingUser.stateOfOrigin && (
                                                 <div>
-                                                    <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-0.5">State of Origin</p>
-                                                    <p className="text-xs font-medium text-white/70">{editingUser.stateOfOrigin}</p>
+                                                    <p className="text-[8px] font-black uppercase tracking-widest text-[var(--fg4)] mb-0.5">State of Origin</p>
+                                                    <p className="text-xs font-medium text-[var(--fg1)]">{editingUser.stateOfOrigin}</p>
                                                 </div>
                                             )}
                                             {editingUser.nationality && (
                                                 <div>
-                                                    <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-0.5">Nationality</p>
-                                                    <p className="text-xs font-medium text-white/70">{editingUser.nationality}</p>
+                                                    <p className="text-[8px] font-black uppercase tracking-widest text-[var(--fg4)] mb-0.5">Nationality</p>
+                                                    <p className="text-xs font-medium text-[var(--fg1)]">{editingUser.nationality}</p>
                                                 </div>
                                             )}
                                             {editingUser.socialLink && (
                                                 <div className="col-span-2">
-                                                    <p className="text-[8px] font-black uppercase tracking-widest text-white/25 mb-0.5">IG / FB Link</p>
-                                                    <a href={editingUser.socialLink} target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-blue-400 hover:text-blue-300 truncate block transition-colors">{editingUser.socialLink}</a>
+                                                    <p className="text-[8px] font-black uppercase tracking-widest text-[var(--fg4)] mb-0.5">IG / FB Link</p>
+                                                    <a href={editingUser.socialLink} target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-[var(--blue-fg)] hover:text-blue-300 truncate block transition-colors">{editingUser.socialLink}</a>
                                                 </div>
                                             )}
                                         </div>
@@ -1957,7 +1957,7 @@ export default function AdminDashboard() {
                                 )}
 
                                 <div className="flex gap-3 pt-2">
-                                    <button type="button" onClick={() => setEditingUser(null)} className="flex-1 py-3 rounded-xl border border-white/[0.06] text-xs font-black uppercase tracking-wider text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">Cancel</button>
+                                    <button type="button" onClick={() => setEditingUser(null)} className="flex-1 py-3 rounded-xl border border-[var(--line)] text-xs font-black uppercase tracking-wider text-[var(--fg2)] hover:text-[var(--fg0)] hover:bg-[var(--surface-hover)] transition-all">Cancel</button>
                                     <button type="submit" disabled={updatingUser} className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-blue-600/20 disabled:opacity-50 flex items-center justify-center gap-2">
                                         {updatingUser ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <><Pencil className="w-4 h-4" /> Save</>}
                                     </button>
@@ -1973,13 +1973,13 @@ export default function AdminDashboard() {
             <AnimatePresence>
                 {editingPlaylist && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-50 p-4">
-                        <motion.div initial={{ scale: 0.96, y: 16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, y: 16 }} className="w-full max-w-md rounded-2xl border border-white/[0.08] bg-[#0a0a0a] overflow-hidden">
-                            <div className="px-6 py-5 border-b border-white/[0.06] flex items-start justify-between gap-4">
+                        <motion.div initial={{ scale: 0.96, y: 16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, y: 16 }} className="w-full max-w-md rounded-2xl border border-[var(--line-2)] bg-[var(--bg1)] overflow-hidden">
+                            <div className="px-6 py-5 border-b border-[var(--line)] flex items-start justify-between gap-4">
                                 <div>
-                                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-red-500 mb-0.5">Promote Page</p>
+                                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--accent-fg)] mb-0.5">Promote Page</p>
                                     <h3 className="text-lg font-display uppercase">{editingPlaylist === 'new' ? 'Add Playlist' : 'Edit Playlist'}</h3>
                                 </div>
-                                <button onClick={() => setEditingPlaylist(null)} className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-white transition-colors">
+                                <button onClick={() => setEditingPlaylist(null)} className="p-2 rounded-xl bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg3)] hover:text-[var(--fg0)] transition-colors">
                                     <X className="w-4 h-4" />
                                 </button>
                             </div>
@@ -1995,15 +1995,15 @@ export default function AdminDashboard() {
                                 <div>
                                     <label className={labelCls}>Cover Image</label>
                                     <label htmlFor="playlist-cover-upload"
-                                        className={`py-6 border-2 border-dashed rounded-xl transition-all cursor-pointer flex flex-col items-center justify-center gap-2 ${playlistCoverFile || playlistForm.cover ? 'border-red-600/30 bg-red-600/5' : 'border-white/10 bg-black/20 hover:border-white/20'}`}>
+                                        className={`py-6 border-2 border-dashed rounded-xl transition-all cursor-pointer flex flex-col items-center justify-center gap-2 ${playlistCoverFile || playlistForm.cover ? 'border-red-600/30 bg-red-600/5' : 'border-[var(--line-2)] bg-[var(--surface)] hover:border-[var(--line-2)]'}`}>
                                         {playlistCoverFile ? (
                                             <img src={URL.createObjectURL(playlistCoverFile)} alt="Cover preview" className="w-16 h-16 rounded-lg object-cover" />
                                         ) : playlistForm.cover ? (
                                             <img src={playlistForm.cover} alt="Cover preview" className="w-16 h-16 rounded-lg object-cover" />
                                         ) : (
-                                            <Upload className="w-4 h-4 text-white/30" />
+                                            <Upload className="w-4 h-4 text-[var(--fg3)]" />
                                         )}
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-white/60">
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-[var(--fg1)]">
                                             {playlistCoverFile ? playlistCoverFile.name : playlistForm.cover ? 'Replace cover image' : 'Upload a cover image'}
                                         </p>
                                         <input id="playlist-cover-upload" type="file" accept="image/*" className="sr-only"
@@ -2022,12 +2022,12 @@ export default function AdminDashboard() {
                                         <input type="number" className={inputCls} value={playlistForm.order} onChange={e => setPlaylistForm({ ...playlistForm, order: parseInt(e.target.value) || 0 })} />
                                     </div>
                                     <button type="button" onClick={() => setPlaylistForm({ ...playlistForm, active: !playlistForm.active })}
-                                        className={`h-[46px] rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all ${playlistForm.active ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-white/[0.04] border-white/[0.06] text-white/40'}`}>
+                                        className={`h-[46px] rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all ${playlistForm.active ? 'bg-emerald-500/10 border-emerald-500/20 text-[var(--emerald-fg)]' : 'bg-[var(--surface-hover)] border-[var(--line)] text-[var(--fg2)]'}`}>
                                         {playlistForm.active ? 'Live on Site' : 'Hidden'}
                                     </button>
                                 </div>
                                 <div className="flex gap-3 pt-2">
-                                    <button type="button" onClick={() => setEditingPlaylist(null)} className="flex-1 py-3 rounded-xl border border-white/[0.06] text-xs font-black uppercase tracking-wider text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">Cancel</button>
+                                    <button type="button" onClick={() => setEditingPlaylist(null)} className="flex-1 py-3 rounded-xl border border-[var(--line)] text-xs font-black uppercase tracking-wider text-[var(--fg2)] hover:text-[var(--fg0)] hover:bg-[var(--surface-hover)] transition-all">Cancel</button>
                                     <button type="submit" disabled={savingPlaylist} className="flex-1 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-red-600/20 disabled:opacity-50">
                                         {savingPlaylist ? 'Saving…' : 'Save'}
                                     </button>
@@ -2042,13 +2042,13 @@ export default function AdminDashboard() {
             <AnimatePresence>
                 {showNewNotification && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-50 p-4">
-                        <motion.div initial={{ scale: 0.96, y: 16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, y: 16 }} className="w-full max-w-lg rounded-2xl border border-white/[0.08] bg-[#0a0a0a] overflow-hidden max-h-[90vh] flex flex-col">
-                            <div className="px-6 py-5 border-b border-white/[0.06] flex items-start justify-between gap-4 shrink-0">
+                        <motion.div initial={{ scale: 0.96, y: 16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96, y: 16 }} className="w-full max-w-lg rounded-2xl border border-[var(--line-2)] bg-[var(--bg1)] overflow-hidden max-h-[90vh] flex flex-col">
+                            <div className="px-6 py-5 border-b border-[var(--line)] flex items-start justify-between gap-4 shrink-0">
                                 <div>
-                                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-red-500 mb-0.5">Broadcast Center</p>
+                                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--accent-fg)] mb-0.5">Broadcast Center</p>
                                     <h3 className="text-lg font-display uppercase">New Notification</h3>
                                 </div>
-                                <button onClick={() => setShowNewNotification(false)} className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-white transition-colors"><X className="w-4 h-4" /></button>
+                                <button onClick={() => setShowNewNotification(false)} className="p-2 rounded-xl bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg3)] hover:text-[var(--fg0)] transition-colors"><X className="w-4 h-4" /></button>
                             </div>
                             <form onSubmit={handleCreateNotification} className="p-6 space-y-5 overflow-y-auto">
                                 <div>
@@ -2056,12 +2056,12 @@ export default function AdminDashboard() {
                                     <div className="grid grid-cols-3 gap-2">
                                         {(['public', 'all_users', 'individual'] as const).map(a => (
                                             <button key={a} type="button" onClick={() => setNotificationForm({ ...notificationForm, audience: a })}
-                                                className={`py-3 px-2 rounded-xl border text-[9px] font-black uppercase tracking-wider transition-all ${notificationForm.audience === a ? 'bg-red-600 border-red-600 text-white' : 'bg-white/[0.03] border-white/[0.08] text-white/40 hover:text-white/70'}`}>
+                                                className={`py-3 px-2 rounded-xl border text-[9px] font-black uppercase tracking-wider transition-all ${notificationForm.audience === a ? 'bg-red-600 border-red-600 text-white' : 'bg-[var(--surface)] border-[var(--line-2)] text-[var(--fg2)] hover:text-[var(--fg1)]'}`}>
                                                 {a === 'public' ? 'Everyone' : a === 'all_users' ? 'All Accounts' : 'One Artist'}
                                             </button>
                                         ))}
                                     </div>
-                                    <p className="text-[9px] text-white/25 mt-1.5">
+                                    <p className="text-[9px] text-[var(--fg4)] mt-1.5">
                                         {notificationForm.audience === 'public' && 'Pops up on the public landing page for any visitor, account or not.'}
                                         {notificationForm.audience === 'all_users' && 'Pops up on the dashboard for every artist with an account.'}
                                         {notificationForm.audience === 'individual' && 'Pops up only for the specific artist you choose below.'}
@@ -2079,10 +2079,10 @@ export default function AdminDashboard() {
                                                 onClick={() => setArtistPickerOpen(o => !o)}
                                                 className={`${inputCls} flex items-center justify-between gap-2 text-left`}
                                             >
-                                                <span className={`truncate ${selectedArtist ? 'text-white' : 'text-white/30'}`}>
+                                                <span className={`truncate ${selectedArtist ? 'text-[var(--fg0)]' : 'text-[var(--fg3)]'}`}>
                                                     {selectedArtist ? `${selectedArtist.name} — ${selectedArtist.email}` : 'Select an artist…'}
                                                 </span>
-                                                <ChevronDown className={`w-3.5 h-3.5 text-white/30 shrink-0 transition-transform ${artistPickerOpen ? 'rotate-180' : ''}`} />
+                                                <ChevronDown className={`w-3.5 h-3.5 text-[var(--fg3)] shrink-0 transition-transform ${artistPickerOpen ? 'rotate-180' : ''}`} />
                                             </button>
 
                                             {createPortal(
@@ -2090,24 +2090,24 @@ export default function AdminDashboard() {
                                                     <div
                                                         ref={artistMenuRef}
                                                         style={{ top: artistMenuPos.top, left: artistMenuPos.left, width: artistMenuPos.width }}
-                                                        className="fixed z-[10000] rounded-xl border border-white/[0.08] bg-[#111] shadow-2xl overflow-hidden"
+                                                        className="fixed z-[10000] rounded-xl border border-[var(--line-2)] bg-[var(--bg1)] shadow-2xl overflow-hidden"
                                                     >
-                                                        <div className="p-2 border-b border-white/[0.06]">
-                                                            <div className="flex items-center gap-2 bg-white/[0.04] border border-white/[0.06] px-3 py-2 rounded-lg">
-                                                                <Search className="w-3.5 h-3.5 text-white/20 shrink-0" />
+                                                        <div className="p-2 border-b border-[var(--line)]">
+                                                            <div className="flex items-center gap-2 bg-[var(--surface-hover)] border border-[var(--line)] px-3 py-2 rounded-lg">
+                                                                <Search className="w-3.5 h-3.5 text-[var(--fg5)] shrink-0" />
                                                                 <input
                                                                     autoFocus
                                                                     type="text"
                                                                     placeholder="Search artists…"
                                                                     value={artistSearchQuery}
                                                                     onChange={e => setArtistSearchQuery(e.target.value)}
-                                                                    className="bg-transparent text-xs text-white placeholder-white/20 outline-none w-full font-medium"
+                                                                    className="bg-transparent text-xs text-[var(--fg0)] placeholder-[var(--placeholder)] outline-none w-full font-medium"
                                                                 />
                                                             </div>
                                                         </div>
                                                         <div className="max-h-56 overflow-y-auto">
                                                             {artistPickerResults.length === 0 ? (
-                                                                <p className="px-3 py-4 text-[10px] text-white/25 text-center font-bold uppercase tracking-widest">No matches</p>
+                                                                <p className="px-3 py-4 text-[10px] text-[var(--fg4)] text-center font-bold uppercase tracking-widest">No matches</p>
                                                             ) : artistPickerResults.map(u => (
                                                                 <button
                                                                     type="button"
@@ -2117,10 +2117,10 @@ export default function AdminDashboard() {
                                                                         setArtistPickerOpen(false);
                                                                         setArtistSearchQuery('');
                                                                     }}
-                                                                    className={`w-full text-left px-3 py-2.5 text-xs font-medium transition-colors ${u._id === notificationForm.target_user ? 'bg-red-600/15 text-red-400' : 'text-white/70 hover:bg-white/[0.04]'}`}
+                                                                    className={`w-full text-left px-3 py-2.5 text-xs font-medium transition-colors ${u._id === notificationForm.target_user ? 'bg-red-600/15 text-[var(--accent-fg)]' : 'text-[var(--fg1)] hover:bg-[var(--surface-hover)]'}`}
                                                                 >
-                                                                    <span className="font-bold text-white">{u.name}</span>
-                                                                    <span className="text-white/30"> — {u.email}</span>
+                                                                    <span className="font-bold text-[var(--fg0)]">{u.name}</span>
+                                                                    <span className="text-[var(--fg3)]"> — {u.email}</span>
                                                                 </button>
                                                             ))}
                                                         </div>
@@ -2137,11 +2137,11 @@ export default function AdminDashboard() {
                                     <div className="grid grid-cols-2 gap-2">
                                         {NOTIFICATION_TEMPLATES.map(t => (
                                             <button key={t.id} type="button" onClick={() => setNotificationForm({ ...notificationForm, template: t.id })}
-                                                className={`flex items-center gap-2.5 p-3 rounded-xl border transition-all text-left ${notificationForm.template === t.id ? 'border-red-600 bg-red-600/10' : 'border-white/[0.08] bg-white/[0.02] hover:border-white/20'}`}>
+                                                className={`flex items-center gap-2.5 p-3 rounded-xl border transition-all text-left ${notificationForm.template === t.id ? 'border-red-600 bg-red-600/10' : 'border-[var(--line-2)] bg-[var(--surface-2)] hover:border-[var(--line-2)]'}`}>
                                                 <div className={`w-8 h-8 rounded-lg border flex items-center justify-center shrink-0 ${t.accent}`}>
                                                     <t.icon className="w-3.5 h-3.5" />
                                                 </div>
-                                                <span className="text-[10px] font-bold text-white/70">{t.label}</span>
+                                                <span className="text-[10px] font-bold text-[var(--fg1)]">{t.label}</span>
                                             </button>
                                         ))}
                                     </div>
@@ -2159,15 +2159,15 @@ export default function AdminDashboard() {
                                 <div>
                                     <label className={labelCls}>Image (Optional)</label>
                                     <div onClick={() => document.getElementById('notification-image-upload')?.click()}
-                                        className={`py-6 border-2 border-dashed rounded-xl transition-all cursor-pointer flex flex-col items-center justify-center gap-2 ${notificationImage ? 'border-red-600/30 bg-red-600/5' : 'border-white/10 bg-black/20 hover:border-white/20'}`}>
-                                        <Upload className={`w-4 h-4 ${notificationImage ? 'text-red-500' : 'text-white/30'}`} />
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-white/60">{notificationImage ? notificationImage.name : 'Attach an image'}</p>
+                                        className={`py-6 border-2 border-dashed rounded-xl transition-all cursor-pointer flex flex-col items-center justify-center gap-2 ${notificationImage ? 'border-red-600/30 bg-red-600/5' : 'border-[var(--line-2)] bg-[var(--surface)] hover:border-[var(--line-2)]'}`}>
+                                        <Upload className={`w-4 h-4 ${notificationImage ? 'text-[var(--accent-fg)]' : 'text-[var(--fg3)]'}`} />
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-[var(--fg1)]">{notificationImage ? notificationImage.name : 'Attach an image'}</p>
                                         <input id="notification-image-upload" type="file" accept="image/*" className="sr-only" onChange={e => { if (e.target.files?.[0]) setNotificationImage(e.target.files[0]); }} />
                                     </div>
                                 </div>
 
                                 <div className="flex gap-3 pt-2">
-                                    <button type="button" onClick={() => setShowNewNotification(false)} className="flex-1 py-3 rounded-xl border border-white/[0.06] text-xs font-black uppercase tracking-wider text-white/40 hover:text-white hover:bg-white/[0.04] transition-all">Cancel</button>
+                                    <button type="button" onClick={() => setShowNewNotification(false)} className="flex-1 py-3 rounded-xl border border-[var(--line)] text-xs font-black uppercase tracking-wider text-[var(--fg2)] hover:text-[var(--fg0)] hover:bg-[var(--surface-hover)] transition-all">Cancel</button>
                                     <button type="submit" disabled={savingNotification} className="flex-1 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-red-600/20 disabled:opacity-50">
                                         {savingNotification ? 'Sending…' : 'Send Notification'}
                                     </button>
@@ -2181,18 +2181,18 @@ export default function AdminDashboard() {
             {/* Support Ticket Chat Modal */}
             {activeTicket && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/85 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
-                    <motion.div initial={{ y: '100%', opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: '100%', opacity: 0 }} transition={{ type: 'spring', damping: 30 }} className="w-full sm:max-w-2xl rounded-t-3xl sm:rounded-2xl border border-white/[0.08] bg-[#080808] flex flex-col h-[90vh] sm:h-[80vh]">
-                        <div className="px-5 py-4 border-b border-white/[0.06] flex items-start justify-between gap-4 bg-white/[0.02]">
+                    <motion.div initial={{ y: '100%', opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: '100%', opacity: 0 }} transition={{ type: 'spring', damping: 30 }} className="w-full sm:max-w-2xl rounded-t-3xl sm:rounded-2xl border border-[var(--line-2)] bg-[var(--bg1)] flex flex-col h-[90vh] sm:h-[80vh]">
+                        <div className="px-5 py-4 border-b border-[var(--line)] flex items-start justify-between gap-4 bg-[var(--surface-2)]">
                             <div className="min-w-0">
-                                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-red-500 mb-0.5">{activeTicket.user?.name} · {activeTicket.user?.email}</p>
-                                <h3 className="text-sm font-bold text-white truncate">{activeTicket.subject}</h3>
+                                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--accent-fg)] mb-0.5">{activeTicket.user?.name} · {activeTicket.user?.email}</p>
+                                <h3 className="text-sm font-bold text-[var(--fg0)] truncate">{activeTicket.subject}</h3>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
-                                <select value={activeTicket.status} onChange={e => handleTicketStatus(activeTicket._id, e.target.value)} className="bg-white/[0.04] border border-white/[0.06] text-[9px] font-black uppercase tracking-wider rounded-lg px-3 py-2 text-white/50 focus:border-red-600/40 outline-none">
+                                <select value={activeTicket.status} onChange={e => handleTicketStatus(activeTicket._id, e.target.value)} className="bg-[var(--surface-hover)] border border-[var(--line)] text-[9px] font-black uppercase tracking-wider rounded-lg px-3 py-2 text-[var(--fg2)] focus:border-red-600/40 outline-none">
                                     <option value="Open">Open</option>
                                     <option value="Resolved">Resolved</option>
                                 </select>
-                                <button onClick={() => setActiveTicket(null)} className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 hover:text-white transition-colors">
+                                <button onClick={() => setActiveTicket(null)} className="p-2 rounded-xl bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg3)] hover:text-[var(--fg0)] transition-colors">
                                     <X className="w-4 h-4" />
                                 </button>
                             </div>
@@ -2204,16 +2204,16 @@ export default function AdminDashboard() {
                                 return (
                                     <div key={idx} className={`flex flex-col ${isAdmin ? 'items-end' : 'items-start'}`}>
                                         <div className={`flex items-center gap-2 mb-1.5 ${isAdmin ? 'flex-row-reverse' : ''}`}>
-                                            <div className={`w-6 h-6 rounded-lg flex items-center justify-center border ${isAdmin ? 'bg-red-500/10 border-red-500/20 text-red-400' : 'bg-blue-500/10 border-blue-500/20 text-blue-400'}`}>
+                                            <div className={`w-6 h-6 rounded-lg flex items-center justify-center border ${isAdmin ? 'bg-red-500/10 border-red-500/20 text-[var(--accent-fg)]' : 'bg-blue-500/10 border-blue-500/20 text-[var(--blue-fg)]'}`}>
                                                 {isAdmin ? <LayoutDashboard className="w-3 h-3" /> : <UserCheck className="w-3 h-3" />}
                                             </div>
-                                            <span className="text-[9px] font-black uppercase tracking-widest text-white/30">
+                                            <span className="text-[9px] font-black uppercase tracking-widest text-[var(--fg3)]">
                                                 {isAdmin ? 'Admin' : activeTicket.user?.name}
                                             </span>
                                         </div>
                                         <div className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm font-medium leading-relaxed whitespace-pre-wrap ${isAdmin
-                                            ? 'bg-zinc-900 border border-white/[0.06] text-white/80 rounded-tr-sm'
-                                            : 'bg-white/[0.04] border border-white/[0.06] text-white/60 rounded-tl-sm'
+                                            ? 'bg-[var(--bg1)] border border-[var(--line)] text-[var(--fg1)] rounded-tr-sm'
+                                            : 'bg-[var(--surface-hover)] border border-[var(--line)] text-[var(--fg1)] rounded-tl-sm'
                                         }`}>
                                             {msg.content}
                                         </div>
@@ -2222,13 +2222,13 @@ export default function AdminDashboard() {
                             })}
                         </div>
 
-                        <form onSubmit={handleTicketReply} className="p-4 border-t border-white/[0.06] bg-black/40 flex gap-3">
+                        <form onSubmit={handleTicketReply} className="p-4 border-t border-[var(--line)] bg-[var(--surface-hover)] flex gap-3">
                             <input
                                 type="text"
                                 value={replyMessage}
                                 onChange={e => setReplyMessage(e.target.value)}
                                 placeholder="Type your reply…"
-                                className="flex-1 bg-white/[0.04] border border-white/[0.06] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:border-white/15 outline-none font-medium"
+                                className="flex-1 bg-[var(--surface-hover)] border border-[var(--line)] rounded-xl px-4 py-3 text-sm text-[var(--fg0)] placeholder-[var(--placeholder)] focus:border-[var(--line-2)] outline-none font-medium"
                             />
                             <button type="submit" disabled={!replyMessage.trim() || replying} className="px-5 bg-red-600 hover:bg-red-500 text-white rounded-xl font-black transition-all shadow-lg shadow-red-600/20 flex items-center justify-center disabled:opacity-40">
                                 {replying ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Send className="w-4 h-4" />}

@@ -22,15 +22,15 @@ const PLATFORM_COLORS: Record<string, string> = {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-zinc-950 border border-zinc-800 shadow-2xl rounded-xl px-3 py-2.5 text-sm">
-        <p className="font-black text-white mb-1.5 text-[10px] uppercase tracking-wider border-b border-zinc-900 pb-1">{label}</p>
+      <div className="bg-[var(--bg1)] border border-[var(--line-2)] shadow-2xl rounded-xl px-3 py-2.5 text-sm">
+        <p className="font-black text-[var(--fg0)] mb-1.5 text-[10px] uppercase tracking-wider border-b border-[var(--line)] pb-1">{label}</p>
         {payload.map((entry: any) => (
           <div key={entry.name} className="flex items-center justify-between gap-4 mt-1">
             <span className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: entry.color || entry.fill }} />
-              <span className="text-zinc-400 text-[10px]">{entry.name}:</span>
+              <span className="text-[var(--fg2)] text-[10px]">{entry.name}:</span>
             </span>
-            <span className="text-white font-mono font-black text-[10px]">{typeof entry.value === 'number' ? entry.value.toLocaleString() : entry.value}</span>
+            <span className="text-[var(--fg0)] font-mono font-black text-[10px]">{typeof entry.value === 'number' ? entry.value.toLocaleString() : entry.value}</span>
           </div>
         ))}
       </div>
@@ -109,7 +109,7 @@ export default function Analytics() {
       {/* ─── Header ─── */}
       <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}>
         <p className="label-caps mb-1.5 text-[9px]">Performance Metrics</p>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display italic tracking-tight text-white uppercase leading-[1.1] pb-1">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display italic tracking-tight text-[var(--fg0)] uppercase leading-[1.1] pb-1">
           Project <span className="text-gradient-red">Analytics</span>
         </h1>
       </motion.div>
@@ -134,7 +134,7 @@ export default function Analytics() {
             </div>
             <div>
               <p className="label-caps opacity-60 mb-0.5 text-[8px]">{card.label}</p>
-              <p className="text-lg md:text-xl lg:text-2xl font-black text-white tracking-tight truncate">{card.value}</p>
+              <p className="text-lg md:text-xl lg:text-2xl font-black text-[var(--fg0)] tracking-tight truncate">{card.value}</p>
             </div>
           </motion.div>
         ))}
@@ -142,9 +142,9 @@ export default function Analytics() {
 
       {releases.length === 0 ? (
         <div className="glass-card-premium rounded-2xl p-12 text-center">
-          <Music className="w-10 h-10 text-zinc-600 mx-auto mb-3" />
-          <h2 className="text-base font-black text-white mb-1">No releases yet</h2>
-          <p className="text-sm text-zinc-500 font-medium">Submit a release to start seeing analytics.</p>
+          <Music className="w-10 h-10 text-[var(--fg4)] mx-auto mb-3" />
+          <h2 className="text-base font-black text-[var(--fg0)] mb-1">No releases yet</h2>
+          <p className="text-sm text-[var(--fg3)] font-medium">Submit a release to start seeing analytics.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 md:gap-6">
@@ -154,14 +154,14 @@ export default function Analytics() {
 
             {/* Streaming Trend */}
             <div className="glass-card-premium overflow-hidden flex flex-col rounded-[2rem]">
-              <div className="px-5 md:px-7 py-4 md:py-5 border-b border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white/[0.02]">
+              <div className="px-5 md:px-7 py-4 md:py-5 border-b border-[var(--line)] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[var(--surface)]">
                 <div>
-                  <h2 className="text-sm md:text-base font-black text-white tracking-tight uppercase">Streaming Trend</h2>
+                  <h2 className="text-sm md:text-base font-black text-[var(--fg0)] tracking-tight uppercase">Streaming Trend</h2>
                   <p className="label-caps mt-0.5 text-[8px] opacity-60">Daily Performance</p>
                 </div>
                 <div className="relative">
                   <select
-                    className="appearance-none bg-zinc-950 border border-white/5 text-white text-[10px] font-black pl-4 pr-8 py-2.5 rounded-xl focus:outline-none focus:border-red-600/50 transition-all cursor-pointer"
+                    className="appearance-none bg-[var(--input-bg)] border border-[var(--line)] text-[var(--fg0)] text-[10px] font-black pl-4 pr-8 py-2.5 rounded-xl focus:outline-none focus:border-red-600/50 transition-all cursor-pointer"
                     value={selected?.id || ''}
                     onChange={e => {
                       const r = releases.find(r => r.id === e.target.value);
@@ -170,7 +170,7 @@ export default function Analytics() {
                   >
                     {releases.map(r => <option key={r.id} value={r.id}>{r.title.toUpperCase()}</option>)}
                   </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500 pointer-events-none" />
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--fg3)] pointer-events-none" />
                 </div>
               </div>
 
@@ -181,8 +181,8 @@ export default function Analytics() {
                   </div>
                 ) : chartData.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-[220px] md:h-[280px] text-center">
-                    <TrendingUp className="w-10 h-10 text-zinc-700 mb-3" />
-                    <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Awaiting streaming data…</p>
+                    <TrendingUp className="w-10 h-10 text-[var(--fg5)] mb-3" />
+                    <p className="text-[10px] text-[var(--fg3)] font-black uppercase tracking-widest">Awaiting streaming data…</p>
                   </div>
                 ) : (
                   <div className="min-w-[300px]">
@@ -208,7 +208,7 @@ export default function Analytics() {
             {/* Platform Distribution */}
             <div className="glass-card-premium rounded-[2rem] p-5 md:p-7 flex flex-col">
               <div className="mb-5">
-                <h2 className="text-sm md:text-base font-black text-white tracking-tight uppercase">Platform Breakdown</h2>
+                <h2 className="text-sm md:text-base font-black text-[var(--fg0)] tracking-tight uppercase">Platform Breakdown</h2>
                 <p className="label-caps mt-0.5 text-[8px] opacity-60">Market Share by Platform</p>
               </div>
               <div className="overflow-x-auto min-w-0">
@@ -250,8 +250,8 @@ export default function Analytics() {
                       </PieChart>
                     </ResponsiveContainer>
                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                      <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Volume</p>
-                      <p className="text-xl font-black text-white leading-none">
+                      <p className="text-[9px] font-black text-[var(--fg3)] uppercase tracking-widest">Volume</p>
+                      <p className="text-xl font-black text-[var(--fg0)] leading-none">
                         {totalStreams > 1000 ? (totalStreams / 1000).toFixed(1) + 'K' : totalStreams}
                       </p>
                     </div>
@@ -261,9 +261,9 @@ export default function Analytics() {
                       <div key={p.name} className="flex items-center justify-between group">
                         <div className="flex items-center gap-3">
                           <div className="w-2 h-2 rounded-full" style={{ backgroundColor: PLATFORM_COLORS[p.name] || '#52525b' }} />
-                          <span className="text-[10px] text-white font-black uppercase tracking-widest">{p.name}</span>
+                          <span className="text-[10px] text-[var(--fg0)] font-black uppercase tracking-widest">{p.name}</span>
                         </div>
-                        <span className="text-sm font-black text-white font-mono">
+                        <span className="text-sm font-black text-[var(--fg0)] font-mono">
                           {totalStreams > 0 ? Math.round((p.value / totalStreams) * 100) : 0}%
                         </span>
                       </div>
@@ -272,8 +272,8 @@ export default function Analytics() {
                 </>
               ) : (
                 <div className="flex flex-col items-center justify-center h-48 text-center">
-                  <Globe className="w-10 h-10 text-zinc-700 mb-3" />
-                  <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Global metrics pending…</p>
+                  <Globe className="w-10 h-10 text-[var(--fg5)] mb-3" />
+                  <p className="text-[10px] text-[var(--fg3)] font-black uppercase tracking-widest">Global metrics pending…</p>
                 </div>
               )}
             </div>
@@ -287,14 +287,14 @@ export default function Analytics() {
               >
                 <div className="absolute top-0 right-0 w-24 h-24 bg-red-600/5 blur-2xl pointer-events-none" />
                 <div className="flex items-center gap-2.5 mb-3">
-                  <TrendingUp className="w-4 h-4 text-red-500" />
-                  <p className="label-caps text-red-500 text-[9px]">Growth Insight</p>
+                  <TrendingUp className="w-4 h-4 text-[var(--accent-fg)]" />
+                  <p className="label-caps text-[var(--accent-fg)] text-[9px]">Growth Insight</p>
                 </div>
-                <p className="text-sm text-zinc-300 font-medium leading-relaxed">
-                  <span className="text-white font-black">{topPlatform.name}</span> is your primary growth engine, commanding{' '}
-                  <span className="text-red-500 font-black">{topPlatformPercent}%</span> of your total audience.
+                <p className="text-sm text-[var(--fg1)] font-medium leading-relaxed">
+                  <span className="text-[var(--fg0)] font-black">{topPlatform.name}</span> is your primary growth engine, commanding{' '}
+                  <span className="text-[var(--accent-fg)] font-black">{topPlatformPercent}%</span> of your total audience.
                 </p>
-                <p className="mt-3 text-[9px] text-zinc-500 uppercase tracking-widest font-black">Priority: Push marketing here</p>
+                <p className="mt-3 text-[9px] text-[var(--fg3)] uppercase tracking-widest font-black">Priority: Push marketing here</p>
               </motion.div>
             )}
           </div>

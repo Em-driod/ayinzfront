@@ -34,10 +34,10 @@ interface Release {
 }
 
 const getStatusStyle = (status: string) => {
-  if (status === 'approved') return { cls: 'bg-red-600/10 text-red-500 border border-red-600/20', label: 'Approved' };
-  if (status === 'pending') return { cls: 'bg-amber-500/10 text-amber-400 border border-amber-500/20', label: 'Pending' };
-  if (status === 'rejected') return { cls: 'bg-zinc-800 text-zinc-400 border border-zinc-700', label: 'Rejected' };
-  return { cls: 'bg-zinc-800 text-white border border-zinc-700', label: status };
+  if (status === 'approved') return { cls: 'bg-red-600/10 text-[var(--accent-fg)] border border-red-600/20', label: 'Approved' };
+  if (status === 'pending') return { cls: 'bg-amber-500/10 text-[var(--amber-fg)] border border-amber-500/20', label: 'Pending' };
+  if (status === 'rejected') return { cls: 'bg-[var(--surface-hover)] text-[var(--fg2)] border border-[var(--line-2)]', label: 'Rejected' };
+  return { cls: 'bg-[var(--surface-hover)] text-[var(--fg0)] border border-[var(--line-2)]', label: status };
 };
 
 export default function Releases() {
@@ -77,18 +77,18 @@ export default function Releases() {
         <div className="flex flex-col gap-4">
           <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}>
             <p className="label-caps mb-1.5 text-[9px]">Catalogue Management</p>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display italic tracking-tight text-white uppercase leading-[1.1] pb-1">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display italic tracking-tight text-[var(--fg0)] uppercase leading-[1.1] pb-1">
               Your <span className="text-gradient-red">Catalogue</span>
             </h1>
           </motion.div>
 
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--fg4)]" />
               <input
                 type="text"
                 placeholder="Search releases…"
-                className="w-full pl-10 pr-4 py-3 bg-zinc-950/60 border border-white/5 rounded-2xl text-sm text-white placeholder-zinc-700 focus:border-red-600/40 focus:outline-none transition-all font-bold"
+                className="w-full pl-10 pr-4 py-3 bg-[var(--input-bg)] border border-[var(--line)] rounded-2xl text-sm text-[var(--fg0)] placeholder-[var(--placeholder)] focus:border-red-600/40 focus:outline-none transition-all font-bold"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
               />
@@ -97,7 +97,7 @@ export default function Releases() {
               initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
               onClick={() => navigate('/releases/new')}
-              className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-black rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all hover:bg-zinc-100 active:scale-95 shadow-lg shrink-0"
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-[var(--invert-bg)] text-[var(--invert-fg)] rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all hover:bg-[var(--invert-hover)] active:scale-95 shadow-lg shrink-0"
             >
               <Plus className="w-4 h-4" /> New Release
             </motion.button>
@@ -121,7 +121,7 @@ export default function Releases() {
 
           {/* Error */}
           {error && !loading && (
-            <div className="bg-red-600/10 border border-red-600/20 text-red-400 rounded-2xl p-5 text-sm font-bold flex items-center gap-3">
+            <div className="bg-red-600/10 border border-red-600/20 text-[var(--danger-tint-fg)] rounded-2xl p-5 text-sm font-bold flex items-center gap-3">
               <AlertCircle className="w-5 h-5 shrink-0" />{error}
             </div>
           )}
@@ -132,13 +132,13 @@ export default function Releases() {
               initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               className="flex flex-col items-center justify-center py-24 text-center glass-card-premium rounded-[2rem]"
             >
-              <div className="w-16 h-16 bg-zinc-950 border border-white/5 rounded-[2rem] flex items-center justify-center mb-6 shadow-2xl">
-                <Music className="w-7 h-7 text-zinc-600" />
+              <div className="w-16 h-16 bg-[var(--bg1)] border border-[var(--line)] rounded-[2rem] flex items-center justify-center mb-6 shadow-2xl">
+                <Music className="w-7 h-7 text-[var(--fg4)]" />
               </div>
-              <h2 className="text-xl font-black text-white mb-2 uppercase tracking-wide">
+              <h2 className="text-xl font-black text-[var(--fg0)] mb-2 uppercase tracking-wide">
                 {search ? 'No Results' : 'Catalogue Empty'}
               </h2>
-              <p className="text-xs text-zinc-500 mb-8 max-w-xs font-medium leading-relaxed">
+              <p className="text-xs text-[var(--fg3)] mb-8 max-w-xs font-medium leading-relaxed">
                 {search
                   ? 'Try different keywords or browse all titles.'
                   : 'Upload your first release to start distributing worldwide.'}
@@ -179,14 +179,14 @@ export default function Releases() {
                     >
                       {/* Cover Art */}
                       <div
-                        className="aspect-square relative overflow-hidden bg-zinc-950 cursor-pointer"
+                        className="aspect-square relative overflow-hidden bg-[var(--bg1)] cursor-pointer"
                         onClick={() => navigate('/analytics')}
                       >
                         {release.cover_url ? (
                           <img src={release.cover_url} alt={release.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
-                            <Music className="w-10 h-10 text-zinc-800 group-hover:text-red-600/20 transition-colors duration-500" />
+                            <Music className="w-10 h-10 text-[var(--fg5)] group-hover:text-red-600/20 transition-colors duration-500" />
                           </div>
                         )}
                         <div className="absolute top-3 right-3">
@@ -202,17 +202,17 @@ export default function Releases() {
                       </div>
 
                       {/* Info */}
-                      <div className="p-4 md:p-5 flex flex-col flex-1 bg-white/[0.02]">
-                        <h3 className="text-base font-black text-white truncate uppercase tracking-tight group-hover:text-red-500 transition-colors mb-2">
+                      <div className="p-4 md:p-5 flex flex-col flex-1 bg-[var(--surface)]">
+                        <h3 className="text-base font-black text-[var(--fg0)] truncate uppercase tracking-tight group-hover:text-[var(--accent-fg)] transition-colors mb-2">
                           {release.title}
                         </h3>
 
                         {release.status === 'rejected' && (
                           <div className="mb-3 p-2.5 rounded-xl bg-red-600/[0.06] border border-red-600/20 space-y-2">
                             <div className="flex items-start gap-2">
-                              <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" />
+                              <AlertCircle className="w-3.5 h-3.5 text-[var(--accent-fg)] shrink-0 mt-0.5" />
                               <div className="min-w-0">
-                                <p className="text-[8px] font-black text-red-500 uppercase tracking-widest mb-0.5">Rejected</p>
+                                <p className="text-[8px] font-black text-[var(--accent-fg)] uppercase tracking-widest mb-0.5">Rejected</p>
                                 <p className="text-[10px] font-medium text-red-300/80 leading-snug">
                                   {release.rejection_reason || 'No reason provided — contact support for details.'}
                                 </p>
@@ -228,55 +228,55 @@ export default function Releases() {
                         )}
 
                         {/* Artist */}
-                        <div className="mb-3 p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
+                        <div className="mb-3 p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--line)]">
                           <div className="flex items-center gap-2.5">
                             <div className="w-7 h-7 rounded-full bg-red-600/10 border border-red-600/20 flex items-center justify-center shrink-0">
-                              <span className="text-[10px] font-black text-red-500">{release.artist?.charAt(0).toUpperCase()}</span>
+                              <span className="text-[10px] font-black text-[var(--accent-fg)]">{release.artist?.charAt(0).toUpperCase()}</span>
                             </div>
                             <div className="min-w-0 flex-1">
-                              <p className="text-xs font-black text-white truncate">{release.artist}</p>
+                              <p className="text-xs font-black text-[var(--fg0)] truncate">{release.artist}</p>
                               {release.featured_artists && release.featured_artists.length > 0 && (
-                                <p className="text-[9px] font-bold text-zinc-500 truncate">ft. {release.featured_artists.join(', ')}</p>
+                                <p className="text-[9px] font-bold text-[var(--fg3)] truncate">ft. {release.featured_artists.join(', ')}</p>
                               )}
                               <div className="flex items-center gap-1.5 mt-0.5">
-                                <span className="text-[8px] font-black text-red-500/80 uppercase tracking-widest px-1.5 py-0.5 bg-red-600/10 rounded-md border border-red-600/10">{release.type}</span>
-                                {multiTrack && <span className="text-[8px] font-bold text-zinc-600 uppercase">{release.tracks!.length} tracks</span>}
+                                <span className="text-[8px] font-black text-[var(--accent-fg)]/80 uppercase tracking-widest px-1.5 py-0.5 bg-red-600/10 rounded-md border border-red-600/10">{release.type}</span>
+                                {multiTrack && <span className="text-[8px] font-bold text-[var(--fg4)] uppercase">{release.tracks!.length} tracks</span>}
                               </div>
                             </div>
                           </div>
                         </div>
 
                         <div className="mt-auto space-y-3">
-                          <div className="pt-3 border-t border-white/5 flex items-center justify-between">
+                          <div className="pt-3 border-t border-[var(--line)] flex items-center justify-between">
                             <div>
-                              <p className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-0.5">Streams</p>
-                              <p className="text-sm font-black text-white font-mono">{release.streams?.toLocaleString() || '—'}</p>
+                              <p className="text-[8px] font-black text-[var(--fg4)] uppercase tracking-widest mb-0.5">Streams</p>
+                              <p className="text-sm font-black text-[var(--fg0)] font-mono">{release.streams?.toLocaleString() || '—'}</p>
                             </div>
                             <div className="text-right">
-                              <p className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-0.5">Revenue</p>
-                              <p className="text-sm font-black text-red-500 font-mono">
+                              <p className="text-[8px] font-black text-[var(--fg4)] uppercase tracking-widest mb-0.5">Revenue</p>
+                              <p className="text-sm font-black text-[var(--accent-fg)] font-mono">
                                 {release.revenue > 0 ? `₦${release.revenue.toLocaleString()}` : '—'}
                               </p>
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-1.5 text-[9px] font-bold text-zinc-600 uppercase tracking-wider">
+                          <div className="flex items-center gap-1.5 text-[9px] font-bold text-[var(--fg4)] uppercase tracking-wider">
                             <Calendar className="w-3 h-3" />
                             <span>{date}</span>
                           </div>
 
                           {(release.isrc || release.upc) && (
-                            <div className="pt-2.5 border-t border-white/5 space-y-1">
+                            <div className="pt-2.5 border-t border-[var(--line)] space-y-1">
                               {release.isrc && (
                                 <div className="flex items-center justify-between">
-                                  <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">ISRC</span>
-                                  <span className="text-[9px] font-mono tracking-wider text-zinc-400">{release.isrc}</span>
+                                  <span className="text-[8px] font-black text-[var(--fg4)] uppercase tracking-widest">ISRC</span>
+                                  <span className="text-[9px] font-mono tracking-wider text-[var(--fg2)]">{release.isrc}</span>
                                 </div>
                               )}
                               {release.upc && (
                                 <div className="flex items-center justify-between">
-                                  <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">UPC</span>
-                                  <span className="text-[9px] font-mono tracking-wider text-zinc-400">{release.upc}</span>
+                                  <span className="text-[8px] font-black text-[var(--fg4)] uppercase tracking-widest">UPC</span>
+                                  <span className="text-[9px] font-mono tracking-wider text-[var(--fg2)]">{release.upc}</span>
                                 </div>
                               )}
                             </div>
@@ -285,7 +285,7 @@ export default function Releases() {
                           {multiTrack && (
                             <button
                               onClick={() => toggleExpand(release.id)}
-                              className="w-full flex items-center justify-between pt-2.5 border-t border-white/5 text-[9px] font-black uppercase tracking-widest text-zinc-500 hover:text-red-500 transition-colors"
+                              className="w-full flex items-center justify-between pt-2.5 border-t border-[var(--line)] text-[9px] font-black uppercase tracking-widest text-[var(--fg3)] hover:text-[var(--accent-fg)] transition-colors"
                             >
                               <span>{isExpanded ? 'Hide Tracklist' : `View ${release.tracks!.length} Tracks`}</span>
                               {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
@@ -302,19 +302,19 @@ export default function Releases() {
                             animate={{ height: 'auto', opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
                             transition={{ duration: 0.25 }}
-                            className="overflow-hidden border-t border-white/5"
+                            className="overflow-hidden border-t border-[var(--line)]"
                           >
                             <div className="p-3 space-y-2 max-h-72 overflow-y-auto custom-scrollbar">
-                              <p className="text-[8px] font-black uppercase text-zinc-600 tracking-widest mb-2">Tracklist</p>
+                              <p className="text-[8px] font-black uppercase text-[var(--fg4)] tracking-widest mb-2">Tracklist</p>
                               {release.tracks!.map((track, idx) => (
-                                <div key={idx} className="p-2.5 rounded-xl bg-black/40 border border-white/5 space-y-1.5 hover:border-red-600/20 transition-colors">
-                                  <p className="text-xs font-black text-white truncate">
-                                    <span className="text-red-500 mr-1.5">{idx + 1}.</span>{track.title}
+                                <div key={idx} className="p-2.5 rounded-xl bg-black/40 border border-[var(--line)] space-y-1.5 hover:border-red-600/20 transition-colors">
+                                  <p className="text-xs font-black text-[var(--fg0)] truncate">
+                                    <span className="text-[var(--accent-fg)] mr-1.5">{idx + 1}.</span>{track.title}
                                   </p>
-                                  <p className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">
+                                  <p className="text-[9px] font-bold text-[var(--fg3)] uppercase tracking-wider">
                                     {track.artist} {track.featured_artist ? `ft. ${track.featured_artist}` : ''} · {track.genre}
                                     {track.explicit === 'Yes' && (
-                                      <span className="ml-1.5 px-1 bg-white/10 rounded text-[7px]">E</span>
+                                      <span className="ml-1.5 px-1 bg-[var(--surface-hover)] rounded text-[7px]">E</span>
                                     )}
                                   </p>
                                   {track.song_url && (

@@ -183,7 +183,7 @@ export default function Settings() {
     { id: 'subscription', label: 'Plan', icon: CreditCard }
   ];
 
-  const inputCls = 'w-full bg-white/[0.03] border border-white/5 rounded-2xl px-5 py-3.5 text-white focus:border-red-600/50 outline-none transition-all font-bold text-sm';
+  const inputCls = 'w-full bg-[var(--input-bg)] border border-[var(--line)] rounded-2xl px-5 py-3.5 text-[var(--fg0)] focus:border-red-600/50 outline-none transition-all font-bold text-sm';
 
   if (loading) {
     return (
@@ -200,7 +200,7 @@ export default function Settings() {
         {/* ─── Header ─── */}
         <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}>
           <p className="label-caps mb-1.5 text-[9px]">Management Center</p>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display italic tracking-tight text-white uppercase leading-[1.1] pb-1">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display italic tracking-tight text-[var(--fg0)] uppercase leading-[1.1] pb-1">
             Account <span className="text-gradient-red">Settings</span>
           </h1>
         </motion.div>
@@ -212,8 +212,8 @@ export default function Settings() {
             animate={{ opacity: 1, y: 0 }}
             className={`p-3.5 rounded-xl flex items-center gap-3 text-sm font-semibold border ${
               message.type === 'success'
-                ? 'bg-red-600/10 text-red-500 border-red-600/20'
-                : 'bg-red-500/5 text-red-400 border-red-500/20'
+                ? 'bg-red-600/10 text-[var(--accent-fg)] border-red-600/20'
+                : 'bg-red-500/5 text-[var(--danger-tint-fg)] border-red-500/20'
             }`}
           >
             {message.type === 'success'
@@ -237,11 +237,11 @@ export default function Settings() {
                   className={`flex items-center gap-2.5 px-4 py-3 rounded-2xl text-sm font-black transition-all whitespace-nowrap shrink-0 lg:w-full lg:justify-between ${
                     activeTab === tab.id
                       ? 'bg-red-600 text-white shadow-xl shadow-red-600/20'
-                      : 'text-zinc-400 hover:text-white bg-white/[0.03] hover:bg-white/[0.06] border border-white/5'
+                      : 'text-[var(--fg2)] hover:text-[var(--fg0)] bg-[var(--surface)] hover:bg-[var(--surface-hover)] border border-[var(--line)]'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <tab.icon className={`w-4 h-4 shrink-0 ${activeTab === tab.id ? 'text-white' : 'text-zinc-500'}`} />
+                    <tab.icon className={`w-4 h-4 shrink-0 ${activeTab === tab.id ? 'text-white' : 'text-[var(--fg3)]'}`} />
                     <span className="uppercase tracking-widest text-[11px]">{tab.label}</span>
                   </div>
                   {activeTab === tab.id && <div className="hidden lg:block w-1.5 h-1.5 rounded-full bg-white" />}
@@ -267,7 +267,7 @@ export default function Settings() {
                       <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-amber-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500" />
                       <div
                         onClick={() => !uploadingAvatar && document.getElementById('avatar-upload')?.click()}
-                        className="relative w-20 h-20 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center text-white text-2xl font-display italic overflow-hidden cursor-pointer"
+                        className="relative w-20 h-20 rounded-2xl bg-[var(--surface-hover)] border border-[var(--line-2)] flex items-center justify-center text-[var(--fg0)] text-2xl font-display italic overflow-hidden cursor-pointer"
                       >
                         {profile.avatar_url
                           ? <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
@@ -283,9 +283,9 @@ export default function Settings() {
                       </div>
                     </div>
                     <div className="pt-1 text-center sm:text-left">
-                      <p className="label-caps text-red-500 mb-1 text-[9px]">Identity Verified</p>
-                      <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight leading-none mb-1">{profile.name || 'ANONYMOUS'}</h3>
-                      <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Artiste Tier</p>
+                      <p className="label-caps text-[var(--accent-fg)] mb-1 text-[9px]">Identity Verified</p>
+                      <h3 className="text-2xl md:text-3xl font-black text-[var(--fg0)] tracking-tight leading-none mb-1">{profile.name || 'ANONYMOUS'}</h3>
+                      <p className="text-[10px] text-[var(--fg3)] font-black uppercase tracking-widest">Artiste Tier</p>
                     </div>
                   </div>
 
@@ -300,7 +300,7 @@ export default function Settings() {
                         <label className="label-caps opacity-50 text-[9px]">Email (locked)</label>
                         <div className="relative">
                           <input type="email" readOnly className={`${inputCls} cursor-not-allowed opacity-50`} value={profile.email} />
-                          <Shield className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
+                          <Shield className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--fg4)]" />
                         </div>
                       </div>
                     </div>
@@ -310,7 +310,7 @@ export default function Settings() {
                         value={profile.avatar_url} onChange={e => setProfile({ ...profile, avatar_url: e.target.value })} />
                     </div>
                     <button type="submit" disabled={submitting}
-                      className="w-full group bg-white text-black hover:bg-red-600 hover:text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all disabled:opacity-50 shadow-xl flex items-center justify-center gap-2.5 active:scale-95"
+                      className="w-full group bg-[var(--invert-bg)] text-[var(--invert-fg)] hover:bg-red-600 hover:text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all disabled:opacity-50 shadow-xl flex items-center justify-center gap-2.5 active:scale-95"
                     >
                       {submitting
                         ? <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
@@ -325,7 +325,7 @@ export default function Settings() {
               {activeTab === 'security' && (
                 <div className="glass-card-premium p-5 md:p-8 rounded-[2rem]">
                   <div className="mb-7">
-                    <h3 className="text-xl font-black text-white tracking-tight uppercase">Security Vault</h3>
+                    <h3 className="text-xl font-black text-[var(--fg0)] tracking-tight uppercase">Security Vault</h3>
                     <p className="label-caps mt-1 opacity-60 text-[9px]">Manage authentication</p>
                   </div>
 
@@ -351,10 +351,10 @@ export default function Settings() {
                       </div>
                     </div>
                     <button type="submit" disabled={submitting}
-                      className="w-full bg-zinc-950 hover:bg-red-600/10 border border-white/5 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="w-full bg-[var(--bg1)] hover:bg-red-600/10 border border-[var(--line)] text-[var(--fg0)] py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       {submitting
-                        ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        ? <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                         : 'Update Password'
                       }
                     </button>
@@ -366,29 +366,29 @@ export default function Settings() {
               {activeTab === 'subscription' && (
                 <div className="glass-card-premium p-5 md:p-8 rounded-[2rem] space-y-6">
                   <div>
-                    <h3 className="text-xl font-black text-white tracking-tight uppercase">Plan Status</h3>
+                    <h3 className="text-xl font-black text-[var(--fg0)] tracking-tight uppercase">Plan Status</h3>
                     <p className="label-caps mt-1 opacity-60 text-[9px]">Manage your distribution tier</p>
                   </div>
 
                   {/* Current plan banner */}
-                  <div className={`bg-gradient-to-br from-zinc-950 border rounded-[1.5rem] p-5 md:p-7 relative overflow-hidden ${
+                  <div className={`bg-gradient-to-br from-[var(--bg1)] border rounded-[1.5rem] p-5 md:p-7 relative overflow-hidden ${
                     userPlan === 'none' ? 'border-amber-500/20 to-amber-900/10' : 'border-red-600/20 to-red-900/10'
                   }`}>
                     <div className="absolute top-0 right-0 w-24 h-24 bg-red-600/10 blur-2xl pointer-events-none" />
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div>
-                        <p className={`label-caps mb-2 text-[9px] ${userPlan === 'none' ? 'text-amber-500' : 'text-red-500'}`}>
+                        <p className={`label-caps mb-2 text-[9px] ${userPlan === 'none' ? 'text-[var(--amber-fg)]' : 'text-[var(--accent-fg)]'}`}>
                           Active Tier
                         </p>
-                        <h4 className="text-2xl md:text-3xl font-display italic text-white tracking-tight leading-none mb-1">
+                        <h4 className="text-2xl md:text-3xl font-display italic text-[var(--fg0)] tracking-tight leading-none mb-1">
                           {currentPlan.label}
                         </h4>
-                        <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">{currentPlan.desc}</p>
+                        <p className="text-[10px] text-[var(--fg3)] font-black uppercase tracking-widest">{currentPlan.desc}</p>
                       </div>
                       {userPlan !== 'none' && !showPlanGrid && (
                         <button
                           onClick={() => setShowPlanGrid(true)}
-                          className="self-start sm:self-auto flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all"
+                          className="self-start sm:self-auto flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--surface)] border border-[var(--line-2)] text-[var(--fg0)] text-[10px] font-black uppercase tracking-widest hover:bg-[var(--surface-hover)] transition-all"
                         >
                           <ChevronRight className="w-3.5 h-3.5" /> Change Plan
                         </button>
@@ -410,26 +410,26 @@ export default function Settings() {
                             className={`p-5 rounded-2xl border text-left transition-all group flex flex-col disabled:opacity-60 ${
                               selectedPlanId === p.id && paymentLoading
                                 ? 'border-red-600 bg-red-600/10'
-                                : 'border-white/5 bg-white/[0.02] hover:border-white/10'
+                                : 'border-[var(--line)] bg-[var(--surface)] hover:border-[var(--line-2)]'
                             }`}
                           >
                             <div className="flex items-center justify-between mb-3">
-                              <p className="text-[9px] font-black uppercase text-zinc-500">{p.subtitle}</p>
+                              <p className="text-[9px] font-black uppercase text-[var(--fg3)]">{p.subtitle}</p>
                               <div className="flex items-center gap-1.5">
                                 {userPlan === p.id && <span className="text-[8px] font-black bg-red-600 text-white px-2 py-0.5 rounded-full uppercase">Current</span>}
                                 {selectedPlanId === p.id && paymentLoading && <div className="w-3.5 h-3.5 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />}
-                                {selectedPlanId === p.id && !paymentLoading && <Check className="w-3.5 h-3.5 text-red-500" />}
+                                {selectedPlanId === p.id && !paymentLoading && <Check className="w-3.5 h-3.5 text-[var(--accent-fg)]" />}
                               </div>
                             </div>
-                            <h3 className="text-base font-black text-white mb-1 uppercase">{p.name}</h3>
-                            <p className="text-lg font-black text-red-500 mb-auto">
-                              ₦{p.price.toLocaleString()} <span className="text-[9px] text-zinc-600 uppercase">/ {p.period}</span>
+                            <h3 className="text-base font-black text-[var(--fg0)] mb-1 uppercase">{p.name}</h3>
+                            <p className="text-lg font-black text-[var(--accent-fg)] mb-auto">
+                              ₦{p.price.toLocaleString()} <span className="text-[9px] text-[var(--fg4)] uppercase">/ {p.period}</span>
                             </p>
-                            <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
-                              <span className="text-[9px] font-black uppercase text-zinc-500 group-hover:text-white transition-colors">
+                            <div className="mt-4 pt-3 border-t border-[var(--line)] flex items-center justify-between">
+                              <span className="text-[9px] font-black uppercase text-[var(--fg3)] group-hover:text-[var(--fg0)] transition-colors">
                                 {userPlan === p.id ? 'Current Plan' : 'Subscribe Now'}
                               </span>
-                              <ArrowUpRight className="w-3.5 h-3.5 text-zinc-700 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                              <ArrowUpRight className="w-3.5 h-3.5 text-[var(--fg5)] group-hover:text-[var(--fg0)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                             </div>
                           </button>
                         ))}
@@ -439,7 +439,7 @@ export default function Settings() {
                         <div className="flex justify-center pt-2">
                           <button
                             onClick={() => setShowPlanGrid(false)}
-                            className="text-[10px] font-black text-zinc-600 uppercase tracking-widest hover:text-white transition-colors"
+                            className="text-[10px] font-black text-[var(--fg4)] uppercase tracking-widest hover:text-[var(--fg0)] transition-colors"
                           >
                             Cancel
                           </button>
@@ -449,11 +449,11 @@ export default function Settings() {
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {currentPlan.perks.map((perk, i) => (
-                        <div key={i} className="flex items-center gap-3 bg-white/[0.03] border border-white/5 p-4 rounded-2xl group hover:bg-white/[0.05] transition-colors">
+                        <div key={i} className="flex items-center gap-3 bg-[var(--surface)] border border-[var(--line)] p-4 rounded-2xl group hover:bg-[var(--surface-hover)] transition-colors">
                           <div className="w-7 h-7 rounded-lg bg-red-600/10 flex items-center justify-center shrink-0">
-                            <CheckCircle className="w-3.5 h-3.5 text-red-500 group-hover:scale-110 transition-transform" />
+                            <CheckCircle className="w-3.5 h-3.5 text-[var(--accent-fg)] group-hover:scale-110 transition-transform" />
                           </div>
-                          <span className="text-[10px] font-black text-white uppercase tracking-widest">{perk}</span>
+                          <span className="text-[10px] font-black text-[var(--fg0)] uppercase tracking-widest">{perk}</span>
                         </div>
                       ))}
                     </div>

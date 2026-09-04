@@ -34,15 +34,15 @@ const PLATFORM_COLORS: Record<string, string> = {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-zinc-950 border border-zinc-800 shadow-2xl rounded-xl px-3 py-2.5">
-        <p className="font-black text-white mb-1 text-[10px] uppercase tracking-wider border-b border-zinc-900 pb-1">{label}</p>
+      <div className="bg-[var(--bg1)] border border-[var(--line-2)] shadow-2xl rounded-xl px-3 py-2.5">
+        <p className="font-black text-[var(--fg0)] mb-1 text-[10px] uppercase tracking-wider border-b border-[var(--line)] pb-1">{label}</p>
         {payload.map((entry: any) => (
           <div key={entry.name} className="flex items-center justify-between gap-4 mt-1">
             <span className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: entry.color || entry.fill }} />
-              <span className="text-zinc-400 text-[10px]">{entry.name}:</span>
+              <span className="text-[var(--fg2)] text-[10px]">{entry.name}:</span>
             </span>
-            <span className="text-white font-mono font-black text-[10px]">₦{typeof entry.value === 'number' ? entry.value.toLocaleString() : entry.value}</span>
+            <span className="text-[var(--fg0)] font-mono font-black text-[10px]">₦{typeof entry.value === 'number' ? entry.value.toLocaleString() : entry.value}</span>
           </div>
         ))}
       </div>
@@ -51,8 +51,8 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-const inputClass = 'w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3.5 text-white placeholder-zinc-700 focus:border-zinc-600 focus:outline-none transition-colors font-medium text-sm';
-const labelClass = 'block text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-2';
+const inputClass = 'w-full bg-[var(--input-bg)] border border-[var(--line-2)] rounded-xl px-4 py-3.5 text-[var(--fg0)] placeholder-[var(--placeholder)] focus:border-zinc-600 focus:outline-none transition-colors font-medium text-sm';
+const labelClass = 'block text-[10px] font-black text-[var(--fg2)] uppercase tracking-[0.2em] mb-2';
 
 export default function Revenue() {
   const [releases, setReleases] = useState<Release[]>([]);
@@ -113,9 +113,9 @@ export default function Revenue() {
   const pieData = Object.entries(revenueByPlatform).map(([name, value]) => ({ name, value }));
 
   const payoutStatusStyle = (status: string) => {
-    if (status === 'Completed') return 'bg-red-600/10 text-red-500 border border-red-600/20';
-    if (status === 'Rejected') return 'bg-zinc-800 text-zinc-400 border border-zinc-700';
-    return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+    if (status === 'Completed') return 'bg-red-600/10 text-[var(--accent-fg)] border border-red-600/20';
+    if (status === 'Rejected') return 'bg-[var(--surface-hover)] text-[var(--fg2)] border border-[var(--line-2)]';
+    return 'bg-amber-500/10 text-[var(--amber-fg)] border border-amber-500/20';
   };
 
   if (loading) {
@@ -133,7 +133,7 @@ export default function Revenue() {
         {/* ─── Header ─── */}
         <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}>
           <p className="label-caps mb-1.5 text-[9px]">Financial Records</p>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display italic tracking-tight text-white uppercase leading-[1.1] pb-1">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display italic tracking-tight text-[var(--fg0)] uppercase leading-[1.1] pb-1">
             Revenue <span className="text-gradient-red">Management</span>
           </h1>
         </motion.div>
@@ -156,23 +156,23 @@ export default function Revenue() {
                   <div className="w-12 h-8 bg-zinc-900/60 border border-white/5 rounded-lg flex items-center justify-center overflow-hidden">
                     <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-amber-700 blur-sm opacity-50" />
                   </div>
-                  <CreditCard className="w-5 h-5 text-zinc-600" />
+                  <CreditCard className="w-5 h-5 text-[var(--fg4)]" />
                 </div>
                 <p className="label-caps opacity-50 mb-1 text-[9px]">Available Balance</p>
-                <h2 className="text-3xl md:text-4xl font-black text-white tracking-tighter leading-none">
+                <h2 className="text-3xl md:text-4xl font-black text-[var(--fg0)] tracking-tighter leading-none">
                   ₦{netBalance.toLocaleString()}
                 </h2>
                 {pendingWithdrawals > 0 && (
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full mt-3">
-                    <Clock className="w-3 h-3 text-amber-500" />
-                    <span className="text-[9px] text-amber-500 font-black uppercase tracking-widest">₦{pendingWithdrawals.toLocaleString()} Processing</span>
+                    <Clock className="w-3 h-3 text-[var(--amber-fg)]" />
+                    <span className="text-[9px] text-[var(--amber-fg)] font-black uppercase tracking-widest">₦{pendingWithdrawals.toLocaleString()} Processing</span>
                   </div>
                 )}
               </div>
 
               <button
                 onClick={() => { setPayoutForm(f => ({ ...f, amount: netBalance })); setShowModal(true); }}
-                className="relative w-full bg-white text-black hover:bg-red-600 hover:text-white px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2 shadow-xl mt-4"
+                className="relative w-full bg-[var(--invert-bg)] text-[var(--invert-fg)] hover:bg-red-600 hover:text-white px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2 shadow-xl mt-4"
               >
                 Request Payout <ArrowUpRight className="w-4 h-4" />
               </button>
@@ -191,9 +191,9 @@ export default function Revenue() {
             </div>
             <div className="mt-8">
               <p className="label-caps mb-1.5 opacity-60 text-[9px]">Lifetime Earnings</p>
-              <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight mb-1">₦{totalRevenue.toLocaleString()}</h2>
-              <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider flex items-center gap-1">
-                <ArrowUpRight className="w-3 h-3 text-red-500" /> All-time performance
+              <h2 className="text-2xl md:text-3xl font-black text-[var(--fg0)] tracking-tight mb-1">₦{totalRevenue.toLocaleString()}</h2>
+              <p className="text-[10px] text-[var(--fg3)] font-bold uppercase tracking-wider flex items-center gap-1">
+                <ArrowUpRight className="w-3 h-3 text-[var(--accent-fg)]" /> All-time performance
               </p>
             </div>
           </motion.div>
@@ -209,10 +209,10 @@ export default function Revenue() {
             </div>
             <div className="mt-8">
               <p className="label-caps mb-1.5 opacity-60 text-[9px]">Top Earner</p>
-              <h2 className="text-xl md:text-2xl font-black text-white tracking-tight truncate leading-none mb-1">
+              <h2 className="text-xl md:text-2xl font-black text-[var(--fg0)] tracking-tight truncate leading-none mb-1">
                 {topRelease?.title.toUpperCase() || '—'}
               </h2>
-              <p className="text-[10px] text-zinc-500 font-black uppercase tracking-wider">
+              <p className="text-[10px] text-[var(--fg3)] font-black uppercase tracking-wider">
                 ₦{topRelease?.revenue?.toLocaleString() || 0} Generated
               </p>
             </div>
@@ -239,8 +239,8 @@ export default function Revenue() {
                     </PieChart>
                   </ResponsiveContainer>
                   <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Share</p>
-                    <p className="text-lg font-black text-white leading-none">TOTAL</p>
+                    <p className="text-[9px] font-black text-[var(--fg3)] uppercase tracking-widest">Share</p>
+                    <p className="text-lg font-black text-[var(--fg0)] leading-none">TOTAL</p>
                   </div>
                 </div>
                 <div className="mt-5 space-y-3">
@@ -248,17 +248,17 @@ export default function Revenue() {
                     <div key={p.name} className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: PLATFORM_COLORS[p.name] || '#52525b' }} />
-                        <span className="text-[10px] text-white font-black uppercase tracking-widest">{p.name}</span>
+                        <span className="text-[10px] text-[var(--fg0)] font-black uppercase tracking-widest">{p.name}</span>
                       </div>
-                      <span className="text-sm font-black text-white font-mono">₦{Math.round(p.value).toLocaleString()}</span>
+                      <span className="text-sm font-black text-[var(--fg0)] font-mono">₦{Math.round(p.value).toLocaleString()}</span>
                     </div>
                   ))}
                 </div>
               </>
             ) : (
               <div className="flex flex-col items-center justify-center h-48 text-center">
-                <Globe className="w-10 h-10 text-zinc-700 mb-3" />
-                <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Revenue data pending…</p>
+                <Globe className="w-10 h-10 text-[var(--fg5)] mb-3" />
+                <p className="text-[10px] text-[var(--fg3)] font-black uppercase tracking-widest">Revenue data pending…</p>
               </div>
             )}
           </div>
@@ -267,19 +267,19 @@ export default function Revenue() {
           <div className="lg:col-span-2 glass-card-premium rounded-[2rem] p-5 md:p-7 flex flex-col">
             <div className="flex items-center justify-between mb-5">
               <div>
-                <h2 className="text-sm md:text-base font-black text-white tracking-tight uppercase">Payout History</h2>
+                <h2 className="text-sm md:text-base font-black text-[var(--fg0)] tracking-tight uppercase">Payout History</h2>
                 <p className="label-caps mt-0.5 text-[8px] opacity-60">Transaction Logs</p>
               </div>
-              <div className="w-9 h-9 rounded-xl bg-zinc-950 border border-white/5 flex items-center justify-center">
-                <Clock className="w-4 h-4 text-zinc-600" />
+              <div className="w-9 h-9 rounded-xl bg-[var(--bg1)] border border-[var(--line)] flex items-center justify-center">
+                <Clock className="w-4 h-4 text-[var(--fg4)]" />
               </div>
             </div>
 
             <div className="space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar">
               {payouts.length === 0 ? (
                 <div className="text-center py-16 flex flex-col items-center">
-                  <CreditCard className="w-10 h-10 text-zinc-700 mb-3" />
-                  <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">No transactions yet</p>
+                  <CreditCard className="w-10 h-10 text-[var(--fg5)] mb-3" />
+                  <p className="text-[10px] text-[var(--fg3)] font-black uppercase tracking-widest">No transactions yet</p>
                 </div>
               ) : payouts.map((payout, i) => (
                 <motion.div
@@ -287,22 +287,22 @@ export default function Revenue() {
                   initial={{ opacity: 0, x: 16 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.04 }}
-                  className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-2xl hover:bg-white/[0.04] hover:border-white/10 transition-all group"
+                  className="flex items-center justify-between p-4 bg-[var(--surface)] border border-[var(--line)] rounded-2xl hover:bg-[var(--surface-hover)] hover:border-[var(--line-2)] transition-all group"
                 >
                   <div className="flex items-center gap-3.5">
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 ${
                       payout.status === 'Completed' ? 'bg-red-600/10' :
-                      payout.status === 'Rejected' ? 'bg-zinc-900' : 'bg-amber-500/10'
+                      payout.status === 'Rejected' ? 'bg-[var(--surface-hover)]' : 'bg-amber-500/10'
                     }`}>
                       {payout.status === 'Completed'
-                        ? <ArrowDownLeft className="w-4 h-4 text-red-500" />
-                        : payout.status === 'Rejected' ? <X className="w-4 h-4 text-zinc-500" />
-                        : <Clock className="w-4 h-4 text-amber-500" />
+                        ? <ArrowDownLeft className="w-4 h-4 text-[var(--accent-fg)]" />
+                        : payout.status === 'Rejected' ? <X className="w-4 h-4 text-[var(--fg3)]" />
+                        : <Clock className="w-4 h-4 text-[var(--amber-fg)]" />
                       }
                     </div>
                     <div>
-                      <p className="text-white font-black text-base font-mono">₦{payout.amount.toLocaleString()}</p>
-                      <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider mt-0.5">
+                      <p className="text-[var(--fg0)] font-black text-base font-mono">₦{payout.amount.toLocaleString()}</p>
+                      <p className="text-[9px] text-[var(--fg3)] font-bold uppercase tracking-wider mt-0.5">
                         {new Date(payout.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} · {payout.bankName.toUpperCase()}
                       </p>
                     </div>
@@ -331,37 +331,37 @@ export default function Revenue() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: '100%', opacity: 0 }}
               transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              className="bg-zinc-950 border border-zinc-900 rounded-t-[2rem] sm:rounded-[2rem] p-6 w-full max-w-md relative max-h-[90vh] overflow-y-auto"
+              className="bg-[var(--bg1)] border border-[var(--line)] rounded-t-[2rem] sm:rounded-[2rem] p-6 w-full max-w-md relative max-h-[90vh] overflow-y-auto"
             >
-              <div className="w-10 h-1 bg-zinc-800 rounded-full mx-auto mb-5 sm:hidden" />
+              <div className="w-10 h-1 bg-[var(--line-2)] rounded-full mx-auto mb-5 sm:hidden" />
 
-              <button onClick={() => setShowModal(false)} className="absolute top-5 right-5 text-zinc-600 hover:text-white transition-colors p-1">
+              <button onClick={() => setShowModal(false)} className="absolute top-5 right-5 text-[var(--fg4)] hover:text-[var(--fg0)] transition-colors p-1">
                 <X className="w-5 h-5" />
               </button>
 
               <div className="mb-6">
-                <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-1">Payout Request</p>
-                <h3 className="text-xl font-black text-white">Withdraw Funds</h3>
-                <p className="text-xs text-zinc-500 font-medium mt-0.5">Processed within 7 working days</p>
+                <p className="text-[10px] font-black text-[var(--fg3)] uppercase tracking-[0.2em] mb-1">Payout Request</p>
+                <h3 className="text-xl font-black text-[var(--fg0)]">Withdraw Funds</h3>
+                <p className="text-xs text-[var(--fg3)] font-medium mt-0.5">Processed within 7 working days</p>
               </div>
 
               {formError && (
-                <div className="flex items-center gap-2 text-red-400 text-sm font-bold mb-5 bg-red-500/5 border border-red-500/20 rounded-xl p-3">
+                <div className="flex items-center gap-2 text-[var(--danger-tint-fg)] text-sm font-bold mb-5 bg-red-500/5 border border-red-500/20 rounded-xl p-3">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   {formError}
                 </div>
               )}
 
               <form onSubmit={handleRequestPayout} className="space-y-4">
-                <div className="bg-black border border-zinc-900 rounded-xl p-4">
+                <div className="bg-[var(--input-bg)] border border-[var(--line)] rounded-xl p-4">
                   <label className={labelClass}>Amount (₦)</label>
                   <input
                     type="number" required min="1000" max={netBalance}
-                    className="w-full bg-transparent text-3xl font-black text-white outline-none focus:text-red-500 transition-colors"
+                    className="w-full bg-transparent text-3xl font-black text-[var(--fg0)] outline-none focus:text-[var(--accent-fg)] transition-colors"
                     value={payoutForm.amount}
                     onChange={e => setPayoutForm({ ...payoutForm, amount: parseInt(e.target.value) || 0 })}
                   />
-                  <p className="text-[9px] text-zinc-600 mt-2 font-bold uppercase tracking-wider">Min ₦1,000 · Available ₦{netBalance.toLocaleString()}</p>
+                  <p className="text-[9px] text-[var(--fg4)] mt-2 font-bold uppercase tracking-wider">Min ₦1,000 · Available ₦{netBalance.toLocaleString()}</p>
                 </div>
 
                 <div>
@@ -385,7 +385,7 @@ export default function Revenue() {
 
                 <div className="flex gap-3 pt-1">
                   <button type="button" onClick={() => setShowModal(false)}
-                    className="flex-1 py-3.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl font-black text-sm transition-all">
+                    className="flex-1 py-3.5 bg-[var(--surface-hover)] hover:bg-[var(--line-2)] text-[var(--fg0)] rounded-xl font-black text-sm transition-all">
                     Cancel
                   </button>
                   <button type="submit" disabled={submitting}
