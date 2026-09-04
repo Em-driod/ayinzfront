@@ -3,9 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '../utils/api';
+import ThemeToggle from '../components/ThemeToggle';
 
-const inputClass = 'w-full bg-black/60 border border-zinc-800 rounded-xl px-4 py-3.5 text-white placeholder-white focus:border-white focus:outline-none transition-colors font-medium text-sm';
-const labelClass = 'block text-[10px] font-black text-white uppercase tracking-[0.2em] mb-2';
+const inputClass = 'w-full bg-[var(--input-bg)] border border-[var(--line-2)] rounded-xl px-4 py-3.5 text-[var(--fg0)] placeholder-[var(--placeholder)] focus:border-[var(--fg0)] focus:outline-none transition-colors font-medium text-sm';
+const labelClass = 'block text-[10px] font-black text-[var(--fg0)] uppercase tracking-[0.2em] mb-2';
 
 // Removed plans and PaystackPop
 
@@ -53,11 +54,15 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-[#0a0a0a]">
+    <div className="min-h-screen relative overflow-hidden bg-[var(--bg0)]">
       {/* Background */}
       <div className="absolute inset-0">
         <img src="/ref.jpeg" alt="Studio" className="absolute inset-0 w-full h-full object-cover opacity-20" />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a]/90 via-[#0a0a0a]/70 to-[#0a0a0a]/90" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--bg0)]/90 via-[var(--bg0)]/70 to-[var(--bg0)]/90" />
+      </div>
+
+      <div className="absolute top-5 right-5 z-20">
+        <ThemeToggle variant="mobile" />
       </div>
 
       <div className="relative z-10 min-h-screen flex items-center justify-center px-5 py-12">
@@ -69,17 +74,17 @@ export default function Register() {
         >
           {/* Logo */}
           <div className="flex items-center justify-center space-x-2.5 mb-10">
-            <div className="w-8 h-8 rounded-xl overflow-hidden border border-zinc-800">
+            <div className="w-8 h-8 rounded-xl overflow-hidden border border-[var(--line-2)]">
               <img src="/ayinz.jpeg" alt="Ayinz" className="w-full h-full object-cover" />
             </div>
-            <span className="text-xl font-black text-white tracking-tight">Ayinz</span>
+            <span className="text-xl font-black text-[var(--fg0)] tracking-tight">Ayinz</span>
           </div>
 
           {/* Card */}
-          <div className="bg-zinc-950/80 backdrop-blur-xl border border-zinc-900 rounded-2xl p-7">
+          <div className="bg-[var(--bg1)]/80 backdrop-blur-xl border border-[var(--line)] rounded-2xl p-7">
             <div className="mb-7">
-              <h1 className="text-xl font-black text-white tracking-tight">Create Account</h1>
-              <p className="text-xs text-white font-bold mt-0.5">Start distributing your music to every major store.</p>
+              <h1 className="text-xl font-black text-[var(--fg0)] tracking-tight">Create Account</h1>
+              <p className="text-xs text-[var(--fg0)] font-bold mt-0.5">Start distributing your music to every major store.</p>
             </div>
 
             {error && (
@@ -109,7 +114,7 @@ export default function Register() {
                     placeholder="Min. 8 characters" className={inputClass}
                     value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })} />
                   <button type="button" onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white hover:text-zinc-400 transition-colors">
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--fg0)] hover:text-[var(--fg2)] transition-colors">
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
@@ -154,7 +159,7 @@ export default function Register() {
               </div>
 
               <div>
-                <label htmlFor="referralCode" className={labelClass}>Referral Code <span className="text-white/40 normal-case font-medium">(optional)</span></label>
+                <label htmlFor="referralCode" className={labelClass}>Referral Code <span className="text-[var(--fg3)] normal-case font-medium">(optional)</span></label>
                 <input id="referralCode" type="text" placeholder="e.g. AYINZ01" className={inputClass}
                   value={formData.referralCode} onChange={e => setFormData({ ...formData, referralCode: e.target.value })} />
               </div>
@@ -162,30 +167,33 @@ export default function Register() {
               {/* Terms */}
               <div className="flex items-start gap-2.5 pt-1">
                 <input id="terms" type="checkbox" required
-                  className="mt-0.5 w-4 h-4 bg-zinc-900 border border-zinc-800 rounded"
+                  className="mt-0.5 w-4 h-4 bg-[var(--surface-hover)] border border-[var(--line-2)] rounded"
                   checked={formData.agreeToTerms}
                   onChange={e => setFormData({ ...formData, agreeToTerms: e.target.checked })} />
-                <label htmlFor="terms" className="text-xs text-white font-bold leading-relaxed">
+                <label htmlFor="terms" className="text-xs text-[var(--fg0)] font-bold leading-relaxed">
                   I agree to the{' '}
-                  <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="text-white underline underline-offset-2 hover:text-zinc-300 transition-colors">Terms of Service</Link>
+                  <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="text-[var(--fg0)] underline underline-offset-2 hover:text-[var(--fg2)] transition-colors">Terms of Service</Link>
                   {' '}and{' '}
-                  <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="text-white underline underline-offset-2 hover:text-zinc-300 transition-colors">Privacy Policy</Link>
+                  <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="text-[var(--fg0)] underline underline-offset-2 hover:text-[var(--fg2)] transition-colors">Privacy Policy</Link>
                 </label>
               </div>
 
               <button type="submit" disabled={loading}
-                className="w-full bg-white hover:bg-zinc-100 text-black py-3.5 rounded-xl font-black text-sm transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
+                className="w-full py-3.5 rounded-xl font-black text-sm transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
+                style={{ background: 'var(--invert-bg)', color: 'var(--invert-fg)' }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'var(--invert-hover)')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'var(--invert-bg)')}
               >
                 {loading
-                  ? <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                  ? <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                   : <>Create Account <ArrowRight className="w-4 h-4" /></>
                 }
               </button>
             </form>
 
-            <p className="text-center text-xs text-white font-bold mt-6">
+            <p className="text-center text-xs text-[var(--fg0)] font-bold mt-6">
               Already have an account?{' '}
-              <Link to="/login" className="text-white hover:text-white transition-colors font-black">
+              <Link to="/login" className="text-[var(--fg0)] hover:text-[var(--fg0)] transition-colors font-black">
                 Sign in
               </Link>
             </p>

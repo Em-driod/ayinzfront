@@ -105,10 +105,10 @@ export default function Dashboard() {
   };
 
   const getStatusStyle = (status: string) => {
-    if (status === 'approved') return 'bg-red-600/10 text-red-500 border border-red-600/20';
-    if (status === 'pending') return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
-    if (status === 'rejected') return 'bg-zinc-800 text-zinc-400 border border-zinc-700';
-    return 'bg-zinc-800 text-white border border-zinc-700';
+    if (status === 'approved') return 'bg-red-600/10 text-[var(--accent-fg)] border border-red-600/20';
+    if (status === 'pending') return 'bg-amber-500/10 text-[var(--amber-fg)] border border-amber-500/20';
+    if (status === 'rejected') return 'bg-[var(--surface-hover)] text-[var(--fg2)] border border-[var(--line-2)]';
+    return 'bg-[var(--surface-hover)] text-[var(--fg0)] border border-[var(--line-2)]';
   };
 
   const statCards = [
@@ -131,14 +131,14 @@ export default function Dashboard() {
         >
           <div>
             <p className="label-caps mb-1.5 text-[9px]">Workspace Overview</p>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display italic tracking-tight text-white uppercase leading-[1.1] pb-1">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display italic tracking-tight text-[var(--fg0)] uppercase leading-[1.1] pb-1">
               Welcome,{' '}
               <span className="text-gradient-red">{user.name?.split(' ')[0] || 'Artist'}</span>
             </h1>
           </div>
-          <div className={`self-start sm:self-auto flex items-center gap-2.5 px-4 py-2 glass-dark rounded-2xl border ${plan === 'none' ? 'border-amber-500/40' : 'border-white/10'}`}>
+          <div className={`self-start sm:self-auto flex items-center gap-2.5 px-4 py-2 glass-dark rounded-2xl border ${plan === 'none' ? 'border-amber-500/40' : 'border-[var(--line-2)]'}`}>
             <div className={`w-2 h-2 rounded-full animate-pulse ${plan === 'none' ? 'bg-amber-500' : 'bg-red-600'}`} />
-            <span className="text-[10px] font-black uppercase tracking-widest text-white">{planLabel.name}</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-[var(--fg0)]">{planLabel.name}</span>
           </div>
         </motion.div>
 
@@ -157,7 +157,7 @@ export default function Dashboard() {
               </div>
               <div>
                 <p className="label-caps opacity-60 mb-0.5 text-[8px] md:text-[9px]">{stat.label}</p>
-                <p className="text-xl md:text-2xl lg:text-3xl font-black text-white tracking-tight">{stat.value}</p>
+                <p className="text-xl md:text-2xl lg:text-3xl font-black text-[var(--fg0)] tracking-tight">{stat.value}</p>
               </div>
             </motion.div>
           ))}
@@ -173,14 +173,14 @@ export default function Dashboard() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="lg:col-span-2 glass-card-premium overflow-hidden flex flex-col"
           >
-            <div className="px-5 md:px-7 py-4 md:py-5 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+            <div className="px-5 md:px-7 py-4 md:py-5 border-b border-[var(--line)] flex items-center justify-between bg-[var(--surface)]">
               <div>
-                <h2 className="text-sm md:text-base font-black text-white tracking-tight uppercase">Recent Releases</h2>
+                <h2 className="text-sm md:text-base font-black text-[var(--fg0)] tracking-tight uppercase">Recent Releases</h2>
                 <p className="label-caps mt-0.5 text-[8px] opacity-60">Catalogue Activity</p>
               </div>
               <button
                 onClick={() => navigate('/releases')}
-                className="text-[10px] font-black text-red-500 hover:text-red-400 uppercase tracking-widest flex items-center gap-1 bg-red-600/10 px-3 py-1.5 rounded-xl border border-red-600/20 transition-colors"
+                className="text-[10px] font-black text-[var(--accent-fg)] hover:opacity-80 uppercase tracking-widest flex items-center gap-1 bg-red-600/10 px-3 py-1.5 rounded-xl border border-red-600/20 transition-colors"
               >
                 View All <ChevronRight className="w-3 h-3" />
               </button>
@@ -189,22 +189,25 @@ export default function Dashboard() {
             <div className="flex-1 overflow-y-auto custom-scrollbar max-h-[360px]">
               {userReleases.length === 0 ? (
                 <div className="py-16 text-center px-8">
-                  <div className="w-14 h-14 rounded-[1.5rem] bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto mb-5 shadow-2xl">
-                    <Music className="w-6 h-6 text-zinc-500" />
+                  <div className="w-14 h-14 rounded-[1.5rem] bg-[var(--surface-hover)] border border-[var(--line-2)] flex items-center justify-center mx-auto mb-5 shadow-2xl">
+                    <Music className="w-6 h-6 text-[var(--fg3)]" />
                   </div>
-                  <p className="text-base font-black text-white mb-1.5 uppercase">No catalogue yet</p>
-                  <p className="text-xs text-zinc-500 mb-7 max-w-xs mx-auto font-medium leading-relaxed">
+                  <p className="text-base font-black text-[var(--fg0)] mb-1.5 uppercase">No catalogue yet</p>
+                  <p className="text-xs text-[var(--fg3)] mb-7 max-w-xs mx-auto font-medium leading-relaxed">
                     Submit your first release and we'll distribute it to 150+ stores globally.
                   </p>
                   <button
                     onClick={() => navigate('/releases/new')}
-                    className="bg-white text-black px-7 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all hover:bg-zinc-100 active:scale-95 shadow-xl"
+                    className="px-7 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-xl"
+                    style={{ background: 'var(--invert-bg)', color: 'var(--invert-fg)' }}
+                    onMouseEnter={e => (e.currentTarget.style.background = 'var(--invert-hover)')}
+                    onMouseLeave={e => (e.currentTarget.style.background = 'var(--invert-bg)')}
                   >
                     Start Distribution
                   </button>
                 </div>
               ) : (
-                <div className="divide-y divide-white/5">
+                <div className="divide-y divide-[var(--line)]">
                   {userReleases.map((release: any, i) => (
                     <motion.div
                       key={release.id || release._id || i}
@@ -212,10 +215,10 @@ export default function Dashboard() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.04 }}
                       onClick={() => navigate('/analytics')}
-                      className="px-5 md:px-7 py-4 md:py-5 flex items-center justify-between hover:bg-white/[0.03] transition-all cursor-pointer group"
+                      className="px-5 md:px-7 py-4 md:py-5 flex items-center justify-between hover:bg-[var(--surface-hover)] transition-all cursor-pointer group"
                     >
                       <div className="flex items-center gap-4 min-w-0">
-                        <div className="w-11 h-11 md:w-13 md:h-13 rounded-xl md:rounded-2xl bg-zinc-900 flex items-center justify-center shrink-0 border border-white/5 overflow-hidden group-hover:scale-105 transition-transform duration-300">
+                        <div className="w-11 h-11 md:w-13 md:h-13 rounded-xl md:rounded-2xl bg-[var(--surface-hover)] flex items-center justify-center shrink-0 border border-[var(--line)] overflow-hidden group-hover:scale-105 transition-transform duration-300">
                           {release.cover_url ? (
                             <img src={release.cover_url} alt={release.title} className="w-full h-full object-cover" />
                           ) : (
@@ -223,20 +226,20 @@ export default function Dashboard() {
                           )}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-sm md:text-base font-black text-white truncate group-hover:text-red-500 transition-colors uppercase leading-tight">
+                          <p className="text-sm md:text-base font-black text-[var(--fg0)] truncate group-hover:text-[var(--accent-fg)] transition-colors uppercase leading-tight">
                             {release.title}
                           </p>
                           <div className="flex items-center gap-2 mt-1">
                             <span className={`px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-widest border ${getStatusStyle(release.status)}`}>
                               {release.status}
                             </span>
-                            <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider truncate">
+                            <p className="text-[9px] text-[var(--fg3)] font-bold uppercase tracking-wider truncate">
                               {release.artist} · {formatNumber(release.streams || 0)} streams
                             </p>
                           </div>
                         </div>
                       </div>
-                      <ChevronRight className="w-4 h-4 text-zinc-700 group-hover:text-white group-hover:translate-x-1 transition-all shrink-0" />
+                      <ChevronRight className="w-4 h-4 text-[var(--fg5)] group-hover:text-[var(--fg0)] group-hover:translate-x-1 transition-all shrink-0" />
                     </motion.div>
                   ))}
                 </div>
@@ -284,25 +287,25 @@ export default function Dashboard() {
                 whileTap={action.locked ? {} : { scale: 0.98 }}
                 className={`relative rounded-2xl md:rounded-[1.5rem] p-5 md:p-6 text-left border transition-all duration-300 overflow-hidden group flex items-center gap-4 ${
                   action.locked
-                    ? 'bg-zinc-950/50 border-zinc-900 opacity-40 cursor-not-allowed'
+                    ? 'bg-[var(--surface)] border-[var(--line)] opacity-40 cursor-not-allowed'
                     : action.primary
                     ? 'glass-card-premium border-red-600/20 hover:border-red-600/50'
-                    : 'glass-card-premium hover:border-white/10'
+                    : 'glass-card-premium hover:border-[var(--line-2)]'
                 }`}
               >
                 <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
                   action.primary && !action.locked
                     ? 'bg-red-600 border-red-500 shadow-lg shadow-red-600/20'
-                    : 'bg-zinc-900 border-white/5'
+                    : 'bg-[var(--surface-hover)] border-[var(--line)]'
                 }`}>
-                  <action.icon className="w-5 h-5 text-white" />
+                  <action.icon className={`w-5 h-5 ${action.primary && !action.locked ? 'text-white' : 'text-[var(--fg0)]'}`} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-black text-white uppercase tracking-tight">{action.title}</p>
-                  <p className="text-[10px] font-bold text-zinc-500 mt-0.5 truncate">{action.desc}</p>
+                  <p className="text-sm font-black text-[var(--fg0)] uppercase tracking-tight">{action.title}</p>
+                  <p className="text-[10px] font-bold text-[var(--fg3)] mt-0.5 truncate">{action.desc}</p>
                 </div>
                 {!action.locked && (
-                  <ChevronRight className={`w-4 h-4 shrink-0 group-hover:translate-x-1 transition-transform ${action.primary ? 'text-red-500' : 'text-zinc-600'}`} />
+                  <ChevronRight className={`w-4 h-4 shrink-0 group-hover:translate-x-1 transition-transform ${action.primary ? 'text-[var(--accent-fg)]' : 'text-[var(--fg4)]'}`} />
                 )}
               </motion.button>
             ))}
@@ -316,18 +319,18 @@ export default function Dashboard() {
             >
               <p className="label-caps text-[8px] opacity-60 mb-3">Your Referral Code</p>
               <div className="flex items-center justify-between gap-3">
-                <span className="text-lg md:text-xl font-black text-white tracking-widest truncate">
+                <span className="text-lg md:text-xl font-black text-[var(--fg0)] tracking-widest truncate">
                   {myReferralCode || '—'}
                 </span>
                 <button
                   onClick={copyReferralCode}
                   disabled={!myReferralCode}
-                  className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center bg-red-600/10 border border-red-600/20 text-red-500 hover:bg-red-600/20 transition-colors disabled:opacity-30"
+                  className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center bg-red-600/10 border border-red-600/20 text-[var(--accent-fg)] hover:bg-red-600/20 transition-colors disabled:opacity-30"
                 >
                   {copied ? <CheckIcon className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 </button>
               </div>
-              <p className="text-[10px] font-bold text-zinc-500 mt-2">Share it — it's yours alone.</p>
+              <p className="text-[10px] font-bold text-[var(--fg3)] mt-2">Share it — it's yours alone.</p>
             </motion.div>
           </div>
         </div>
@@ -336,9 +339,9 @@ export default function Dashboard() {
       {/* Loading overlay */}
       {loading && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm">
-          <div className="flex items-center gap-3 bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3.5 shadow-2xl">
+          <div className="flex items-center gap-3 bg-[var(--bg1)] border border-[var(--line-2)] rounded-2xl px-5 py-3.5 shadow-2xl">
             <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
-            <span className="text-sm text-white font-bold">Loading dashboard…</span>
+            <span className="text-sm text-[var(--fg0)] font-bold">Loading dashboard…</span>
           </div>
         </div>
       )}

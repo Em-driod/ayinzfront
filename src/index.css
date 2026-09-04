@@ -8,9 +8,102 @@
   --font-serif: "Cormorant Garamond", serif;
 }
 
+/*
+ * Theme tokens. Dark is the default/primary look (unchanged values from
+ * before theming existed) and lives on :root. Light is opt-in via
+ * [data-theme="light"] on <html>, toggled by ThemeToggle + useTheme.
+ * Reference each token with an arbitrary-value utility, e.g. bg-[var(--bg0)],
+ * text-[var(--fg1)], border-[var(--line)].
+ */
+:root {
+  --bg0: #050505;       /* canvas */
+  --bg1: #0a0a0a;       /* solid panel/card (dark: near-black; light: white) */
+  --surface: rgba(255, 255, 255, 0.03);   /* translucent card overlay */
+  --surface-2: rgba(255, 255, 255, 0.02);
+  --surface-hover: rgba(255, 255, 255, 0.04);
+  --line: rgba(255, 255, 255, 0.06);      /* subtle border */
+  --line-2: rgba(255, 255, 255, 0.1);     /* stronger border */
+
+  --fg0: #ffffff;                  /* primary text */
+  --fg1: rgba(255, 255, 255, 0.6); /* secondary */
+  --fg2: rgba(255, 255, 255, 0.4); /* tertiary */
+  --fg3: rgba(255, 255, 255, 0.3); /* quaternary */
+  --fg4: rgba(255, 255, 255, 0.25);/* muted */
+  --fg5: rgba(255, 255, 255, 0.15);/* faint / decorative only */
+
+  --accent-fg: #ef4444;   /* red-500, accent text/icons on the dark canvas */
+  --amber-fg: #fbbf24;    /* amber-400 */
+  --blue-fg: #60a5fa;     /* blue-400 */
+  --emerald-fg: #34d399;  /* emerald-400 */
+
+  --glass-bg: rgba(0, 0, 0, 0.6);
+  --glass-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.6);
+
+  --mesh-a: 0.15;
+  --mesh-b: 0.1;
+  --mesh-c: 0.1;
+  --mesh-fade: #000000;
+
+  --danger-tint-bg: rgba(127, 29, 29, 0.25);
+  --danger-tint-border: rgba(153, 27, 27, 0.3);
+  --danger-tint-fg: #f87171;
+
+  --input-bg: rgba(0, 0, 0, 0.6);
+  --placeholder: rgba(255, 255, 255, 0.35);
+
+  --invert-bg: #ffffff;
+  --invert-fg: #000000;
+  --invert-hover: #f4f4f5;
+
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg0: #faf9f7;
+  --bg1: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #ffffff;
+  --surface-hover: #f4f3f1;
+  --line: #eceae6;
+  --line-2: #e4e2de;
+
+  --fg0: #18181b;
+  --fg1: #52525b;
+  --fg2: #71717a;
+  --fg3: #71717a;
+  --fg4: #71717a;
+  --fg5: #d4d4d8;
+
+  --accent-fg: #b91c1c;   /* red-700, AA-safe on white */
+  --amber-fg: #b45309;    /* amber-700 */
+  --blue-fg: #1d4ed8;     /* blue-700 */
+  --emerald-fg: #047857;  /* emerald-700 */
+
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-shadow: 0 24px 48px -12px rgba(24, 24, 27, 0.1);
+
+  --mesh-a: 0.05;
+  --mesh-b: 0.045;
+  --mesh-c: 0.035;
+  --mesh-fade: #ffffff;
+
+  --danger-tint-bg: #fef2f2;
+  --danger-tint-border: #fecaca;
+  --danger-tint-fg: #b91c1c;
+
+  --input-bg: #fafaf9;
+  --placeholder: #a1a1aa;
+
+  --invert-bg: #18181b;
+  --invert-fg: #ffffff;
+  --invert-hover: #27272a;
+
+  color-scheme: light;
+}
+
 @layer base {
   body {
-    @apply bg-[#050505] text-white antialiased selection:bg-red-600 selection:text-black;
+    @apply bg-[var(--bg0)] text-[var(--fg0)] antialiased selection:bg-red-600 selection:text-white transition-colors duration-200;
   }
 }
 
@@ -24,11 +117,14 @@
   }
 
   .glass-dark {
-    @apply bg-black/40 backdrop-blur-2xl border border-white/5;
+    background: var(--surface-hover);
+    @apply backdrop-blur-2xl border border-[var(--line)];
   }
 
   .glass-card-premium {
-    @apply bg-black/60 backdrop-blur-[40px] border border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)];
+    background: var(--glass-bg);
+    box-shadow: var(--glass-shadow);
+    @apply backdrop-blur-[40px] border border-[var(--line-2)];
   }
 
   .bg-mesh {
@@ -39,12 +135,12 @@
   }
 
   .bg-mesh-main {
-    background: 
-      radial-gradient(circle at 0% 0%, rgba(220, 38, 38, 0.15) 0%, transparent 40%),
-      radial-gradient(circle at 100% 0%, rgba(245, 158, 11, 0.1) 0%, transparent 40%),
-      radial-gradient(circle at 100% 100%, rgba(220, 38, 38, 0.1) 0%, transparent 40%),
-      radial-gradient(circle at 0% 100%, rgba(0, 0, 0, 1) 0%, transparent 50%),
-      #050505;
+    background:
+      radial-gradient(circle at 0% 0%, rgba(220, 38, 38, var(--mesh-a, 0.15)) 0%, transparent 40%),
+      radial-gradient(circle at 100% 0%, rgba(245, 158, 11, var(--mesh-b, 0.1)) 0%, transparent 40%),
+      radial-gradient(circle at 100% 100%, rgba(220, 38, 38, var(--mesh-c, 0.1)) 0%, transparent 40%),
+      radial-gradient(circle at 0% 100%, var(--mesh-fade, #000000) 0%, transparent 50%),
+      var(--bg0);
   }
 
   .text-gradient-red {
@@ -56,7 +152,7 @@
   }
 
   .label-caps {
-    @apply text-[10px] font-black uppercase tracking-[0.3em] text-white pr-[0.3em] -mr-[0.3em];
+    @apply text-[10px] font-black uppercase tracking-[0.3em] text-[var(--fg0)] pr-[0.3em] -mr-[0.3em];
   }
 
   .marquee-track {

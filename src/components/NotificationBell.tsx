@@ -36,10 +36,10 @@ type FeedItem =
   | { kind: 'ticket'; id: string; title: string; preview: string; date: string; unread: boolean; resolved: boolean };
 
 const TEMPLATE_META: Record<AyinzNotification['template'], { icon: any; accent: string }> = {
-  announcement: { icon: Megaphone, accent: 'text-red-400' },
-  promo: { icon: Gift, accent: 'text-amber-400' },
-  alert: { icon: AlertTriangle, accent: 'text-red-400' },
-  update: { icon: Sparkles, accent: 'text-blue-400' },
+  announcement: { icon: Megaphone, accent: 'text-[var(--accent-fg)]' },
+  promo: { icon: Gift, accent: 'text-[var(--amber-fg)]' },
+  alert: { icon: AlertTriangle, accent: 'text-[var(--accent-fg)]' },
+  update: { icon: Sparkles, accent: 'text-[var(--blue-fg)]' },
 };
 
 const timeAgo = (dateStr: string) => {
@@ -170,15 +170,15 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
   };
 
   const buttonClass = variant === 'mobile'
-    ? 'relative w-10 h-10 rounded-xl flex items-center justify-center transition-all active:scale-90 bg-zinc-900/60 border border-zinc-800 text-zinc-500'
-    : 'relative w-9 h-9 rounded-xl flex items-center justify-center transition-all active:scale-90 bg-zinc-900/60 border border-zinc-800 text-zinc-500 hover:text-white';
+    ? 'relative w-10 h-10 rounded-xl flex items-center justify-center transition-all active:scale-90 bg-[var(--surface-hover)] border border-[var(--line-2)] text-[var(--fg3)]'
+    : 'relative w-9 h-9 rounded-xl flex items-center justify-center transition-all active:scale-90 bg-[var(--surface-hover)] border border-[var(--line-2)] text-[var(--fg3)] hover:text-[var(--fg0)]';
 
   return (
     <div className="relative" ref={containerRef}>
-      <button ref={buttonRef} onClick={toggleOpen} className={buttonClass}>
+      <button ref={buttonRef} onClick={toggleOpen} className={buttonClass} aria-label="Notifications">
         <Bell className="w-4 h-4" />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[16px] h-[16px] px-1 rounded-full bg-red-500 text-white text-[8px] font-black border-2 border-[#0a0a0a]">
+          <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[16px] h-[16px] px-1 rounded-full bg-red-500 text-white text-[8px] font-black border-2 border-[var(--bg1)]">
             {unreadCount}
           </span>
         )}
@@ -194,24 +194,24 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
             exit={{ opacity: 0, y: -8, scale: 0.97 }}
             transition={{ duration: 0.15 }}
             style={{ top: menuPos.top, left: menuPos.left, width: MENU_WIDTH }}
-            className="fixed max-w-[90vw] max-h-[70vh] flex flex-col rounded-2xl border border-zinc-800 bg-[#0a0a0a] shadow-2xl z-[10000] overflow-hidden"
+            className="fixed max-w-[90vw] max-h-[70vh] flex flex-col rounded-2xl border border-[var(--line-2)] bg-[var(--bg1)] shadow-2xl z-[10000] overflow-hidden"
           >
-            <div className="px-4 py-3 border-b border-zinc-900 shrink-0">
-              <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Notifications</span>
+            <div className="px-4 py-3 border-b border-[var(--line)] shrink-0">
+              <span className="text-[10px] font-black text-[var(--fg0)] uppercase tracking-[0.2em]">Notifications</span>
             </div>
 
             {feed.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10 px-4 text-center">
-                <Inbox className="w-6 h-6 text-zinc-700 mb-2" />
-                <p className="text-xs text-zinc-500 font-bold">No notifications yet</p>
+                <Inbox className="w-6 h-6 text-[var(--fg5)] mb-2" />
+                <p className="text-xs text-[var(--fg3)] font-bold">No notifications yet</p>
               </div>
             ) : (
-              <div className="divide-y divide-zinc-900 overflow-y-auto">
+              <div className="divide-y divide-[var(--line)] overflow-y-auto">
                 {feed.map(item => {
                   const isTicket = item.kind === 'ticket';
                   const meta = isTicket ? null : TEMPLATE_META[item.template] || TEMPLATE_META.announcement;
                   const Icon = isTicket ? MessageCircle : meta!.icon;
-                  const accent = isTicket ? 'text-emerald-400' : meta!.accent;
+                  const accent = isTicket ? 'text-[var(--emerald-fg)]' : meta!.accent;
                   const content = (
                     <div className="flex items-start gap-3">
                       <div className={`mt-0.5 shrink-0 ${accent}`}>
@@ -219,18 +219,18 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-2">
-                          <p className="text-xs font-black text-white truncate flex items-center gap-1.5">
+                          <p className="text-xs font-black text-[var(--fg0)] truncate flex items-center gap-1.5">
                             {item.title}
                             {isTicket && (
-                              <span className="text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
+                              <span className="text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-[var(--emerald-fg)] border border-emerald-500/20 shrink-0">
                                 Support
                               </span>
                             )}
                           </p>
-                          <span className="text-[9px] text-zinc-600 font-bold shrink-0">{timeAgo(item.date)}</span>
+                          <span className="text-[9px] text-[var(--fg4)] font-bold shrink-0">{timeAgo(item.date)}</span>
                         </div>
-                        <p className="text-[11px] text-zinc-400 font-medium mt-0.5 line-clamp-2">
-                          {isTicket ? item.preview : linkify(item.preview, 'text-zinc-300 underline underline-offset-2 decoration-1')}
+                        <p className="text-[11px] text-[var(--fg2)] font-medium mt-0.5 line-clamp-2">
+                          {isTicket ? item.preview : linkify(item.preview, 'text-[var(--fg1)] underline underline-offset-2 decoration-1')}
                         </p>
                       </div>
                       {item.unread && <span className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1.5 shrink-0" />}
@@ -238,7 +238,7 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
                         <button
                           onClick={e => { const n = notifications.find(x => x._id === item.id); if (n) removeNotification(e, n); }}
                           title="Remove"
-                          className="shrink-0 p-1.5 rounded-lg text-zinc-700 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                          className="shrink-0 p-1.5 rounded-lg text-[var(--fg5)] hover:text-red-400 hover:bg-red-500/10 transition-colors"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -249,7 +249,7 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
                     <button
                       key={`ticket-${item.id}`}
                       onClick={() => openTicket(item.id)}
-                      className="w-full text-left px-4 py-3 hover:bg-zinc-900/40 transition-colors"
+                      className="w-full text-left px-4 py-3 hover:bg-[var(--surface-hover)] transition-colors"
                     >
                       {content}
                     </button>
@@ -260,7 +260,7 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
                       tabIndex={0}
                       onClick={() => openNotification(item.id)}
                       onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') openNotification(item.id); }}
-                      className="px-4 py-3 hover:bg-zinc-900/40 transition-colors cursor-pointer"
+                      className="px-4 py-3 hover:bg-[var(--surface-hover)] transition-colors cursor-pointer"
                     >
                       {content}
                     </div>
@@ -271,7 +271,7 @@ export default function NotificationBell({ variant = 'mobile' }: { variant?: 'mo
 
             <button
               onClick={() => { setOpen(false); navigate('/notifications'); }}
-              className="shrink-0 flex items-center justify-center gap-1.5 px-4 py-3 border-t border-zinc-900 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white hover:bg-zinc-900/40 transition-colors"
+              className="shrink-0 flex items-center justify-center gap-1.5 px-4 py-3 border-t border-[var(--line)] text-[10px] font-black uppercase tracking-widest text-[var(--fg2)] hover:text-[var(--fg0)] hover:bg-[var(--surface-hover)] transition-colors"
             >
               View all <ArrowRight className="w-3 h-3" />
             </button>
