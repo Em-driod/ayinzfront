@@ -74,8 +74,8 @@ export default function PrivacyPolicy() {
       <div className="space-y-10">
         {sections.map(s => (
           <div key={s.title}>
-            <h2 className="text-sm font-black text-white uppercase tracking-wide mb-3">{s.title}</h2>
-            <p className="text-xs md:text-sm text-white/40 font-light leading-relaxed">{s.body}</p>
+            <h2 className="text-sm font-black text-[var(--fg0)] uppercase tracking-wide mb-3">{s.title}</h2>
+            <p className="text-xs md:text-sm text-[var(--fg2)] font-light leading-relaxed">{s.body}</p>
           </div>
         ))}
       </div>

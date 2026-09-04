@@ -14,11 +14,11 @@ export default function About() {
   return (
     <PageShell
       eyebrow="Our Story"
-      title={<>We built the label<br /><span className="italic font-serif text-red-500">you don't need.</span></>}
+      title={<>We built the label<br /><span className="italic font-serif text-[var(--accent-fg)]">you don't need.</span></>}
       subtitle="Ayinz is a music distribution platform for independent artists and small labels who want their music everywhere, without giving up ownership of it."
     >
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-        className="space-y-6 text-sm md:text-base text-white/50 font-light leading-relaxed mb-16">
+        className="space-y-6 text-sm md:text-base text-[var(--fg2)] font-light leading-relaxed mb-16">
         <p>
           Ayinz started with a simple frustration shared by artists across Lagos, Accra, and Nairobi: getting your
           music onto Spotify, Apple Music, and every other platform that matters shouldn't require signing away your
@@ -41,21 +41,21 @@ export default function About() {
         {values.map((v, i) => (
           <motion.div key={v.title} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ delay: i * 0.08 }}
-            className="p-6 rounded-2xl border border-white/[0.07] bg-white/[0.02]">
-            <div className="w-9 h-9 rounded-xl border border-white/[0.08] bg-white/[0.04] flex items-center justify-center mb-4">
-              <v.Icon className="w-4 h-4 text-white/50" />
+            className="p-6 rounded-2xl border border-[var(--line)] bg-[var(--surface-2)]">
+            <div className="w-9 h-9 rounded-xl border border-[var(--line)] bg-[var(--surface-hover)] flex items-center justify-center mb-4">
+              <v.Icon className="w-4 h-4 text-[var(--fg2)]" />
             </div>
-            <h3 className="text-sm font-black text-white mb-2">{v.title}</h3>
-            <p className="text-xs text-white/35 leading-relaxed font-light">{v.body}</p>
+            <h3 className="text-sm font-black text-[var(--fg0)] mb-2">{v.title}</h3>
+            <p className="text-xs text-[var(--fg3)] leading-relaxed font-light">{v.body}</p>
           </motion.div>
         ))}
       </div>
 
       {/* Location note */}
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-        className="p-6 rounded-2xl border border-white/[0.07] bg-white/[0.02] mb-16 text-center">
-        <p className="text-[9px] uppercase tracking-[0.35em] font-bold text-white/25 mb-2">Headquartered</p>
-        <p className="text-sm text-white/60 font-medium">Lagos, Nigeria — distributing worldwide.</p>
+        className="p-6 rounded-2xl border border-[var(--line)] bg-[var(--surface-2)] mb-16 text-center">
+        <p className="text-[9px] uppercase tracking-[0.35em] font-bold text-[var(--fg4)] mb-2">Headquartered</p>
+        <p className="text-sm text-[var(--fg1)] font-medium">Lagos, Nigeria — distributing worldwide.</p>
       </motion.div>
 
       {/* CTA */}

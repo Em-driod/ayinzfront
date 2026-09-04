@@ -45,26 +45,26 @@ export default function SiteNav() {
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#07070E]/80 backdrop-blur-2xl border-b border-white/[0.06]' : ''}`}
+        className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[var(--bg0)]/80 backdrop-blur-2xl border-b border-[var(--line)]' : ''}`}
       >
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-7 h-7 rounded-lg overflow-hidden border border-white/10 shrink-0">
+            <div className="w-7 h-7 rounded-lg overflow-hidden border border-[var(--line-2)] shrink-0">
               <img src="/ayinz.jpeg" alt="Ayinz" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
             </div>
-            <span className="font-black text-sm tracking-widest uppercase text-white">Ayinz</span>
+            <span className="font-black text-sm tracking-widest uppercase text-[var(--fg0)]">Ayinz</span>
             <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map(n => n.to ? (
               <Link key={n.label} to={n.to}
-                className="text-[10px] uppercase tracking-[0.25em] font-bold text-white/35 hover:text-white/80 transition-colors">
+                className="text-[10px] uppercase tracking-[0.25em] font-bold text-[var(--fg3)] hover:text-[var(--fg1)] transition-colors">
                 {n.label}
               </Link>
             ) : (
               <a key={n.label} href={n.href}
-                className="text-[10px] uppercase tracking-[0.25em] font-bold text-white/35 hover:text-white/80 transition-colors">
+                className="text-[10px] uppercase tracking-[0.25em] font-bold text-[var(--fg3)] hover:text-[var(--fg1)] transition-colors">
                 {n.label}
               </a>
             ))}
@@ -73,23 +73,23 @@ export default function SiteNav() {
           <div className="hidden md:flex items-center gap-4">
             {loggedIn ? (
               <Link to="/dashboard"
-                className="flex items-center gap-2 bg-white text-black text-[10px] uppercase tracking-[0.2em] font-black px-5 py-2.5 rounded-full hover:bg-white/90 transition-all shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+                className="flex items-center gap-2 bg-[var(--invert-bg)] text-[var(--invert-fg)] text-[10px] uppercase tracking-[0.2em] font-black px-5 py-2.5 rounded-full hover:bg-[var(--invert-hover)] transition-all shadow-[0_0_30px_rgba(255,255,255,0.1)]">
                 Dashboard <ArrowUpRight className="w-3 h-3" />
               </Link>
             ) : (
               <>
-                <Link to="/login" className="text-[10px] uppercase tracking-[0.25em] font-bold text-white/35 hover:text-white/70 transition-colors">
+                <Link to="/login" className="text-[10px] uppercase tracking-[0.25em] font-bold text-[var(--fg3)] hover:text-[var(--fg1)] transition-colors">
                   Sign In
                 </Link>
                 <Link to="/register"
-                  className="flex items-center gap-2 bg-white text-black text-[10px] uppercase tracking-[0.2em] font-black px-5 py-2.5 rounded-full hover:bg-white/90 transition-all shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+                  className="flex items-center gap-2 bg-[var(--invert-bg)] text-[var(--invert-fg)] text-[10px] uppercase tracking-[0.2em] font-black px-5 py-2.5 rounded-full hover:bg-[var(--invert-hover)] transition-all shadow-[0_0_30px_rgba(255,255,255,0.1)]">
                   Get Started <ArrowUpRight className="w-3 h-3" />
                 </Link>
               </>
             )}
           </div>
 
-          <button onClick={() => setMenuOpen(true)} className="md:hidden text-white/50 hover:text-white transition-colors">
+          <button onClick={() => setMenuOpen(true)} className="md:hidden text-[var(--fg2)] hover:text-[var(--fg0)] transition-colors">
             <Menu className="w-5 h-5" />
           </button>
         </div>
@@ -99,10 +99,10 @@ export default function SiteNav() {
       <AnimatePresence>
         {menuOpen && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-[#07070E]/98 backdrop-blur-3xl flex flex-col p-7">
+            className="fixed inset-0 z-[60] bg-[var(--bg0)]/98 backdrop-blur-3xl flex flex-col p-7">
             <div className="flex justify-between items-center mb-16">
-              <span className="font-black text-sm tracking-widest uppercase text-white">Ayinz</span>
-              <button onClick={() => setMenuOpen(false)} className="p-2 rounded-xl border border-white/10 text-white/40 hover:text-white transition-colors">
+              <span className="font-black text-sm tracking-widest uppercase text-[var(--fg0)]">Ayinz</span>
+              <button onClick={() => setMenuOpen(false)} className="p-2 rounded-xl border border-[var(--line-2)] text-[var(--fg2)] hover:text-[var(--fg0)] transition-colors">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -112,7 +112,7 @@ export default function SiteNav() {
                   initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.07 }}>
                   <Link to={n.to}
-                    className="text-3xl font-black uppercase tracking-tight text-white/70 hover:text-white transition-colors"
+                    className="text-3xl font-black uppercase tracking-tight text-[var(--fg1)] hover:text-[var(--fg0)] transition-colors"
                     onClick={() => setMenuOpen(false)}>
                     {n.label}
                   </Link>
@@ -121,23 +121,23 @@ export default function SiteNav() {
                 <motion.a key={n.label} href={n.href}
                   initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.07 }}
-                  className="text-3xl font-black uppercase tracking-tight text-white/70 hover:text-white transition-colors"
+                  className="text-3xl font-black uppercase tracking-tight text-[var(--fg1)] hover:text-[var(--fg0)] transition-colors"
                   onClick={() => setMenuOpen(false)}>
                   {n.label}
                 </motion.a>
               ))}
             </nav>
-            <div className="mt-auto space-y-4 pt-8 border-t border-white/[0.07]">
+            <div className="mt-auto space-y-4 pt-8 border-t border-[var(--line)]">
               <div className="flex flex-wrap gap-x-5 gap-y-2">
-                <Link to="/help" className="text-[10px] font-bold uppercase tracking-widest text-white/25 hover:text-white/60 transition-colors" onClick={() => setMenuOpen(false)}>Help</Link>
-                <Link to="/privacy" className="text-[10px] font-bold uppercase tracking-widest text-white/25 hover:text-white/60 transition-colors" onClick={() => setMenuOpen(false)}>Privacy</Link>
+                <Link to="/help" className="text-[10px] font-bold uppercase tracking-widest text-[var(--fg4)] hover:text-[var(--fg1)] transition-colors" onClick={() => setMenuOpen(false)}>Help</Link>
+                <Link to="/privacy" className="text-[10px] font-bold uppercase tracking-widest text-[var(--fg4)] hover:text-[var(--fg1)] transition-colors" onClick={() => setMenuOpen(false)}>Privacy</Link>
               </div>
               {loggedIn ? (
-                <Link to="/dashboard" className="block text-xs font-bold uppercase tracking-widest text-white" onClick={() => setMenuOpen(false)}>Dashboard →</Link>
+                <Link to="/dashboard" className="block text-xs font-bold uppercase tracking-widest text-[var(--fg0)]" onClick={() => setMenuOpen(false)}>Dashboard →</Link>
               ) : (
                 <>
-                  <Link to="/login" className="block text-xs font-bold uppercase tracking-widest text-white/30" onClick={() => setMenuOpen(false)}>Sign In</Link>
-                  <Link to="/register" className="block text-xs font-bold uppercase tracking-widest text-white" onClick={() => setMenuOpen(false)}>Get Started →</Link>
+                  <Link to="/login" className="block text-xs font-bold uppercase tracking-widest text-[var(--fg3)]" onClick={() => setMenuOpen(false)}>Sign In</Link>
+                  <Link to="/register" className="block text-xs font-bold uppercase tracking-widest text-[var(--fg0)]" onClick={() => setMenuOpen(false)}>Get Started →</Link>
                 </>
               )}
             </div>

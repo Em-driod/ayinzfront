@@ -42,7 +42,7 @@ const steps = [
   },
 ];
 
-const inputCls = "w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 focus:border-red-600/50 outline-none transition-all font-medium";
+const inputCls = "w-full bg-[var(--surface)] border border-[var(--line-2)] rounded-xl px-4 py-3 text-sm text-[var(--fg0)] placeholder-[var(--placeholder)] focus:border-red-600/50 outline-none transition-all font-medium";
 
 export default function Promote() {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
@@ -87,20 +87,20 @@ export default function Promote() {
   return (
     <PageShell
       eyebrow="Promotion"
-      title={<>Distribution gets you<br /><span className="italic font-serif text-red-500">on the shelf.</span></>}
+      title={<>Distribution gets you<br /><span className="italic font-serif text-[var(--accent-fg)]">on the shelf.</span></>}
       subtitle="This is what gets people to actually press play. A few things that consistently move the needle for artists on Ayinz."
     >
       <div className="space-y-4 mb-16">
         {steps.map((s, i) => (
           <motion.div key={s.title} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ delay: i * 0.07 }}
-            className="flex items-start gap-4 p-6 rounded-2xl border border-white/[0.07] bg-white/[0.02]">
-            <div className="w-9 h-9 rounded-xl border border-white/[0.08] bg-white/[0.04] flex items-center justify-center shrink-0">
-              <s.Icon className="w-4 h-4 text-white/50" />
+            className="flex items-start gap-4 p-6 rounded-2xl border border-[var(--line)] bg-[var(--surface-2)]">
+            <div className="w-9 h-9 rounded-xl border border-[var(--line)] bg-[var(--surface-hover)] flex items-center justify-center shrink-0">
+              <s.Icon className="w-4 h-4 text-[var(--fg2)]" />
             </div>
             <div>
-              <h3 className="text-sm font-black text-white mb-1.5">{s.title}</h3>
-              <p className="text-xs text-white/35 leading-relaxed font-light">{s.body}</p>
+              <h3 className="text-sm font-black text-[var(--fg0)] mb-1.5">{s.title}</h3>
+              <p className="text-xs text-[var(--fg3)] leading-relaxed font-light">{s.body}</p>
             </div>
           </motion.div>
         ))}
@@ -111,9 +111,9 @@ export default function Promote() {
         <div className="mb-16">
           <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             className="mb-6">
-            <p className="text-[9px] uppercase tracking-[0.35em] font-bold text-white/25 mb-2">Get Playlisted</p>
-            <h2 className="text-xl font-black text-white">Playlists actively pulling from Ayinz artists.</h2>
-            <p className="text-xs text-white/35 font-light mt-2 max-w-lg leading-relaxed">
+            <p className="text-[9px] uppercase tracking-[0.35em] font-bold text-[var(--fg4)] mb-2">Get Playlisted</p>
+            <h2 className="text-xl font-black text-[var(--fg0)]">Playlists actively pulling from Ayinz artists.</h2>
+            <p className="text-xs text-[var(--fg3)] font-light mt-2 max-w-lg leading-relaxed">
               These are real, active Spotify playlists. Submitting your release through Ayinz puts it in front of the
               same people who run these.
             </p>
@@ -131,9 +131,9 @@ export default function Promote() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.07 }}
                 whileHover={{ y: -4 }}
-                className="group flex items-center gap-4 p-4 rounded-2xl border border-white/[0.07] bg-white/[0.02] hover:border-white/15 hover:bg-white/[0.04] transition-all duration-300"
+                className="group flex items-center gap-4 p-4 rounded-2xl border border-[var(--line)] bg-[var(--surface-2)] hover:border-[var(--line-2)] hover:bg-[var(--surface-hover)] transition-all duration-300"
               >
-                <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 border border-white/[0.08] bg-white/[0.03] flex items-center justify-center">
+                <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 border border-[var(--line)] bg-[var(--surface)] flex items-center justify-center">
                   {p.cover && !brokenCovers[p._id] ? (
                     <img
                       src={p.cover}
@@ -142,15 +142,15 @@ export default function Promote() {
                       onError={() => setBrokenCovers(prev => ({ ...prev, [p._id]: true }))}
                     />
                   ) : (
-                    <ListMusic className="w-5 h-5 text-white/15" />
+                    <ListMusic className="w-5 h-5 text-[var(--fg5)]" />
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-black text-white truncate">{p.name}</p>
-                  <p className="text-[9px] uppercase tracking-[0.2em] font-bold text-white/30 mt-1">{p.curator}</p>
+                  <p className="text-sm font-black text-[var(--fg0)] truncate">{p.name}</p>
+                  <p className="text-[9px] uppercase tracking-[0.2em] font-bold text-[var(--fg3)] mt-1">{p.curator}</p>
                 </div>
-                <div className="w-8 h-8 rounded-full border border-white/[0.08] bg-white/[0.03] flex items-center justify-center shrink-0 group-hover:border-[#1DB954]/40 group-hover:bg-[#1DB954]/10 transition-all">
-                  <SiSpotify className="w-3.5 h-3.5 text-white/40 group-hover:text-[#1DB954] transition-colors" />
+                <div className="w-8 h-8 rounded-full border border-[var(--line)] bg-[var(--surface)] flex items-center justify-center shrink-0 group-hover:border-[#1DB954]/40 group-hover:bg-[#1DB954]/10 transition-all">
+                  <SiSpotify className="w-3.5 h-3.5 text-[var(--fg2)] group-hover:text-[#1DB954] transition-colors" />
                 </div>
               </motion.a>
             ))}
@@ -161,49 +161,49 @@ export default function Promote() {
       {/* Playlist submission form */}
       <div className="mb-16">
         <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-6">
-          <p className="text-[9px] uppercase tracking-[0.35em] font-bold text-white/25 mb-2">Submit for Consideration</p>
-          <h2 className="text-xl font-black text-white">Get your track in front of our curators.</h2>
+          <p className="text-[9px] uppercase tracking-[0.35em] font-bold text-[var(--fg4)] mb-2">Submit for Consideration</p>
+          <h2 className="text-xl font-black text-[var(--fg0)]">Get your track in front of our curators.</h2>
         </motion.div>
 
-        <div className="p-6 md:p-8 rounded-[2rem] border border-white/[0.07] bg-white/[0.02]">
+        <div className="p-6 md:p-8 rounded-[2rem] border border-[var(--line)] bg-[var(--surface-2)]">
           {status.type === 'success' ? (
-            <div className="flex items-start gap-4 p-5 rounded-2xl bg-red-600/10 border border-red-600/20 text-red-400">
+            <div className="flex items-start gap-4 p-5 rounded-2xl bg-red-600/10 border border-red-600/20 text-[var(--accent-fg)]">
               <CheckCircle className="w-5 h-5 shrink-0 mt-0.5" />
               <p className="text-sm font-bold">{status.text}</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
               {status.type === 'error' && (
-                <div className="flex items-center gap-3 p-4 rounded-xl bg-red-600/10 border border-red-600/20 text-red-400 text-xs font-bold">
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-red-600/10 border border-red-600/20 text-[var(--accent-fg)] text-xs font-bold">
                   <AlertCircle className="w-4 h-4 shrink-0" />{status.text}
                 </div>
               )}
               <div className="grid sm:grid-cols-2 gap-5">
                 <div className="space-y-1.5">
-                  <label className="text-[9px] font-black uppercase tracking-widest text-white/40">Artiste Name</label>
+                  <label className="text-[9px] font-black uppercase tracking-widest text-[var(--fg2)]">Artiste Name</label>
                   <input type="text" required placeholder="Enter your artiste name" className={inputCls}
                     value={form.artiste_name} onChange={e => setForm({ ...form, artiste_name: e.target.value })} />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[9px] font-black uppercase tracking-widest text-white/40">Email</label>
+                  <label className="text-[9px] font-black uppercase tracking-widest text-[var(--fg2)]">Email</label>
                   <input type="email" required placeholder="Enter your email address" className={inputCls}
                     value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
                 </div>
               </div>
               <div className="space-y-1.5">
-                <label className="text-[9px] font-black uppercase tracking-widest text-white/40">Song Spotify Link</label>
+                <label className="text-[9px] font-black uppercase tracking-widest text-[var(--fg2)]">Song Spotify Link</label>
                 <input type="url" required placeholder="Paste your song Spotify link here" className={inputCls}
                   value={form.spotify_link} onChange={e => setForm({ ...form, spotify_link: e.target.value })} />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[9px] font-black uppercase tracking-widest text-white/40">Attach Screenshot (optional)</label>
+                <label className="text-[9px] font-black uppercase tracking-widest text-[var(--fg2)]">Attach Screenshot (optional)</label>
                 <div
                   onClick={() => document.getElementById('promo-attachment')?.click()}
-                  className={`py-6 border-2 border-dashed rounded-xl transition-all cursor-pointer flex flex-col items-center justify-center gap-2 ${attachment ? 'border-red-600/30 bg-red-600/5' : 'border-white/10 bg-black/20 hover:border-white/20'}`}
+                  className={`py-6 border-2 border-dashed rounded-xl transition-all cursor-pointer flex flex-col items-center justify-center gap-2 ${attachment ? 'border-red-600/30 bg-red-600/5' : 'border-[var(--line-2)] bg-[var(--input-bg)] hover:border-[var(--line-2)]'}`}
                 >
-                  <Upload className={`w-4 h-4 ${attachment ? 'text-red-500' : 'text-white/30'}`} />
-                  <p className="text-[10px] font-black uppercase tracking-widest text-white/60">
+                  <Upload className={`w-4 h-4 ${attachment ? 'text-[var(--accent-fg)]' : 'text-[var(--fg3)]'}`} />
+                  <p className="text-[10px] font-black uppercase tracking-widest text-[var(--fg1)]">
                     {attachment ? attachment.name : 'Attach the screenshot of the playlist you follow'}
                   </p>
                   <input id="promo-attachment" type="file" accept="image/*" className="sr-only"
@@ -211,9 +211,9 @@ export default function Promote() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-                <Info className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
-                <ul className="text-[10px] text-white/40 font-medium leading-relaxed space-y-1 list-disc list-inside">
+              <div className="flex items-start gap-3 p-4 rounded-xl bg-[var(--surface-2)] border border-[var(--line)]">
+                <Info className="w-4 h-4 text-[var(--fg3)] shrink-0 mt-0.5" />
+                <ul className="text-[10px] text-[var(--fg2)] font-medium leading-relaxed space-y-1 list-disc list-inside">
                   <li>Share the playlist to at least 2 of your social platforms</li>
                   <li>Follow the playlist</li>
                   <li>Screenshot it and attach it above</li>
@@ -224,16 +224,16 @@ export default function Promote() {
                 className="w-full bg-red-600 hover:bg-red-500 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all disabled:opacity-50 flex items-center justify-center gap-2.5 active:scale-95">
                 {submitting ? <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" /> : 'Submit for Consideration'}
               </button>
-              <p className="text-[9px] text-white/25 font-bold text-center">We'll get back to you through your email within 7 days.</p>
+              <p className="text-[9px] text-[var(--fg4)] font-bold text-center">We'll get back to you through your email within 7 days.</p>
             </form>
           )}
         </div>
       </div>
 
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-        className="p-7 rounded-2xl border border-white/[0.07] bg-white/[0.02] text-center">
-        <h3 className="text-base font-black text-white mb-2">Your streams, your analytics, your call.</h3>
-        <p className="text-xs text-white/35 font-light mb-6 max-w-sm mx-auto leading-relaxed">
+        className="p-7 rounded-2xl border border-[var(--line)] bg-[var(--surface-2)] text-center">
+        <h3 className="text-base font-black text-[var(--fg0)] mb-2">Your streams, your analytics, your call.</h3>
+        <p className="text-xs text-[var(--fg3)] font-light mb-6 max-w-sm mx-auto leading-relaxed">
           Everything above is available the moment you distribute your first release — no extra fee, no separate tool.
         </p>
         <Link to="/register"

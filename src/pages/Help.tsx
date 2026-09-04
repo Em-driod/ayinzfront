@@ -42,16 +42,16 @@ const faqs = [
 function FaqItem({ q, a, defaultOpen = false }: { q: string; a: string; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border border-white/[0.07] rounded-2xl bg-white/[0.02] overflow-hidden">
+    <div className="border border-[var(--line)] rounded-2xl bg-[var(--surface-2)] overflow-hidden">
       <button onClick={() => setOpen(o => !o)}
         className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left">
-        <span className="text-sm font-bold text-white">{q}</span>
-        <ChevronDown className={`w-4 h-4 text-white/30 shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+        <span className="text-sm font-bold text-[var(--fg0)]">{q}</span>
+        <ChevronDown className={`w-4 h-4 text-[var(--fg3)] shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
         <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
           transition={{ duration: 0.25 }} className="px-5 pb-4">
-          <p className="text-xs text-white/40 font-light leading-relaxed">{a}</p>
+          <p className="text-xs text-[var(--fg2)] font-light leading-relaxed">{a}</p>
         </motion.div>
       )}
     </div>
@@ -72,19 +72,19 @@ export default function Help() {
       </div>
 
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-        className="p-7 rounded-2xl border border-white/[0.07] bg-white/[0.02] text-center">
-        <Mail className="w-5 h-5 text-white/30 mx-auto mb-4" />
-        <h3 className="text-base font-black text-white mb-2">Still stuck?</h3>
-        <p className="text-xs text-white/35 font-light mb-6 max-w-sm mx-auto leading-relaxed">
+        className="p-7 rounded-2xl border border-[var(--line)] bg-[var(--surface-2)] text-center">
+        <Mail className="w-5 h-5 text-[var(--fg3)] mx-auto mb-4" />
+        <h3 className="text-base font-black text-[var(--fg0)] mb-2">Still stuck?</h3>
+        <p className="text-xs text-[var(--fg3)] font-light mb-6 max-w-sm mx-auto leading-relaxed">
           Logged-in artists can open a ticket straight from their dashboard, or reach our team directly by email.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link to="/support"
-            className="group inline-flex items-center gap-2 bg-white text-black px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:bg-zinc-100">
+            className="group inline-flex items-center gap-2 bg-[var(--invert-bg)] text-[var(--invert-fg)] px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:bg-[var(--invert-hover)]">
             Open a Ticket <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
           </Link>
           <a href="mailto:support@ayinz.com"
-            className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40 hover:text-white/70 transition-colors">
+            className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--fg2)] hover:text-[var(--fg1)] transition-colors">
             support@ayinz.com
           </a>
         </div>

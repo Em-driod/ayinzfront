@@ -87,7 +87,7 @@ export default function Pricing() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-[var(--bg1)]">
 
       {/* Subtle top gradient */}
       <div className="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-red-950/10 to-transparent pointer-events-none" />
@@ -97,11 +97,11 @@ export default function Pricing() {
       {/* Hero */}
       <div className="relative z-10 text-center pt-32 pb-14 px-6">
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
-          <p className="text-[10px] font-black text-white uppercase tracking-[0.4em] mb-4">Distribution Plans</p>
-          <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4 leading-[1.1] pb-2">
+          <p className="text-[10px] font-black text-[var(--fg0)] uppercase tracking-[0.4em] mb-4">Distribution Plans</p>
+          <h1 className="text-3xl md:text-5xl font-black text-[var(--fg0)] tracking-tight mb-4 leading-[1.1] pb-2">
             Simple, Transparent<br />Pricing
           </h1>
-          <p className="text-white text-sm md:text-base font-bold max-w-lg mx-auto">
+          <p className="text-[var(--fg0)] text-sm md:text-base font-bold max-w-lg mx-auto">
             No hidden fees. No long-term contracts. Keep 100% of your royalties.
           </p>
         </motion.div>
@@ -118,10 +118,10 @@ export default function Pricing() {
               transition={{ delay: i * 0.08 }}
               className={`relative rounded-2xl border flex flex-col ${
                 plan.temporary
-                  ? 'bg-zinc-950 border-amber-500/40 text-white'
+                  ? 'bg-[var(--bg1)] border-amber-500/40 text-[var(--fg0)]'
                   : plan.popular
-                  ? 'bg-white border-white text-black'
-                  : 'bg-zinc-950 border-zinc-900 text-white'
+                  ? 'bg-[var(--invert-bg)] border-[var(--invert-bg)] text-[var(--invert-fg)]'
+                  : 'bg-[var(--bg1)] border-[var(--line)] text-[var(--fg0)]'
               }`}
             >
               {plan.popular && (
@@ -144,29 +144,29 @@ export default function Pricing() {
                 <div className="flex items-center justify-between mb-5">
                   <div>
                     <p className={`text-[10px] font-black uppercase tracking-[0.2em] mb-0.5 ${
-                      plan.temporary ? 'text-amber-400' : plan.popular ? 'text-white' : 'text-white'
+                      plan.temporary ? 'text-[var(--amber-fg)]' : plan.popular ? 'text-white' : 'text-[var(--fg0)]'
                     }`}>
                       {plan.subtitle}
                     </p>
-                    <h3 className={`text-lg font-black tracking-tight ${plan.popular ? 'text-black' : 'text-white'}`}>{plan.name}</h3>
+                    <h3 className={`text-lg font-black tracking-tight ${plan.popular ? 'text-[var(--invert-fg)]' : 'text-[var(--fg0)]'}`}>{plan.name}</h3>
                   </div>
                   <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
                     plan.temporary ? 'bg-amber-500/10 border border-amber-500/20'
-                    : plan.popular ? 'bg-black/10' : 'bg-zinc-900 border border-zinc-800'
+                    : plan.popular ? 'bg-[var(--invert-fg)]/10' : 'bg-[var(--surface-hover)] border border-[var(--line-2)]'
                   }`}>
-                    <plan.icon className={`w-4 h-4 ${plan.temporary ? 'text-amber-400' : plan.popular ? 'text-black' : 'text-white'}`} />
+                    <plan.icon className={`w-4 h-4 ${plan.temporary ? 'text-[var(--amber-fg)]' : plan.popular ? 'text-[var(--invert-fg)]' : 'text-[var(--fg0)]'}`} />
                   </div>
                 </div>
 
                 {/* Price */}
                 <div className="mb-6">
                   <div className="flex items-end gap-1.5 mb-0.5">
-                    <span className={`text-3xl font-black tracking-tight ${plan.popular ? 'text-black' : plan.temporary ? 'text-amber-400' : 'text-white'}`}>
+                    <span className={`text-3xl font-black tracking-tight ${plan.popular ? 'text-[var(--invert-fg)]' : plan.temporary ? 'text-[var(--amber-fg)]' : 'text-[var(--fg0)]'}`}>
                       ₦{plan.price.toLocaleString()}
                     </span>
-                    <span className={`text-xs font-bold pb-1 ${plan.popular ? 'text-black/60' : 'text-white/50'}`}>/ {plan.period}</span>
+                    <span className={`text-xs font-bold pb-1 ${plan.popular ? 'text-[var(--invert-fg)]/60' : 'text-[var(--fg2)]'}`}>/ {plan.period}</span>
                   </div>
-                  <p className={`text-[10px] font-black line-through ${plan.popular ? 'text-black/40' : 'text-white/30'}`}>
+                  <p className={`text-[10px] font-black line-through ${plan.popular ? 'text-[var(--invert-fg)]/40' : 'text-[var(--fg3)]'}`}>
                     ×₦{plan.original.toLocaleString()}
                   </p>
                 </div>
@@ -177,11 +177,11 @@ export default function Pricing() {
                     <div key={fi} className="flex items-center gap-2.5">
                       <div className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 ${
                         plan.temporary ? 'bg-amber-500/10 border border-amber-500/20'
-                        : plan.popular ? 'bg-black/10' : 'bg-zinc-900 border border-zinc-800'
+                        : plan.popular ? 'bg-[var(--invert-fg)]/10' : 'bg-[var(--surface-hover)] border border-[var(--line-2)]'
                       }`}>
-                        <Check className={`w-2.5 h-2.5 ${plan.temporary ? 'text-amber-400' : plan.popular ? 'text-black' : 'text-red-500'}`} />
+                        <Check className={`w-2.5 h-2.5 ${plan.temporary ? 'text-[var(--amber-fg)]' : plan.popular ? 'text-[var(--invert-fg)]' : 'text-[var(--accent-fg)]'}`} />
                       </div>
-                      <span className={`text-xs font-bold ${plan.popular ? 'text-black' : 'text-white'}`}>{feature}</span>
+                      <span className={`text-xs font-bold ${plan.popular ? 'text-[var(--invert-fg)]' : 'text-[var(--fg0)]'}`}>{feature}</span>
                     </div>
                   ))}
                 </div>
@@ -189,8 +189,8 @@ export default function Pricing() {
                 {/* Temporary warning */}
                 {plan.temporary && (
                   <div className="flex items-start gap-2.5 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 mb-2">
-                    <AlertTriangle className="w-3.5 h-3.5 text-amber-400 flex-shrink-0 mt-0.5" />
-                    <p className="text-[10px] font-black text-amber-400 uppercase tracking-wide leading-tight">
+                    <AlertTriangle className="w-3.5 h-3.5 text-[var(--amber-fg)] flex-shrink-0 mt-0.5" />
+                    <p className="text-[10px] font-black text-[var(--amber-fg)] uppercase tracking-wide leading-tight">
                       Upgrade to a full plan before 3 months to avoid takedown
                     </p>
                   </div>
@@ -206,7 +206,7 @@ export default function Pricing() {
                       ? 'bg-amber-500 text-black hover:bg-amber-400'
                       : plan.popular
                       ? 'bg-red-600 text-white hover:bg-red-700'
-                      : 'bg-zinc-900 border border-zinc-800 text-white hover:bg-zinc-800'
+                      : 'bg-[var(--surface-hover)] border border-[var(--line-2)] text-[var(--fg0)] hover:bg-[var(--line-2)]'
                   }`}
                 >
                   {localStorage.getItem('user') ? 'Subscribe Now' : 'Get Started'} <ArrowRight className="w-3.5 h-3.5" />
@@ -217,7 +217,7 @@ export default function Pricing() {
         </div>
 
         {/* Footer note */}
-        <p className="text-center text-xs text-white font-bold mt-10">
+        <p className="text-center text-xs text-[var(--fg0)] font-bold mt-10">
           Join thousands of artists distributing their music worldwide with Ayinz.
           <br />All plans include 100% royalty retention and no lock-in contracts.
         </p>
